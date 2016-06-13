@@ -35,12 +35,12 @@ namespace CocoloresPEP.Services
 
                 var alledieDaSind = maList.Where(x => !x.NichtDaZeiten.Any(dt => dt == arbeitstag.Datum)).ToList();
 
-                var frühdienst = new DateTime(arbeitstag.Datum.Year, arbeitstag.Datum.Month, arbeitstag.Datum.Day, 7, 0,0);
-                var achtuhrdienst = new DateTime(arbeitstag.Datum.Year, arbeitstag.Datum.Month, arbeitstag.Datum.Day, 8,0, 0);
-                var achtuhr30dienst = new DateTime(arbeitstag.Datum.Year, arbeitstag.Datum.Month, arbeitstag.Datum.Day,8, 30, 0);
-                var neunuhrdienst = new DateTime(arbeitstag.Datum.Year, arbeitstag.Datum.Month, arbeitstag.Datum.Day, 9,0, 0);
-                var zehnuhrdienst = new DateTime(arbeitstag.Datum.Year, arbeitstag.Datum.Month, arbeitstag.Datum.Day,10, 0, 0);
-                var spätdienst = new DateTime(arbeitstag.Datum.Year, arbeitstag.Datum.Month, arbeitstag.Datum.Day, 17,15, 0);
+                var frühdienst = new DateTime(arbeitstag.Datum.Year, arbeitstag.Datum.Month, arbeitstag.Datum.Day, 7, 0, 0);
+                var achtuhrdienst = new DateTime(arbeitstag.Datum.Year, arbeitstag.Datum.Month, arbeitstag.Datum.Day, 8, 0, 0);
+                var achtuhr30Dienst = new DateTime(arbeitstag.Datum.Year, arbeitstag.Datum.Month, arbeitstag.Datum.Day, 8, 30, 0);
+                var neunuhrdienst = new DateTime(arbeitstag.Datum.Year, arbeitstag.Datum.Month, arbeitstag.Datum.Day, 9, 0, 0);
+                var zehnuhrdienst = new DateTime(arbeitstag.Datum.Year, arbeitstag.Datum.Month, arbeitstag.Datum.Day, 10, 0, 0);
+                var spätdienstEnde = new DateTime(arbeitstag.Datum.Year, arbeitstag.Datum.Month, arbeitstag.Datum.Day, 17, 15, 0);
 
 
 
@@ -49,49 +49,28 @@ namespace CocoloresPEP.Services
                 #region Frühdienst
 
                 var maFrüh = NextMitarbeiter(alledieDaSind, listMaDieNichtMehr);
-                if (maFrüh != null)
-                {
-                    listMaDieNichtMehr.Add(maFrüh);
-                    arbeitstag.Istzeiten.Add(new Ist()
-                    {
-                        ErledigtDurch = maFrüh,
-                        Startzeit = frühdienst,
-                        QuarterTicks = maFrüh.TagesQuarterTicks,
-                        Typ = SollTyp.Frühdienst | maFrüh.DefaultGruppe
-                    });
 
-                }
+                listMaDieNichtMehr.Add(maFrüh);
+                var istFrüh = CreateIstItem(maFrüh, frühdienst, maFrüh.TagesQuarterTicks, SollTyp.Frühdienst | maFrüh.DefaultGruppe);
+                arbeitstag.Istzeiten.Add(istFrüh);
 
                 #endregion
 
                 #region Spätdienst 2Mitarbeiter
 
                 var maSpät1 = NextMitarbeiter(alledieDaSind, listMaDieNichtMehr);
-                if (maSpät1 != null)
-                {
-                    listMaDieNichtMehr.Add(maSpät1);
-                    arbeitstag.Istzeiten.Add(new Ist()
-                    {
-                        ErledigtDurch = maSpät1,
-                        Startzeit = spätdienst.AddMinutes(-1*15*maSpät1.TagesQuarterTicks),
-                        QuarterTicks = maSpät1.TagesQuarterTicks,
-                        Typ = SollTyp.Spätdienst | maSpät1.DefaultGruppe
-                    });
-                }
+
+                listMaDieNichtMehr.Add(maSpät1);
+                var spätdienstStart1 = spätdienstEnde.AddMinutes(-1 * 15 * maSpät1.TagesQuarterTicks);
+                var istSpät1 = CreateIstItem(maSpät1, spätdienstStart1, maSpät1.TagesQuarterTicks, SollTyp.Spätdienst | maSpät1.DefaultGruppe);
+                arbeitstag.Istzeiten.Add(istSpät1);
 
                 var maSpät2 = NextMitarbeiter(alledieDaSind, listMaDieNichtMehr);
-                if (maSpät2 != null)
-                {
-                    listMaDieNichtMehr.Add(maSpät2);
-                    arbeitstag.Istzeiten.Add(new Ist()
-                    {
-                        ErledigtDurch = maSpät2,
-                        Startzeit = spätdienst.AddMinutes(-1*15*maSpät2.TagesQuarterTicks),
-                        QuarterTicks = maSpät2.TagesQuarterTicks,
-                        Typ = SollTyp.Spätdienst | maSpät2.DefaultGruppe
-                    });
 
-                }
+                listMaDieNichtMehr.Add(maSpät2);
+                var spätdienstStart2 = spätdienstEnde.AddMinutes(-1 * 15 * maSpät2.TagesQuarterTicks);
+                var istSpät2 = CreateIstItem(maSpät2, spätdienstStart2, maSpät2.TagesQuarterTicks, SollTyp.Spätdienst | maSpät2.DefaultGruppe);
+                arbeitstag.Istzeiten.Add(istSpät2);
 
                 #endregion
 
@@ -99,23 +78,13 @@ namespace CocoloresPEP.Services
 
                 var ma8UhrErster = NextMitarbeiter(alledieDaSind, listMaDieNichtMehr);
                 listMaDieNichtMehr.Add(ma8UhrErster);
-                arbeitstag.Istzeiten.Add(new Ist()
-                {
-                    ErledigtDurch = ma8UhrErster,
-                    Startzeit = achtuhrdienst,
-                    QuarterTicks = ma8UhrErster.TagesQuarterTicks,
-                    Typ = SollTyp.AchtUhrDienst | ma8UhrErster.DefaultGruppe
-                });
+                var ist8UhrErster = CreateIstItem(ma8UhrErster, achtuhrdienst, ma8UhrErster.TagesQuarterTicks, SollTyp.AchtUhrDienst | ma8UhrErster.DefaultGruppe);
+                arbeitstag.Istzeiten.Add(ist8UhrErster);
 
                 var ma8UhrZweiter = NextMitarbeiter(alledieDaSind, listMaDieNichtMehr);
                 listMaDieNichtMehr.Add(ma8UhrZweiter);
-                arbeitstag.Istzeiten.Add(new Ist()
-                {
-                    ErledigtDurch = ma8UhrZweiter,
-                    Startzeit = achtuhrdienst,
-                    QuarterTicks = ma8UhrZweiter.TagesQuarterTicks,
-                    Typ = SollTyp.AchtUhrDienst | ma8UhrZweiter.DefaultGruppe
-                });
+                var ist8UhrZweiter = CreateIstItem(ma8UhrZweiter, achtuhrdienst, ma8UhrZweiter.TagesQuarterTicks, SollTyp.AchtUhrDienst | ma8UhrZweiter.DefaultGruppe);
+                arbeitstag.Istzeiten.Add(ist8UhrZweiter);
 
                 #endregion
 
@@ -123,71 +92,77 @@ namespace CocoloresPEP.Services
 
 
                 var nestMas = restMas.Where(x => x.DefaultGruppe.HasFlag(SollTyp.Nest)).ToList();
-                FülleRestlicheMitarbeiter(nestMas, arbeitstag, SollTyp.Nest, neunuhrdienst, achtuhr30dienst, zehnuhrdienst, listMaDieNichtMehr);
+                FülleRestlicheMitarbeiter(nestMas, arbeitstag, SollTyp.Nest, neunuhrdienst, achtuhr30Dienst, zehnuhrdienst, listMaDieNichtMehr);
 
                 var blauMas = restMas.Where(x => x.DefaultGruppe.HasFlag(SollTyp.Blau)).ToList();
-                FülleRestlicheMitarbeiter(blauMas, arbeitstag, SollTyp.Blau, neunuhrdienst, achtuhr30dienst, zehnuhrdienst, listMaDieNichtMehr);
+                FülleRestlicheMitarbeiter(blauMas, arbeitstag, SollTyp.Blau, neunuhrdienst, achtuhr30Dienst, zehnuhrdienst, listMaDieNichtMehr);
 
                 var gruenMas = restMas.Where(x => x.DefaultGruppe.HasFlag(SollTyp.Gruen)).ToList();
-                FülleRestlicheMitarbeiter(gruenMas, arbeitstag, SollTyp.Gruen, neunuhrdienst, achtuhr30dienst, zehnuhrdienst, listMaDieNichtMehr);
+                FülleRestlicheMitarbeiter(gruenMas, arbeitstag, SollTyp.Gruen, neunuhrdienst, achtuhr30Dienst, zehnuhrdienst, listMaDieNichtMehr);
 
                 var rotMas = restMas.Where(x => x.DefaultGruppe.HasFlag(SollTyp.Rot)).ToList();
-                FülleRestlicheMitarbeiter(rotMas, arbeitstag, SollTyp.Rot, neunuhrdienst, achtuhr30dienst, zehnuhrdienst, listMaDieNichtMehr);
+                FülleRestlicheMitarbeiter(rotMas, arbeitstag, SollTyp.Rot, neunuhrdienst, achtuhr30Dienst, zehnuhrdienst, listMaDieNichtMehr);
 
 
 
             }
         }
 
-        private static void FülleRestlicheMitarbeiter(List<Mitarbeiter> maList, Arbeitstag arbeitstag, SollTyp gruppe, 
+        private static Ist CreateIstItem(Mitarbeiter ma, DateTime startzeit, short quarterticks, SollTyp typ)
+        {
+            var result = new Ist();
+
+            result.ErledigtDurch = ma;
+            result.Startzeit = startzeit;
+            result.QuarterTicks = quarterticks;
+            result.Typ = typ;
+
+            //Pause nachbereiten, Startzeit für den Spätdienst vorziehen
+            if (result.BreakTicks != 0)
+            {
+                if (result.Typ.HasFlag(SollTyp.Spätdienst))
+                {
+                    result.Startzeit = startzeit.AddMinutes(-1 * 15 * result.BreakTicks);
+                }
+            }
+
+            return result;
+        }
+
+        private static void FülleRestlicheMitarbeiter(List<Mitarbeiter> maList, Arbeitstag arbeitstag, SollTyp gruppe,
             DateTime neunuhrdienst,
-            DateTime achtuhr30dienst, 
+            DateTime achtuhr30Dienst,
             DateTime zehnuhrdienst,
-            List<Mitarbeiter> listMaDieNichtMehr) 
+            List<Mitarbeiter> listMaDieNichtMehr)
         {
             foreach (var ma in maList)
             {
                 if (arbeitstag.Istzeiten.Any(
-                    x =>(   x.Typ.HasFlag(SollTyp.Frühdienst) 
-                            || x.Typ.HasFlag(SollTyp.AchtUhrDienst) 
+                    x => (x.Typ.HasFlag(SollTyp.Frühdienst)
+                            || x.Typ.HasFlag(SollTyp.AchtUhrDienst)
                             || x.Typ.HasFlag(SollTyp.AchtUhr30Dienst)
                         )
                          && x.ErledigtDurch.DefaultGruppe.HasFlag(gruppe)))
                 {
-                    if (maList.Count == 3 && arbeitstag.Istzeiten.Any(x => x.Typ.HasFlag(SollTyp.NeunUhrDienst) &&
-                                                                           x.ErledigtDurch.DefaultGruppe.HasFlag(gruppe)))
+
+                    if (maList.Count == 3 && arbeitstag.Istzeiten.Any(x => x.Typ.HasFlag(SollTyp.NeunUhrDienst) && x.ErledigtDurch.DefaultGruppe.HasFlag(gruppe)))
                     {
-                        arbeitstag.Istzeiten.Add(new Ist()
-                        {
-                            ErledigtDurch = ma,
-                            Startzeit = zehnuhrdienst,
-                            QuarterTicks = ma.TagesQuarterTicks,
-                            Typ = SollTyp.ZehnUhrDienst | gruppe
-                        });
+                        var ist = CreateIstItem(ma, zehnuhrdienst, ma.TagesQuarterTicks, SollTyp.ZehnUhrDienst | gruppe);
+                        arbeitstag.Istzeiten.Add(ist);
                         listMaDieNichtMehr.Add(ma);
                     }
                     else
                     {
-                         arbeitstag.Istzeiten.Add(new Ist()
-                        {
-                            ErledigtDurch = ma,
-                            Startzeit = neunuhrdienst,
-                            QuarterTicks = ma.TagesQuarterTicks,
-                            Typ = SollTyp.NeunUhrDienst | gruppe
-                        });
+                        var ist = CreateIstItem(ma, neunuhrdienst, ma.TagesQuarterTicks, SollTyp.NeunUhrDienst | gruppe);
+                        arbeitstag.Istzeiten.Add(ist);
                         listMaDieNichtMehr.Add(ma);
                     }
-                   
+
                 }
                 else
                 {
-                    arbeitstag.Istzeiten.Add(new Ist()
-                    {
-                        ErledigtDurch = ma,
-                        Startzeit = achtuhr30dienst,
-                        QuarterTicks = ma.TagesQuarterTicks,
-                        Typ = SollTyp.AchtUhr30Dienst | gruppe
-                    });
+                    var ist = CreateIstItem(ma, achtuhr30Dienst, ma.TagesQuarterTicks, SollTyp.AchtUhr30Dienst | gruppe);
+                    arbeitstag.Istzeiten.Add(ist);
                     listMaDieNichtMehr.Add(ma);
                 }
             }

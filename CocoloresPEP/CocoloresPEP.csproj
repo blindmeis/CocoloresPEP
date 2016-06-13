@@ -54,6 +54,7 @@
       <HintPath>..\EPPlus\EPPlus.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
@@ -84,6 +85,7 @@
     <Compile Include="Services\FactoryService.cs" />
     <Compile Include="Services\IstService.cs" />
     <Compile Include="Services\PlanService.cs" />
+    <Compile Include="Services\SerializationService.cs" />
     <Compile Include="Services\SollzeitenService.cs" />
     <Compile Include="Views\Mitarbeiter\MitarbeiterView.xaml.cs">
       <DependentUpon>MitarbeiterView.xaml</DependentUpon>

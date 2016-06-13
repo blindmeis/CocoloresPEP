@@ -46,6 +46,9 @@ namespace CocoloresPEP
 
             mas[7].NichtDaZeiten.Add(new DateTime(2016,6,2));
 
+            var ss = new SerializationService();
+            ss.WriteMitarbeiterListe(mas);
+
             var fac = new FactoryService();
 
             var am = new ArbeitswochenService();

@@ -40,7 +40,7 @@ namespace CocoloresPEP.Services
                         var ma = mitarbeiters[i];
                         foreach (var zeiten in tag.Istzeiten.Where(x=>x.ErledigtDurch.Name==ma.Name))
                         {
-                            var endzeit = zeiten.Startzeit.AddMinutes(15*zeiten.QuarterTicks);
+                            var endzeit = zeiten.Startzeit.AddMinutes(15*zeiten.AllTicks);
                             ws.Cells[row, j + 2].Value =$"{zeiten.Startzeit.ToString("HH:mm")}-{endzeit.ToString("HH:mm")}";
                         }
                     }
