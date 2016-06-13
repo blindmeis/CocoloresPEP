@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace CocoloresPEP.Views.Mitarbeiter
 {
     /// <summary>
-    /// Interaktionslogik für MitarbeiterView.xaml
+    /// Interaktionslogik für MitarbeiterDetailView.xaml
     /// </summary>
-    public partial class MitarbeiterView : IDataContextMarkerMitarbeiter
+    public partial class MitarbeiterDetailView : UserControl
     {
-        public MitarbeiterView()
+        public MitarbeiterDetailView()
         {
             InitializeComponent();
         }

@@ -9,15 +9,16 @@ namespace CocoloresPEP.Common.Entities
     [Flags]
     public enum SollTyp
     {
-        Blau= 1 << 0,
-        Gruen = 1 << 1,
-        Rot = 1 << 2,
-        Nest = 1 << 3,
-        Frühdienst = 1 << 4,
-        Spätdienst = 1 << 5,
-        AchtUhrDienst = 1<< 6,
-        AchtUhr30Dienst = 1<< 7,
-        NeunUhrDienst = 1<< 8,
-        ZehnUhrDienst = 1<< 9,
+        None = 1 << 0,
+        Blau= 1 << 1,
+        Gruen = 1 << 2,
+        Rot = 1 << 3,
+        Nest = 1 << 4,
+        Frühdienst = 1 << 5,
+        Spätdienst = 1 << 6,
+        AchtUhrDienst = 1<< 7,
+        AchtUhr30Dienst = 1<< 8,
+        NeunUhrDienst = 1<< 9,
+        ZehnUhrDienst = 1<< 10,
     }
 }

@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace CocoloresPEP.Views.Mitarbeiter
+namespace CocoloresPEP.Images
 {
     /// <summary>
-    /// Interaktionslogik für MitarbeiterView.xaml
+    /// Interaktionslogik für Speichern.xaml
     /// </summary>
-    public partial class MitarbeiterView : IDataContextMarkerMitarbeiter
+    public partial class Speichern : UserControl
     {
-        public MitarbeiterView()
+        public Speichern()
         {
             InitializeComponent();
         }

@@ -6,7 +6,10 @@
         xmlns:local="clr-namespace:CocoloresPEP"
         xmlns:mitarbeiter="clr-namespace:CocoloresPEP.Views.Mitarbeiter"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="800">
+        Title="Cocolores PEP" 
+        MinHeight="768" MinWidth="1024"
+        WindowStartupLocation="CenterScreen" 
+        Style="{DynamicResource {x:Type Window}}">
     <Grid>
         <TabControl>
             <TabItem Header="Mitarbeiter">

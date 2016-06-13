@@ -20,13 +20,6 @@ namespace CocoloresPEP.Common.Extensions
                 xmlSerializer.Serialize(ms, obj);
 
                 ms.CreateFile(false, filename);
-
-                //using (TextWriter streamWriter = new StreamWriter(memoryStream))
-                //{
-                //    var xmlSerializer = new XmlSerializer(typeof(T));
-                //    xmlSerializer.Serialize(streamWriter, obj);
-                //    return XElement.Parse(Encoding.ASCII.GetString(memoryStream.ToArray()));
-                //}
             }
         }
 
@@ -58,7 +51,7 @@ namespace CocoloresPEP.Common.Extensions
             }
             catch (Exception ex)
             {
-                //Log exception here
+                throw new Exception($"Fehler beim Derialisieren von {filename}", ex);
             }
 
             return objectOut;
