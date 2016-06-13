@@ -80,7 +80,10 @@
     <Compile Include="Common\Extensions\MemoryStreamExtensions.cs" />
     <Compile Include="Common\Extensions\ObjectExtensions.cs" />
     <Compile Include="Common\ViewmodelBase.cs" />
+    <Compile Include="Common\WpfCore\Commanding\DelegateCommand.cs" />
+    <Compile Include="MainViewModel.cs" />
     <Compile Include="Module\Mitarbeiter\MitarbeiterManager.cs" />
+    <Compile Include="Module\Planung\PlanungManager.cs" />
     <Compile Include="Services\ArbeitswochenService.cs" />
     <Compile Include="Services\FactoryService.cs" />
     <Compile Include="Services\IstService.cs" />
@@ -150,6 +153,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Images\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

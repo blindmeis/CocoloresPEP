@@ -15,13 +15,33 @@ namespace CocoloresPEP.Services
         {
             try
             {
-                var path = ConfigurationManager.AppSettings["PfadMitarbeiter"];
-
-                mitarbeiters.ToFile<List<Mitarbeiter>>(path);
+                mitarbeiters.ToFile<List<Mitarbeiter>>(PathMitarbeiter);
             }
             catch (Exception ex)
             {
                 throw new Exception("Fehler beim Speichern der Mitarbeiterliste.", ex);
+            }
+        }
+
+        public IList<Mitarbeiter> ReadMitarbeiterListe()
+        {
+            try
+            {
+                var daten = ObjectExtensions.FromFile<List<Mitarbeiter>>(PathMitarbeiter);
+                return daten ?? new List<Mitarbeiter>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Fehler beim Lesen der Mitarbeiterliste.", ex);
+            }
+        }
+
+        private static string PathMitarbeiter
+        {
+            get
+            {
+                var path = ConfigurationManager.AppSettings["PfadMitarbeiter"];
+                return path;
             }
         }
     }
