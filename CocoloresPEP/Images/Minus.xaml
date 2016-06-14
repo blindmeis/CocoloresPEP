@@ -1,0 +1,10 @@
+﻿<UserControl x:Class="CocoloresPEP.Images.Minus"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CocoloresPEP.Images">
+    <Path Style="{StaticResource PathImageStyle}" 
+        Data="F1 M0,0 L38,0 38,6 0,6 0,0 z" Height="6" Width="38"/>
+
+</UserControl>

@@ -4,10 +4,11 @@
              xmlns:local="clr-namespace:CocoloresPEP"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:focus="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors.Focus"
+             xmlns:entities="clr-namespace:CocoloresPEP.Common.Entities"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          <ResourceDictionary>
-
+            
             <system:Double x:Key="FontSize">15</system:Double>
             <system:Double x:Key="FontSizeSmall">12</system:Double>
             <FontFamily x:Key="FontFamily">Consolas</FontFamily>

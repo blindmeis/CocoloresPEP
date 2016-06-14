@@ -5,49 +5,79 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CocoloresPEP.Views.Mitarbeiter"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:behaviors="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-       <Grid.RowDefinitions>
-           <RowDefinition Height="Auto"/>
-           <RowDefinition Height="Auto"/>
-           <RowDefinition Height="Auto"/>
-           <RowDefinition Height="Auto"/>
-           <RowDefinition Height="Auto"/>
-           <RowDefinition Height="Auto"/>
-       </Grid.RowDefinitions>     
+             xmlns:behaviors="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors">
+    <Grid>   
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         
-        <Label Grid.Row="0" Grid.Column="0" Content="Name:" />
-        <TextBox Grid.Row="0" Grid.Column="1" MinWidth="200"
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" Content="Name:" />
+            <TextBox Grid.Row="0" Grid.Column="1" MinWidth="200"
                  VerticalAlignment="Center"  VerticalContentAlignment="Center" HorizontalAlignment="Left"
                  Text="{Binding Path=Name}"/>
-        
-        <Label Grid.Row="1" Grid.Column="0" Content="Arbeitsstunden (Vertrag):"/>
-        <TextBox Grid.Row="1" Grid.Column="1" MinWidth="100"
+
+            <Label Grid.Row="1" Grid.Column="0" Content="Arbeitsstunden (Vertrag):"/>
+            <TextBox Grid.Row="1" Grid.Column="1" MinWidth="100"
                  VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"
                  Text="{Binding Path=WochenStunden}"/>
 
-        <Label Grid.Row="2" Grid.Column="0" Content="Gruppe:"/>
-        <ComboBox Grid.Row="2" Grid.Column="1" MinWidth="150"
+            <Label Grid.Row="2" Grid.Column="0" Content="Gruppe:"/>
+            <ComboBox Grid.Row="2" Grid.Column="1" MinWidth="150"
                   VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"
                   ItemsSource="{Binding Path=DataContext.GruppenDefaultDictionary, RelativeSource={RelativeSource AncestorType={x:Type local:IDataContextMarkerMitarbeiter}}}"
                   SelectedValue="{Binding DefaultGruppe, Mode=TwoWay}"
                   DisplayMemberPath="Key"
                   SelectedValuePath="Value"
                   IsSynchronizedWithCurrentItem="True"/>
+            
+            <Label Grid.Row="3" Grid.Column="0" Content="Wunschdienste"/>
+            <ItemsControl Grid.Row="3" Grid.Column="1" Margin="0,5,0,0"
+                          x:Name="IcWunschdienste"
+                          ItemsSource="{Binding Path=DataContext.Wunschdienste, RelativeSource={RelativeSource AncestorType={x:Type local:IDataContextMarkerMitarbeiter}}}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <CheckBox Content="{Binding Path=Displayname}"
+                                  IsChecked="{Binding Path=IsSelected, Mode=TwoWay}">
+
+                        </CheckBox>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                
+            </ItemsControl>
+
+        </Grid>
         
-        <Label Grid.Row="4" Grid.Column="0" Content="Urlaub/Nicht anwesend:"/>
-        <Calendar Grid.Row="4" Grid.Column="1" SelectionMode="MultipleRange"
+       <Grid Grid.Column="1" Margin="50,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Label Grid.Row="0" Content="Urlaub/Nicht anwesend:"/>
+            <Calendar Grid.Row="1" SelectionMode="MultipleRange"
+                  IsTodayHighlighted="False"
                   x:Name="CalUrlaub">
-            <i:Interaction.Behaviors>
-                <behaviors:CalendarBehavior SelectedDatesCollection="{Binding NichtDaZeiten, Mode=TwoWay}"/>
-            </i:Interaction.Behaviors>
-        </Calendar>
-        <ItemsControl Grid.Row="5" ItemsSource="{Binding ElementName=CalUrlaub, Path=SelectedDates}"></ItemsControl>
+                <i:Interaction.Behaviors>
+                    <behaviors:CalendarBehavior SelectedDatesCollection="{Binding NichtDaZeiten, Mode=TwoWay}"/>
+                </i:Interaction.Behaviors>
+            </Calendar>
+        </Grid>
+        
+      
     </Grid>
 </UserControl>

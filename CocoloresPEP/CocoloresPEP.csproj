@@ -77,7 +77,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Common\Entities\SollTyp.cs" />
+    <Compile Include="Common\Entities\WunschdiensteCollection.cs" />
     <Compile Include="Common\Extensions\DateTimeExtensions.cs" />
+    <Compile Include="Common\Extensions\ExceptionExtension.cs" />
     <Compile Include="Common\Extensions\MemoryStreamExtensions.cs" />
     <Compile Include="Common\Extensions\ObjectExtensions.cs" />
     <Compile Include="Common\ViewmodelBase.cs" />
@@ -86,6 +88,12 @@
     <Compile Include="Common\WpfCore\Behaviors\CalendarBehavior.cs" />
     <Compile Include="Common\WpfCore\Behaviors\Focus\FocusBorderAdornerBehavior.cs" />
     <Compile Include="Common\WpfCore\Commanding\DelegateCommand.cs" />
+    <Compile Include="Images\Minus.xaml.cs">
+      <DependentUpon>Minus.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Images\Plus.xaml.cs">
+      <DependentUpon>Plus.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Images\Speichern.xaml.cs">
       <DependentUpon>Speichern.xaml</DependentUpon>
     </Compile>
@@ -105,6 +113,14 @@
     <Compile Include="Views\Mitarbeiter\MitarbeiterView.xaml.cs">
       <DependentUpon>MitarbeiterView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Images\Minus.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Images\Plus.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Images\Speichern.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

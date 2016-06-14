@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CocoloresPEP.Views.Mitarbeiter"
-            x:Name="Uc">
+             xmlns:images="clr-namespace:CocoloresPEP.Images"
+             x:Name="Uc">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -17,7 +18,24 @@
                     Style="{DynamicResource ToolbarButtonStyle}"
                     >
                 <Viewbox Width="24" Height="24">
-                   
+                   <images:Plus/>
+                </Viewbox>
+            </Button>
+            <Button ToolTip="Mitarbeiter entfernen" 
+                    Command="{Binding Path=DeleteMitarbeiterCommand}"
+                    Style="{DynamicResource ToolbarButtonStyle}"
+                    >
+                <Viewbox Width="24" Height="24">
+                    <images:Minus/>
+                </Viewbox>
+            </Button>
+            <Separator/>
+            <Button ToolTip="Speichern" 
+                    Command="{Binding Path=SaveMitarbeiterCommand}"
+                    Style="{DynamicResource ToolbarButtonStyle}"
+                    >
+                <Viewbox Width="24" Height="24">
+                    <images:Speichern/>
                 </Viewbox>
             </Button>
         </ToolBar>

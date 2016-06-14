@@ -47,6 +47,8 @@ namespace CocoloresPEP
             //mas.Add(new Mitarbeiter() { Name = "MaRot3", WochenStunden = 30, DefaultGruppe = SollTyp.Rot });
 
             //mas[7].NichtDaZeiten.Add(new DateTime(2016, 6, 2));
+            //mas[7].NichtDaZeiten.Add(new DateTime(2016, 6, 4));
+            //mas[7].NichtDaZeiten.Add(new DateTime(2016, 6, 10));
 
             //var ss = new SerializationService();
             //ss.WriteMitarbeiterListe(mas);
