@@ -13,6 +13,15 @@
         </Grid.RowDefinitions>
         
         <ToolBar Grid.Row="0" IsOverflowOpen="False">
+            <Button ToolTip="Speichern" 
+                    Command="{Binding Path=SaveMitarbeiterCommand}"
+                    Style="{DynamicResource ToolbarButtonStyle}"
+                    >
+                <Viewbox Width="24" Height="24">
+                    <images:Speichern/>
+                </Viewbox>
+            </Button> 
+            <Separator/>
             <Button ToolTip="Mitarbeiter anlegen" 
                     Command="{Binding Path=CreateMitarbeiterCommand}"
                     Style="{DynamicResource ToolbarButtonStyle}"
@@ -29,15 +38,7 @@
                     <images:Minus/>
                 </Viewbox>
             </Button>
-            <Separator/>
-            <Button ToolTip="Speichern" 
-                    Command="{Binding Path=SaveMitarbeiterCommand}"
-                    Style="{DynamicResource ToolbarButtonStyle}"
-                    >
-                <Viewbox Width="24" Height="24">
-                    <images:Speichern/>
-                </Viewbox>
-            </Button>
+           
         </ToolBar>
         
         <Grid Grid.Row="1">
@@ -47,7 +48,7 @@
             </Grid.ColumnDefinitions>
             
             <ListBox Grid.Column="0"
-                     ItemsSource="{Binding MitarbeiterCollection}"
+                     ItemsSource="{Binding MitarbeiterView}"
                      IsSynchronizedWithCurrentItem="True"
                      SelectedValue="{Binding SelectedMitarbeiter, Mode=TwoWay}"
                      SelectionMode="Single">

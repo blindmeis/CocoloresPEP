@@ -1,0 +1,122 @@
+﻿<UserControl x:Class="CocoloresPEP.Views.Planung.PlanungView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:images="clr-namespace:CocoloresPEP.Images"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:behaviors="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <ToolBar Grid.Row="0" IsOverflowOpen="False"> 
+            <Button ToolTip="Speichern" 
+                    Command="{Binding Path=SavePlanungswocheCommand}"
+                    Style="{DynamicResource ToolbarButtonStyle}"
+                    >
+                <Viewbox Width="24" Height="24">
+                    <images:Speichern/>
+                </Viewbox>
+            </Button>
+            <Separator/>
+            <TextBlock Text="Jahr/ Kalenderwoche:" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding Path=Jahr, UpdateSourceTrigger=LostFocus}" MinWidth="50"
+                     MaxLength="4">
+                <i:Interaction.Behaviors>
+                    <behaviors:TextBoxInputBehavior InputMode="DigitInput" />
+                </i:Interaction.Behaviors>
+            </TextBox>
+            <TextBlock Text="/" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding Path=KalenderWoche, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" MinWidth="50"
+                     MaxLength="2">
+                <i:Interaction.Behaviors>
+                    <behaviors:TextBoxInputBehavior InputMode="DigitInput" />
+                </i:Interaction.Behaviors>
+            </TextBox>
+            <Button ToolTip="Planungswoche anlegen" 
+                    Command="{Binding Path=CreatePlanungswocheCommand}"
+                    Style="{DynamicResource ToolbarButtonStyle}"
+                    >
+                <Viewbox Width="24" Height="24">
+                    <images:Plus/>
+                </Viewbox>
+            </Button>
+            <Separator/>
+            
+        </ToolBar>
+        
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" MinWidth="250"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <TreeView Grid.Column="0" 
+                      ItemsSource="{Binding PlanungView.Groups}"
+                      >
+                <TreeView.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type CollectionViewGroup}" ItemsSource="{Binding Items}">
+                        <TextBlock Text="{Binding Name}"/>
+                        <HierarchicalDataTemplate.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=KalenderWoche, StringFormat='Woche {0}'}"/>
+                            </DataTemplate>
+                        </HierarchicalDataTemplate.ItemTemplate>
+                    </HierarchicalDataTemplate>
+                </TreeView.Resources>
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <Setter Property="IsExpanded" Value="True"/>
+                    </Style>
+                </TreeView.ItemContainerStyle>
+                <i:Interaction.Behaviors>
+                    <behaviors:TreeViewSelectedItemBehavior SelectedItem="{Binding SelectedArbeitswoche, Mode=TwoWay}" />
+                </i:Interaction.Behaviors>
+            </TreeView>
+            
+            <Grid Grid.Column="1" Margin="50,0,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0" Content="{Binding SelectedArbeitswocheInfo}"></Label>
+
+                <DataGrid Grid.Row="1" 
+                          ItemsSource="{Binding ArbeitswocheVorschau}"
+                          AutoGenerateColumns="False" IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" MinWidth="150"
+                                            Binding="{Binding Mitarbeiter.Name}">
+                            
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Montag" MinWidth="100"
+                                            Binding="{Binding Montag.IstZeitenInfo}">
+
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Dienstag" MinWidth="100"
+                                            Binding="{Binding Dienstag.IstZeitenInfo}">
+
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Mittwoch" MinWidth="100"
+                                            Binding="{Binding Mittwoch.IstZeitenInfo}">
+
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Donnerstag" MinWidth="100"
+                                            Binding="{Binding Donnerstag.IstZeitenInfo}">
+
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Freitag" MinWidth="100"
+                                            Binding="{Binding Freitag.IstZeitenInfo}">
+
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

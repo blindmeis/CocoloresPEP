@@ -13,6 +13,7 @@ namespace CocoloresPEP.Common.Entities
         {
             NichtDaZeiten = new ObservableCollection<DateTime>();
         }
+
         public string Name { get; set; }
 
         public decimal WochenStunden { get; set; }
@@ -29,7 +30,7 @@ namespace CocoloresPEP.Common.Entities
             }
         }
 
-        public ObservableCollection<DateTime> NichtDaZeiten { get; set; } 
+        public ObservableCollection<DateTime> NichtDaZeiten { get; set; }
 
         public SollTyp DefaultGruppe { get; set; }
 

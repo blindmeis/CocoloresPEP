@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CocoloresPEP.Common;
 using CocoloresPEP.Module.Mitarbeiter;
+using CocoloresPEP.Module.Planung;
 
 namespace CocoloresPEP
 {
@@ -13,8 +14,10 @@ namespace CocoloresPEP
         public MainViewModel()
         {
             MitarbeiterVm = new MitarbeiterManager();
+            PlanungVm = new PlanungManager();
         }
 
         public MitarbeiterManager MitarbeiterVm { get; set; }
+        public PlanungManager PlanungVm { get; set; }
     }
 }

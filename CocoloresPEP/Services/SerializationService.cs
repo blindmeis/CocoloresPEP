@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace CocoloresPEP.Services
 {
     public class SerializationService
     {
+        #region Mitarbeiter
         public void WriteMitarbeiterListe(IList<Mitarbeiter> mitarbeiters)
         {
             try
@@ -27,8 +29,15 @@ namespace CocoloresPEP.Services
         {
             try
             {
-                var daten = ObjectExtensions.FromFile<List<Mitarbeiter>>(PathMitarbeiter);
-                return daten ?? new List<Mitarbeiter>();
+                var fi = new FileInfo(PathMitarbeiter);
+
+                if (fi.Exists)
+                {
+                    var daten = ObjectExtensions.FromFile<List<Mitarbeiter>>(PathMitarbeiter);
+                    return daten ?? new List<Mitarbeiter>();
+                }
+
+                return new List<Mitarbeiter>();
             }
             catch (Exception ex)
             {
@@ -44,5 +53,50 @@ namespace CocoloresPEP.Services
                 return path;
             }
         }
+        #endregion
+
+        #region Planung
+        public void WritePlanungListe(IList<Arbeitswoche> planungen)
+        {
+            try
+            {
+                planungen.ToFile<List<Arbeitswoche>>(PfadPlanungen);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Fehler beim Speichern der Planungsliste.", ex);
+            }
+        }
+
+        public IList<Arbeitswoche> ReadPlanungListe()
+        {
+            try
+            {
+                var fi = new FileInfo(PfadPlanungen);
+
+                if (fi.Exists)
+                {
+                    var daten = ObjectExtensions.FromFile<List<Arbeitswoche>>(PfadPlanungen);
+                    return daten ?? new List<Arbeitswoche>();
+                }
+
+                return new List<Arbeitswoche>(); 
+               
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Fehler beim Lesen der Planungsliste.", ex);
+            }
+        }
+        private static string PfadPlanungen
+        {
+            get
+            {
+                var path = ConfigurationManager.AppSettings["PfadPlanungen"];
+                return path;
+            }
+        }
+
+        #endregion
     }
 }

@@ -49,6 +49,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Cocolores.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EPPlus">
       <HintPath>..\EPPlus\EPPlus.dll</HintPath>
@@ -76,8 +79,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Common\Controls\DefaultGruppenControl.cs" />
+    <Compile Include="Common\Controls\WunschdienstControl.cs" />
     <Compile Include="Common\Entities\SollTyp.cs" />
-    <Compile Include="Common\Entities\WunschdiensteCollection.cs" />
     <Compile Include="Common\Extensions\DateTimeExtensions.cs" />
     <Compile Include="Common\Extensions\ExceptionExtension.cs" />
     <Compile Include="Common\Extensions\MemoryStreamExtensions.cs" />
@@ -87,7 +91,16 @@
     <Compile Include="Common\WpfCore\Behaviors\AttachableForStyleBehavior.cs" />
     <Compile Include="Common\WpfCore\Behaviors\CalendarBehavior.cs" />
     <Compile Include="Common\WpfCore\Behaviors\Focus\FocusBorderAdornerBehavior.cs" />
+    <Compile Include="Common\WpfCore\Behaviors\TextBoxInputBehavior.cs" />
+    <Compile Include="Common\WpfCore\Behaviors\TreeViewSelectedItemBehavior.cs" />
     <Compile Include="Common\WpfCore\Commanding\DelegateCommand.cs" />
+    <Compile Include="Common\WpfCore\Controls\BusyControl.xaml.cs">
+      <DependentUpon>BusyControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Common\WpfCore\Controls\CircularProgressBar.xaml.cs">
+      <DependentUpon>CircularProgressBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Common\WpfCore\Controls\DesignModeTool.cs" />
     <Compile Include="Images\Minus.xaml.cs">
       <DependentUpon>Minus.xaml</DependentUpon>
     </Compile>
@@ -99,13 +112,16 @@
     </Compile>
     <Compile Include="MainViewModel.cs" />
     <Compile Include="Module\Mitarbeiter\MitarbeiterManager.cs" />
+    <Compile Include="Module\Mitarbeiter\MitarbeiterMappingService.cs" />
+    <Compile Include="Module\Mitarbeiter\MitarbeiterViewmodel.cs" />
     <Compile Include="Module\Planung\PlanungManager.cs" />
+    <Compile Include="Module\Planung\PlanungstagViewmodel.cs" />
+    <Compile Include="Module\Planung\PlanungswochePreviewViewmodel.cs" />
     <Compile Include="Services\ArbeitswochenService.cs" />
     <Compile Include="Services\FactoryService.cs" />
     <Compile Include="Services\IstService.cs" />
     <Compile Include="Services\PlanService.cs" />
     <Compile Include="Services\SerializationService.cs" />
-    <Compile Include="Services\SollzeitenService.cs" />
     <Compile Include="Views\Mitarbeiter\IDataContextMarkerMitarbeiter.cs" />
     <Compile Include="Views\Mitarbeiter\MitarbeiterDetailView.xaml.cs">
       <DependentUpon>MitarbeiterDetailView.xaml</DependentUpon>
@@ -113,6 +129,17 @@
     <Compile Include="Views\Mitarbeiter\MitarbeiterView.xaml.cs">
       <DependentUpon>MitarbeiterView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Planung\PlanungView.xaml.cs">
+      <DependentUpon>PlanungView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Common\WpfCore\Controls\BusyControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Common\WpfCore\Controls\CircularProgressBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Images\Minus.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -147,6 +174,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Mitarbeiter\MitarbeiterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Planung\PlanungView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -190,7 +221,9 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Cocolores.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

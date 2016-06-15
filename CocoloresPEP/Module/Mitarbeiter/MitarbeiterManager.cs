@@ -20,8 +20,7 @@ namespace CocoloresPEP.Module.Mitarbeiter
     public class MitarbeiterManager : ViewmodelBase
     {
         private readonly SerializationService _serializationService;
-        private ICollectionView _view;
-        private Common.Entities.Mitarbeiter _selectedMitarbeiter;
+        private MitarbeiterViewmodel _selectedMitarbeiter;
 
         private readonly Lazy<DelegateCommand> _lazyCreateMitarbeiterCommand;
         private readonly Lazy<DelegateCommand> _lazySaveMitarbeiterCommand;
@@ -31,21 +30,13 @@ namespace CocoloresPEP.Module.Mitarbeiter
         {
             _serializationService = new SerializationService();
 
-            MitarbeiterCollection = new ObservableCollection<Common.Entities.Mitarbeiter>(_serializationService.ReadMitarbeiterListe());
+            var mitarbeiter = _serializationService.ReadMitarbeiterListe();
+            MitarbeiterCollection = new ObservableCollection<MitarbeiterViewmodel>(mitarbeiter.Select(x=> x.MapMitarbeiterToViewmodel()));
 
-            _view = CollectionViewSource.GetDefaultView(MitarbeiterCollection);
-            _view.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
-
-            Wunschdienste = new WunschdiensteCollection();
-            GruppenDefaultDictionary = new Dictionary<string, SollTyp>
-            {
-                {" ", SollTyp.None},
-                {"Blau", SollTyp.Blau},
-                {"Rot", SollTyp.Rot},
-                {"Grün", SollTyp.Gruen},
-                {"Nest", SollTyp.Nest}
-            };
-
+            MitarbeiterView = CollectionViewSource.GetDefaultView(MitarbeiterCollection);
+            MitarbeiterView.SortDescriptions.Add(new SortDescription("DefaultGruppe", ListSortDirection.Ascending));
+            MitarbeiterView.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
+            
             _lazyCreateMitarbeiterCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(CreateMitarbeiterCommandExecute, CanCreateMitarbeiterCommandExecute));
             _lazySaveMitarbeiterCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(SaveMitarbeiterCommandExecute, CanSaveMitarbeiterCommandExecute));
             _lazyDeleteMitarbeiterCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(DeleteMitarbeiterCommandExecute, CanDeleteMitarbeiterCommandExecute));
@@ -53,13 +44,12 @@ namespace CocoloresPEP.Module.Mitarbeiter
 
      
 
-        public ObservableCollection<Common.Entities.Mitarbeiter> MitarbeiterCollection { get; private set; }
+        public ObservableCollection<MitarbeiterViewmodel> MitarbeiterCollection { get; private set; }
 
-        public Dictionary<string, SollTyp> GruppenDefaultDictionary { get; set; }
+        public ICollectionView MitarbeiterView { get; }
 
-        public WunschdiensteCollection Wunschdienste { get; set; }
 
-        public Common.Entities.Mitarbeiter SelectedMitarbeiter
+        public MitarbeiterViewmodel SelectedMitarbeiter
         {
             get { return _selectedMitarbeiter; }
             set
@@ -83,8 +73,9 @@ namespace CocoloresPEP.Module.Mitarbeiter
             if (!CanCreateMitarbeiterCommandExecute())
                 return;
 
-            SelectedMitarbeiter = new Common.Entities.Mitarbeiter() {Name = "Neu"};
+            SelectedMitarbeiter = new MitarbeiterViewmodel() {Name = "Neu"};
             MitarbeiterCollection.Add(SelectedMitarbeiter);
+            MitarbeiterView.Refresh();
         }
 
         #endregion
@@ -105,7 +96,7 @@ namespace CocoloresPEP.Module.Mitarbeiter
 
             try
             {
-               await Task.Run( ()=> _serializationService.WriteMitarbeiterListe(MitarbeiterCollection.ToList()));
+               await Task.Run( ()=> _serializationService.WriteMitarbeiterListe(MitarbeiterCollection.Select(x=>x.MapViewmodelToMitarbeiter()).ToList()));
             }
             catch (Exception ex)
             {
@@ -119,7 +110,7 @@ namespace CocoloresPEP.Module.Mitarbeiter
         #region DeleteMitarbeiterCommand
     
         public ICommand DeleteMitarbeiterCommand { get { return _lazyDeleteMitarbeiterCommand.Value; }}
-
+        
         private bool CanDeleteMitarbeiterCommandExecute()
         {
             return SelectedMitarbeiter != null;
