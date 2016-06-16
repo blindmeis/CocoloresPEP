@@ -17,12 +17,13 @@ namespace CocoloresPEP.Common.Entities
             Jahr = jahr;
             KalenderWoche = woche;
             Arbeitstage = new List<Arbeitstag>();
+            Mitarbeiter = new List<Mitarbeiter>();
         }
         public int Jahr { get;  set; }
         public int KalenderWoche { get;  set; }
 
         public List<Arbeitstag> Arbeitstage { get;  set; } 
 
-
+        public List<Mitarbeiter> Mitarbeiter { get; set; } 
     }
 }

@@ -11,14 +11,17 @@
         Icon="Cocolores.ico"
         MinHeight="768" MinWidth="1024"
         WindowStartupLocation="CenterScreen" 
-        Style="{DynamicResource {x:Type Window}}">
+        Style="{DynamicResource {x:Type Window}}"
+        >
     <Grid>
         <TabControl>
             <TabItem Header="Mitarbeiter">
                 <mitarbeiter:MitarbeiterView DataContext="{Binding MitarbeiterVm}"/>
             </TabItem>
             <TabItem Header="Planung">
-                <planung:PlanungView DataContext="{Binding PlanungVm}"/>
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <planung:PlanungView DataContext="{Binding PlanungVm}"/>
+                </ScrollViewer>
             </TabItem>
         </TabControl>
     </Grid>

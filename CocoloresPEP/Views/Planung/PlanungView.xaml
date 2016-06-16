@@ -5,7 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:images="clr-namespace:CocoloresPEP.Images"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:behaviors="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors">
+             xmlns:behaviors="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors"
+             xmlns:planung="clr-namespace:CocoloresPEP.Views.Planung"
+             xmlns:entities="clr-namespace:CocoloresPEP.Common.Entities">
     
     <Grid>
         <Grid.RowDefinitions>
@@ -45,7 +47,23 @@
                     <images:Plus/>
                 </Viewbox>
             </Button>
+            <Button ToolTip="Planungswoche löschen" 
+                    Command="{Binding Path=DeletePlanungswocheCommand}"
+                    Style="{DynamicResource ToolbarButtonStyle}"
+                    >
+                <Viewbox Width="24" Height="24">
+                    <images:Minus/>
+                </Viewbox>
+            </Button>
             <Separator/>
+            <Button ToolTip="Planung ausführen" 
+                    Command="{Binding Path=RunPlanungCommand}"
+                    Style="{DynamicResource ToolbarButtonStyle}"
+                    >
+                <Viewbox Width="24" Height="24">
+                   <images:DoWork/>
+                </Viewbox>
+            </Button>
             
         </ToolBar>
         
@@ -53,6 +71,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" MinWidth="250"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             
             <TreeView Grid.Column="0" 
@@ -78,7 +97,7 @@
                 </i:Interaction.Behaviors>
             </TreeView>
             
-            <Grid Grid.Column="1" Margin="50,0,0,0">
+            <Grid Grid.Column="1" Margin="50,0,0,0" HorizontalAlignment="Left">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -86,36 +105,171 @@
 
                 <Label Grid.Row="0" Content="{Binding SelectedArbeitswocheInfo}"></Label>
 
-                <DataGrid Grid.Row="1" 
+                <DataGrid Grid.Row="1" x:Name="GridPlanung"
                           ItemsSource="{Binding ArbeitswocheVorschau}"
-                          AutoGenerateColumns="False" IsReadOnly="True">
+                          AutoGenerateColumns="False" IsReadOnly="True"
+                          CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False"
+                          SelectedValue="{Binding SelectedMitarbeiter, Mode=TwoWay}"
+                          SelectionMode="Single"
+                          SelectionUnit="FullRow"
+                          IsSynchronizedWithCurrentItem="True">
+                    <DataGrid.Resources>
+                      
+                    </DataGrid.Resources>
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Name" MinWidth="150"
-                                            Binding="{Binding Mitarbeiter.Name}">
-                            
+                                            Binding="{Binding Mitarbeiter.Name}"
+                                            >
+                          <DataGridTextColumn.CellStyle>
+                                <Style TargetType="DataGridCell">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Mitarbeiter.DefaultGruppe}" Value="{x:Static entities:SollTyp.Blau}">
+                                            <Setter Property="Background" Value="{StaticResource ColorGruppeBlau}"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Mitarbeiter.DefaultGruppe}" Value="{x:Static entities:SollTyp.Gruen}">
+                                            <Setter Property="Background" Value="{StaticResource ColorGruppeGruen}"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Mitarbeiter.DefaultGruppe}" Value="{x:Static entities:SollTyp.Rot}">
+                                            <Setter Property="Background" Value="{StaticResource ColorGruppeRot}"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Mitarbeiter.DefaultGruppe}" Value="{x:Static entities:SollTyp.Nest}">
+                                            <Setter Property="Background" Value="{StaticResource ColorGruppeNest}"></Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.CellStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Header="Montag" MinWidth="100"
+                        <DataGridTextColumn Header="Montag" MinWidth="100" 
                                             Binding="{Binding Montag.IstZeitenInfo}">
-
+                            <DataGridTextColumn.CellStyle>
+                                <Style TargetType="DataGridCell">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Montag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:SollTyp.Blau}}" Value="true">
+                                            <Setter Property="Background" Value="{StaticResource ColorGruppeBlau}"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Montag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:SollTyp.Gruen}}" Value="true">
+                                            <Setter Property="Background" Value="{StaticResource ColorGruppeGruen}"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Montag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:SollTyp.Rot}}" Value="true">
+                                            <Setter Property="Background" Value="{StaticResource ColorGruppeRot}"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Montag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:SollTyp.Nest}}" Value="true">
+                                            <Setter Property="Background" Value="{StaticResource ColorGruppeNest}"></Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.CellStyle>
                         </DataGridTextColumn>
                         <DataGridTextColumn Header="Dienstag" MinWidth="100"
-                                            Binding="{Binding Dienstag.IstZeitenInfo}">
-
+                                            Binding="{Binding Dienstag.IstZeitenInfo}"
+                                            >
+                            <DataGridTextColumn.CellStyle>
+                                <Style TargetType="DataGridCell">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Dienstag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:SollTyp.Blau}}" Value="true">
+                                            <Setter Property="Background" Value="{StaticResource ColorGruppeBlau}"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Dienstag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:SollTyp.Gruen}}" Value="true">
+                                            <Setter Property="Background" Value="{StaticResource ColorGruppeGruen}"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Dienstag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:SollTyp.Rot}}" Value="true">
+                                            <Setter Property="Background" Value="{StaticResource ColorGruppeRot}"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Dienstag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:SollTyp.Nest}}" Value="true">
+                                            <Setter Property="Background" Value="{StaticResource ColorGruppeNest}"></Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.CellStyle>
                         </DataGridTextColumn>
                         <DataGridTextColumn Header="Mittwoch" MinWidth="100"
-                                            Binding="{Binding Mittwoch.IstZeitenInfo}">
-
+                                            Binding="{Binding Mittwoch.IstZeitenInfo}"
+                                            >
+                            <DataGridTextColumn.CellStyle>
+                                <Style TargetType="DataGridCell">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Mittwoch.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:SollTyp.Blau}}" Value="true">
+                                            <Setter Property="Background" Value="{StaticResource ColorGruppeBlau}"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Mittwoch.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:SollTyp.Gruen}}" Value="true">
+                                            <Setter Property="Background" Value="{StaticResource ColorGruppeGruen}"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Mittwoch.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:SollTyp.Rot}}" Value="true">
+                                            <Setter Property="Background" Value="{StaticResource ColorGruppeRot}"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Mittwoch.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:SollTyp.Nest}}" Value="true">
+                                            <Setter Property="Background" Value="{StaticResource ColorGruppeNest}"></Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.CellStyle>
                         </DataGridTextColumn>
                         <DataGridTextColumn Header="Donnerstag" MinWidth="100"
-                                            Binding="{Binding Donnerstag.IstZeitenInfo}">
-
+                                            Binding="{Binding Donnerstag.IstZeitenInfo}"
+                                            >
+                            <DataGridTextColumn.CellStyle>
+                                <Style TargetType="DataGridCell">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Donnerstag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:SollTyp.Blau}}" Value="true">
+                                            <Setter Property="Background" Value="{StaticResource ColorGruppeBlau}"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Donnerstag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:SollTyp.Gruen}}" Value="true">
+                                            <Setter Property="Background" Value="{StaticResource ColorGruppeGruen}"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Donnerstag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:SollTyp.Rot}}" Value="true">
+                                            <Setter Property="Background" Value="{StaticResource ColorGruppeRot}"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Donnerstag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:SollTyp.Nest}}" Value="true">
+                                            <Setter Property="Background" Value="{StaticResource ColorGruppeNest}"></Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.CellStyle>
                         </DataGridTextColumn>
                         <DataGridTextColumn Header="Freitag" MinWidth="100"
                                             Binding="{Binding Freitag.IstZeitenInfo}">
-
+                            <DataGridTextColumn.CellStyle>
+                                <Style TargetType="DataGridCell">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Freitag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:SollTyp.Blau}}" Value="true">
+                                            <Setter Property="Background" Value="{StaticResource ColorGruppeBlau}"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Freitag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:SollTyp.Gruen}}" Value="true">
+                                            <Setter Property="Background" Value="{StaticResource ColorGruppeGruen}"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Freitag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:SollTyp.Rot}}" Value="true">
+                                            <Setter Property="Background" Value="{StaticResource ColorGruppeRot}"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Freitag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:SollTyp.Nest}}" Value="true">
+                                            <Setter Property="Background" Value="{StaticResource ColorGruppeNest}"></Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.CellStyle>
                         </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
+            </Grid>
+       
+            <Grid Grid.Column="2" HorizontalAlignment="Left" Margin="25,0,0,0">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=GridPlanung, Path=SelectedItem}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                
+                <Border BorderBrush="Black" BorderThickness="1" Padding="10,5">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                        <planung:MitarbeiterDetailView DataContext="{Binding ElementName=GridPlanung, Path=SelectedItem.Mitarbeiter}"/>
+                    </ScrollViewer>
+                </Border>
+                
+                
             </Grid>
         </Grid>
     </Grid>

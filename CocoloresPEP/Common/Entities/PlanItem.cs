@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CocoloresPEP.Common.Entities
 {
-    public class Ist
+    public class PlanItem
     {
         public DateTime Startzeit { get; set; }
 

@@ -5,9 +5,12 @@
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:focus="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors.Focus"
              xmlns:entities="clr-namespace:CocoloresPEP.Common.Entities"
+             xmlns:converter="clr-namespace:CocoloresPEP.Common.WpfCore.Converter"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          <ResourceDictionary>
+
+            <converter:EnumHasFlagConverter x:Key="MyEnumHasFlagConverter"/>
             
             <system:Double x:Key="FontSize">15</system:Double>
             <system:Double x:Key="FontSizeSmall">12</system:Double>
@@ -16,6 +19,11 @@
             <SolidColorBrush x:Key="PathImageColor" Color="DarkGreen"/>
             <SolidColorBrush x:Key="IsDisabledForegroundBrush" Color="Black"/>
             <SolidColorBrush x:Key="BrushError" Color="Red"/>
+             
+             <SolidColorBrush x:Key="ColorGruppeBlau" Color="LightBlue"/>
+             <SolidColorBrush x:Key="ColorGruppeGruen" Color="LightGreen"/>
+             <SolidColorBrush x:Key="ColorGruppeRot" Color="LightCoral"/>
+             <SolidColorBrush x:Key="ColorGruppeNest" Color="DarkGoldenrod"/>
 
             <!--STYLES-->
             <Style x:Key="{x:Type Window}" TargetType="{x:Type Window}">

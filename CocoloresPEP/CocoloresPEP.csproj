@@ -101,6 +101,11 @@
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common\WpfCore\Controls\DesignModeTool.cs" />
+    <Compile Include="Common\WpfCore\Converter\EnumHasFlagConverter.cs" />
+    <Compile Include="Common\WpfCore\Helper.cs" />
+    <Compile Include="Images\DoWork.xaml.cs">
+      <DependentUpon>DoWork.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Images\Minus.xaml.cs">
       <DependentUpon>Minus.xaml</DependentUpon>
     </Compile>
@@ -114,9 +119,12 @@
     <Compile Include="Module\Mitarbeiter\MitarbeiterManager.cs" />
     <Compile Include="Module\Mitarbeiter\MitarbeiterMappingService.cs" />
     <Compile Include="Module\Mitarbeiter\MitarbeiterViewmodel.cs" />
+    <Compile Include="Module\Planung\ArbeitstagViewmodel.cs" />
+    <Compile Include="Module\Planung\ArbeitswocheViewmodel.cs" />
     <Compile Include="Module\Planung\PlanungManager.cs" />
+    <Compile Include="Module\Planung\PlanungMappingService.cs" />
     <Compile Include="Module\Planung\PlanungstagViewmodel.cs" />
-    <Compile Include="Module\Planung\PlanungswochePreviewViewmodel.cs" />
+    <Compile Include="Module\Planung\PlanungswocheMitarbeiterViewmodel.cs" />
     <Compile Include="Services\ArbeitswochenService.cs" />
     <Compile Include="Services\FactoryService.cs" />
     <Compile Include="Services\IstService.cs" />
@@ -129,6 +137,9 @@
     <Compile Include="Views\Mitarbeiter\MitarbeiterView.xaml.cs">
       <DependentUpon>MitarbeiterView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Planung\MitarbeiterDetailView.xaml.cs">
+      <DependentUpon>MitarbeiterDetailView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Planung\PlanungView.xaml.cs">
       <DependentUpon>PlanungView.xaml</DependentUpon>
     </Compile>
@@ -139,6 +150,10 @@
     <Page Include="Common\WpfCore\Controls\CircularProgressBar.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Images\DoWork.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Images\Minus.xaml">
       <SubType>Designer</SubType>
@@ -162,9 +177,8 @@
     </Compile>
     <Compile Include="Common\Entities\Arbeitstag.cs" />
     <Compile Include="Common\Entities\Arbeitswoche.cs" />
-    <Compile Include="Common\Entities\Ist.cs" />
+    <Compile Include="Common\Entities\PlanItem.cs" />
     <Compile Include="Common\Entities\Mitarbeiter.cs" />
-    <Compile Include="Common\Entities\SollItem.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -174,6 +188,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Mitarbeiter\MitarbeiterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Planung\MitarbeiterDetailView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

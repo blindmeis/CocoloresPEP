@@ -16,14 +16,11 @@ namespace CocoloresPEP.Common.Entities
         public Arbeitstag(DateTime dt)
         {
             Datum = dt;
-            SollItems = new ObservableCollection<SollItem>();
-            Istzeiten = new ObservableCollection<Ist>();
+            Planzeiten = new ObservableCollection<PlanItem>();
         }
 
         public DateTime Datum { get;  set; }
-        public bool IsLocked { get; set; }
-
-        public ObservableCollection<SollItem> SollItems { get;  set; }
-        public ObservableCollection<Ist> Istzeiten { get;  set; }
+        
+        public ObservableCollection<PlanItem> Planzeiten { get;  set; }
     }
 }

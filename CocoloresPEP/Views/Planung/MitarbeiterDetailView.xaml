@@ -1,0 +1,60 @@
+﻿<UserControl x:Class="CocoloresPEP.Views.Planung.MitarbeiterDetailView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CocoloresPEP.Views.Planung"
+             xmlns:controls="clr-namespace:CocoloresPEP.Common.Controls"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:behaviors="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0" Content="{Binding Path=Name}" ContentStringFormat="Mitarbeiter: {0}"/>
+
+        <Label Grid.Row="1" Content="Arbeitsstunden (angeordnet):"/>
+        <TextBox Grid.Row="2" MinWidth="100"
+                 VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"
+                 Text="{Binding Path=WochenStunden}"/>
+
+        <Label Grid.Row="3" Content="Gruppe:"/>
+        <controls:DefaultGruppenControl Grid.Row="4"  MinWidth="150"
+                  VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"
+                  SelectedValue="{Binding DefaultGruppe, Mode=TwoWay}"
+                  DisplayMemberPath="Key"
+                  SelectedValuePath="Value"
+                  IsSynchronizedWithCurrentItem="True"/>
+
+        <Label Grid.Row="5" Grid.Column="0" Content="Wunschdienste:"/>
+        <controls:WunschdienstControl Grid.Row="6" Margin="0,5,0,0"
+                                          Wunschdienste="{Binding Path=Wunschdienste, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <controls:WunschdienstControl.ItemTemplate>
+                <DataTemplate>
+                    <CheckBox Content="{Binding Path=Displayname}"
+                                  IsChecked="{Binding Path=IsSelected, Mode=TwoWay}">
+
+                    </CheckBox>
+                </DataTemplate>
+            </controls:WunschdienstControl.ItemTemplate>
+        </controls:WunschdienstControl>
+
+        <Label Grid.Row="7" Content="Urlaub/Nicht anwesend:"/>
+        <Calendar Grid.Row="8" SelectionMode="MultipleRange" HorizontalAlignment="Left"
+                  IsTodayHighlighted="False"
+                  x:Name="CalUrlaub">
+            <i:Interaction.Behaviors>
+                <behaviors:CalendarBehavior SelectedDatesCollection="{Binding NichtDaZeiten, Mode=TwoWay}"/>
+            </i:Interaction.Behaviors>
+        </Calendar>
+    </Grid>
+</UserControl>

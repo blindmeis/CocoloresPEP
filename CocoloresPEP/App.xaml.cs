@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using CocoloresPEP.Common.WpfCore;
 
 namespace CocoloresPEP
 {
@@ -13,5 +14,10 @@ namespace CocoloresPEP
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            Helper.SetOnStartUpSettings();
+            base.OnStartup(e);
+        }
     }
 }

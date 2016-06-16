@@ -27,25 +27,25 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <Label Grid.Row="0" Grid.Column="0" Content="Name:" />
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Name:" />
             <TextBox Grid.Row="0" Grid.Column="1" MinWidth="200"
                  VerticalAlignment="Center"  VerticalContentAlignment="Center" HorizontalAlignment="Left"
                  Text="{Binding Path=Name}"/>
 
-            <Label Grid.Row="1" Grid.Column="0" Content="Arbeitsstunden (Vertrag):"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Arbeitsstunden (Vertrag):"/>
             <TextBox Grid.Row="1" Grid.Column="1" MinWidth="100"
                  VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"
                  Text="{Binding Path=WochenStunden}"/>
 
-            <Label Grid.Row="2" Grid.Column="0" Content="Gruppe:"/>
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Gruppe:"/>
             <controls:DefaultGruppenControl Grid.Row="2" Grid.Column="1" MinWidth="150"
                   VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"
                   SelectedValue="{Binding DefaultGruppe, Mode=TwoWay}"
                   DisplayMemberPath="Key"
                   SelectedValuePath="Value"
                   IsSynchronizedWithCurrentItem="True"/>
-            
-            <Label Grid.Row="3" Grid.Column="0" Content="Wunschdienste"/>
+
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Wunschdienste:"/>
             <controls:WunschdienstControl Grid.Row="3" Grid.Column="1" Margin="0,5,0,0"
                                           Wunschdienste="{Binding Path=Wunschdienste, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <controls:WunschdienstControl.ItemTemplate>
@@ -66,7 +66,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Label Grid.Row="0" Content="Urlaub/Nicht anwesend:"/>
+            <TextBlock Grid.Row="0" Text="Urlaub/Nicht anwesend:"/>
             <Calendar Grid.Row="1" SelectionMode="MultipleRange"
                   IsTodayHighlighted="False"
                   x:Name="CalUrlaub">

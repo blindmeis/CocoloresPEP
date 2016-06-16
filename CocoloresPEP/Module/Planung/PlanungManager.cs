@@ -14,6 +14,7 @@ using CocoloresPEP.Common;
 using CocoloresPEP.Common.Entities;
 using CocoloresPEP.Common.Extensions;
 using CocoloresPEP.Common.WpfCore.Commanding;
+using CocoloresPEP.Module.Mitarbeiter;
 using CocoloresPEP.Services;
 using CocoloresPEP.Views.Mitarbeiter;
 
@@ -24,19 +25,21 @@ namespace CocoloresPEP.Module.Planung
         private readonly SerializationService _serializationService;
         private int _kalenderWoche;
         private int _jahr;
-        private Arbeitswoche _selectedArbeitswoche;
-        private ICollectionView _arbeitswocheVorschau;
+        private ArbeitswocheViewmodel _selectedArbeitswoche;
 
 
         private readonly Lazy<DelegateCommand> _lazyCreatePlanungswocheCommand;
         private readonly Lazy<DelegateCommand> _lazySavePlanungswocheCommand;
+        private readonly Lazy<DelegateCommand> _lazyDeletePlanungswocheCommand;
+        private readonly Lazy<DelegateCommand> _lazyRunPlanungCommand;
+
 
         public PlanungManager()
         {
             _serializationService = new SerializationService();
 
             var planungen = _serializationService.ReadPlanungListe();
-            ArbeitswochenCollection = new ObservableCollection<Arbeitswoche>(planungen);
+            ArbeitswochenCollection = new ObservableCollection<ArbeitswocheViewmodel>(planungen.Select(x=>x.MapArbeitswocheToViewmodel()));
 
             PlanungView = CollectionViewSource.GetDefaultView(ArbeitswochenCollection);
             PlanungView.SortDescriptions.Add(new SortDescription("Jahr", ListSortDirection.Ascending));
@@ -46,16 +49,19 @@ namespace CocoloresPEP.Module.Planung
 
             _lazyCreatePlanungswocheCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(CreatePlanungswocheCommandExecute, CanCreatePlanungswocheCommandExecute));
             _lazySavePlanungswocheCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(SavePlanungswocheCommandExecute, CanSavePlanungswocheCommandExecute));
+            _lazyDeletePlanungswocheCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(DeletePlanungswocheCommandExecute, CanDeletePlanungswocheCommandExecute));
+            _lazyRunPlanungCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(RunPlanungCommandExecute, CanRunPlanungCommandExecute));
 
             Jahr = DateTime.Now.Year;
         }
-        
-       
+
+   
+
         public ICollectionView PlanungView { get; set; }
 
-        public ObservableCollection<Arbeitswoche> ArbeitswochenCollection { get; set; }
+        public ObservableCollection<ArbeitswocheViewmodel> ArbeitswochenCollection { get; set; }
 
-        public Arbeitswoche SelectedArbeitswoche
+        public ArbeitswocheViewmodel SelectedArbeitswoche
         {
             get { return _selectedArbeitswoche; }
             set
@@ -86,7 +92,7 @@ namespace CocoloresPEP.Module.Planung
         {
             get
             {
-               return  TransformArbeitswocheToPreview(SelectedArbeitswoche, GetMitarbeiters());
+               return  TransformArbeitswocheToPreview(SelectedArbeitswoche);
             }
           
         }
@@ -127,7 +133,25 @@ namespace CocoloresPEP.Module.Planung
                 return;
 
             var sr = new SerializationService();
-            sr.WritePlanungListe(ArbeitswochenCollection.ToList());
+            sr.WritePlanungListe(ArbeitswochenCollection.Select(x=>x.MapViewmodelToArbeitswoche()).ToList());
+        }
+        #endregion
+
+        #region DeletePlanungswocheCommand
+        public ICommand DeletePlanungswocheCommand { get { return _lazyDeletePlanungswocheCommand.Value; } }
+        
+        private bool CanDeletePlanungswocheCommandExecute()
+        {
+            return !IsBusy && SelectedArbeitswoche != null;
+        }
+
+        private void DeletePlanungswocheCommandExecute()
+        {
+            if (!CanDeletePlanungswocheCommandExecute())
+                return;
+
+            ArbeitswochenCollection.Remove(SelectedArbeitswoche);
+            ArbeitswocheVorschau.Refresh();
         }
         #endregion
 
@@ -151,79 +175,53 @@ namespace CocoloresPEP.Module.Planung
             
             var am = new ArbeitswochenService();
             var aw = am.CreateArbeitswoche(Jahr, KalenderWoche);
+            var ms = new SerializationService();
+            aw.Mitarbeiter = new List<Common.Entities.Mitarbeiter>(ms.ReadMitarbeiterListe());
+            var vm = aw.MapArbeitswocheToViewmodel();
+            ArbeitswochenCollection.Add(vm);
+            SelectedArbeitswoche = vm;
 
-            ArbeitswochenCollection.Add(aw);
-            SelectedArbeitswoche = aw;
-
-            var ps = new PlanService();
-            var mitarbeiters = GetMitarbeiters();
-            ps.ErstelleWochenplan(SelectedArbeitswoche,mitarbeiters);
-            
-            OnPropertyChanged(nameof(ArbeitswocheVorschau));
+            ArbeitswocheVorschau.Refresh();
         }
         #endregion
 
-
-        private ICollectionView TransformArbeitswocheToPreview(Arbeitswoche woche, IList<Common.Entities.Mitarbeiter> mitarbeiters)
+        #region RunPlanungCommand
+        public ICommand RunPlanungCommand { get { return _lazyRunPlanungCommand.Value; } }
+        private bool CanRunPlanungCommandExecute()
         {
-            var ppvms = new List<PlanungswochePreviewViewmodel>();
+            return !IsBusy && SelectedArbeitswoche != null;
+        }
 
-            foreach (Common.Entities.Mitarbeiter mitarbeiter in mitarbeiters)
-            {
-               var pp = new PlanungswochePreviewViewmodel();
-               pp.Mitarbeiter = mitarbeiter;
-                
-                if(woche==null)
-                    continue;
+        private void RunPlanungCommandExecute()
+        {
+            if(!CanRunPlanungCommandExecute())
+                return;
+            
+            var woche = SelectedArbeitswoche.MapViewmodelToArbeitswoche();
 
-                foreach (var tag in woche.Arbeitstage)
-                {
-                    var dow = tag.Datum.DayOfWeek;
-                    var ptvm = new PlanungstagViewmodel()
-                    {
-                        Datum = tag.Datum,
-                        IstZeiten = tag.Istzeiten.Where(x => x.ErledigtDurch.Name == pp.Mitarbeiter.Name).ToList()
-                    };
-                    switch (dow)
-                    {
-                           case DayOfWeek.Monday:
-                            pp.Montag = ptvm;
-                            break;
-                            case DayOfWeek.Tuesday:
-                            pp.Dienstag = ptvm;
-                            break;
-                        case DayOfWeek.Wednesday:
-                            pp.Mittwoch = ptvm;
-                            break;
-                        case DayOfWeek.Thursday:
-                            pp.Donnerstag = ptvm;
-                            break;
-                        case DayOfWeek.Friday:
-                            pp.Freitag = ptvm;
-                            break;
-                       case DayOfWeek.Saturday:
-                           
-                            break;
-                        case DayOfWeek.Sunday:
-                            
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-                }
+            PlanService.ErstelleWochenplan(woche, woche.Mitarbeiter);
 
-                ppvms.Add(pp);
-            }
-            var ordered = ppvms.OrderBy(x => x.Mitarbeiter.DefaultGruppe).ThenBy(x => x.Mitarbeiter.Name).ToList();
+            var neu = woche.MapArbeitswocheToViewmodel();
+
+            ArbeitswochenCollection.Remove(SelectedArbeitswoche);
+            ArbeitswochenCollection.Add(neu);
+            SelectedArbeitswoche = neu;
+
+            ArbeitswocheVorschau.Refresh();
+        }
+
+        #endregion
+
+        private ICollectionView TransformArbeitswocheToPreview(ArbeitswocheViewmodel woche)
+        {
+            if (woche == null)
+                return null;
+          
+            var ordered = woche.PlanungProMitarbeiterListe.OrderBy(x => x.Mitarbeiter.DefaultGruppe).ThenBy(x => x.Mitarbeiter.Name).ToList();
             var view = CollectionViewSource.GetDefaultView(ordered);
             return view;
         }
 
-        private IList<Common.Entities.Mitarbeiter> GetMitarbeiters()
-        {
-            var ms = new SerializationService();
-            return ms.ReadMitarbeiterListe();
-        }
 
     }
 }
