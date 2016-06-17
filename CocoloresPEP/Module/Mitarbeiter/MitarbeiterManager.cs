@@ -30,11 +30,12 @@ namespace CocoloresPEP.Module.Mitarbeiter
         {
             _serializationService = new SerializationService();
 
-            var mitarbeiter = _serializationService.ReadMitarbeiterListe();
+            var mitarbeiter = _serializationService.ReadMitarbeiterListe() ?? new List<Common.Entities.Mitarbeiter>();
             MitarbeiterCollection = new ObservableCollection<MitarbeiterViewmodel>(mitarbeiter.Select(x=> x.MapMitarbeiterToViewmodel()));
 
             MitarbeiterView = CollectionViewSource.GetDefaultView(MitarbeiterCollection);
             MitarbeiterView.SortDescriptions.Add(new SortDescription("DefaultGruppe", ListSortDirection.Ascending));
+            MitarbeiterView.SortDescriptions.Add(new SortDescription("IsHelfer", ListSortDirection.Ascending));
             MitarbeiterView.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
             
             _lazyCreateMitarbeiterCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(CreateMitarbeiterCommandExecute, CanCreateMitarbeiterCommandExecute));
@@ -86,7 +87,7 @@ namespace CocoloresPEP.Module.Mitarbeiter
 
         private bool CanSaveMitarbeiterCommandExecute()
         {
-            return true;
+            return !IsBusy && MitarbeiterCollection.Count > 0;
         }
 
         private async void SaveMitarbeiterCommandExecute()
@@ -94,13 +95,18 @@ namespace CocoloresPEP.Module.Mitarbeiter
             if(!CanSaveMitarbeiterCommandExecute())
                 return;
 
+            IsBusy = true;
             try
             {
-               await Task.Run( ()=> _serializationService.WriteMitarbeiterListe(MitarbeiterCollection.Select(x=>x.MapViewmodelToMitarbeiter()).ToList()));
+                await Task.Run(() =>_serializationService.WriteMitarbeiterListe(MitarbeiterCollection.Select(x => x.MapViewmodelToMitarbeiter()).ToList()));
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Fehler beim Speichern der Daten. " + Environment.NewLine + ex.GetAllErrorMessages());
+            }
+            finally
+            {
+                IsBusy = false;
             }
             
         }

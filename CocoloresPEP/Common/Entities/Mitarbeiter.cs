@@ -32,8 +32,10 @@ namespace CocoloresPEP.Common.Entities
 
         public ObservableCollection<DateTime> NichtDaZeiten { get; set; }
 
-        public SollTyp DefaultGruppe { get; set; }
+        public GruppenTyp DefaultGruppe { get; set; }
 
-        public SollTyp Wunschdienste { get; set; }
+        public DienstTyp Wunschdienste { get; set; }
+
+        public bool IsHelfer { get; set; }
     }
 }

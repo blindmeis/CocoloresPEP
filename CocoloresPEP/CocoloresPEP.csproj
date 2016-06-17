@@ -81,7 +81,8 @@
     </ApplicationDefinition>
     <Compile Include="Common\Controls\DefaultGruppenControl.cs" />
     <Compile Include="Common\Controls\WunschdienstControl.cs" />
-    <Compile Include="Common\Entities\SollTyp.cs" />
+    <Compile Include="Common\Entities\DienstTyp.cs" />
+    <Compile Include="Common\Entities\GruppenTyp.cs" />
     <Compile Include="Common\Extensions\DateTimeExtensions.cs" />
     <Compile Include="Common\Extensions\ExceptionExtension.cs" />
     <Compile Include="Common\Extensions\MemoryStreamExtensions.cs" />
@@ -103,8 +104,20 @@
     <Compile Include="Common\WpfCore\Controls\DesignModeTool.cs" />
     <Compile Include="Common\WpfCore\Converter\EnumHasFlagConverter.cs" />
     <Compile Include="Common\WpfCore\Helper.cs" />
+    <Compile Include="Images\AddUser.xaml.cs">
+      <DependentUpon>AddUser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Images\Check.xaml.cs">
+      <DependentUpon>Check.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Images\Delete.xaml.cs">
+      <DependentUpon>Delete.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Images\DoWork.xaml.cs">
       <DependentUpon>DoWork.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Images\ExportExcel.xaml.cs">
+      <DependentUpon>ExportExcel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Images\Minus.xaml.cs">
       <DependentUpon>Minus.xaml</DependentUpon>
@@ -126,8 +139,7 @@
     <Compile Include="Module\Planung\PlanungstagViewmodel.cs" />
     <Compile Include="Module\Planung\PlanungswocheMitarbeiterViewmodel.cs" />
     <Compile Include="Services\ArbeitswochenService.cs" />
-    <Compile Include="Services\FactoryService.cs" />
-    <Compile Include="Services\IstService.cs" />
+    <Compile Include="Services\ExcelExportService.cs" />
     <Compile Include="Services\PlanService.cs" />
     <Compile Include="Services\SerializationService.cs" />
     <Compile Include="Views\Mitarbeiter\IDataContextMarkerMitarbeiter.cs" />
@@ -151,7 +163,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Images\AddUser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Images\Check.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Images\Delete.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Images\DoWork.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Images\ExportExcel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

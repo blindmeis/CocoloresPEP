@@ -28,6 +28,7 @@ namespace CocoloresPEP.Common.Entities
         }
 
         public Mitarbeiter ErledigtDurch { get; set; }
-        public SollTyp Typ { get; set; }
+        public GruppenTyp Gruppe { get; set; }
+        public DienstTyp Dienst { get; set; }
     }
 }

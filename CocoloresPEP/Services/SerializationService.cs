@@ -41,7 +41,8 @@ namespace CocoloresPEP.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Fehler beim Lesen der Mitarbeiterliste.", ex);
+                // throw new Exception("Fehler beim Lesen der Mitarbeiterliste.", ex);
+                return null;
             }
         }
 
@@ -85,7 +86,8 @@ namespace CocoloresPEP.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Fehler beim Lesen der Planungsliste.", ex);
+                //throw new Exception("Fehler beim Lesen der Planungsliste.", ex);
+                return null;
             }
         }
         private static string PfadPlanungen

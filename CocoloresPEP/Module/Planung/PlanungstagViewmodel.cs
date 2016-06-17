@@ -26,17 +26,17 @@ namespace CocoloresPEP.Module.Planung
             }
         }
 
-        public SollTyp EingeteiltSollTyp
+        public GruppenTyp EingeteiltSollTyp
         {
             get
             {
-                var s = SollTyp.None;
+                var s = GruppenTyp.None;
                 foreach (var planItem in Planzeiten)
                 {
-                    if((s & planItem.Typ)==planItem.Typ)
+                    if ((s & planItem.Gruppe) == planItem.Gruppe)
                         continue;
 
-                    s |= planItem.Typ;
+                    s |= planItem.Gruppe;
                 }
 
                 return s;

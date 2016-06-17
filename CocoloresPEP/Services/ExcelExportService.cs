@@ -9,7 +9,7 @@ using OfficeOpenXml;
 
 namespace CocoloresPEP.Services
 {
-    public class IstService
+    public class ExcelExportService
     {
         public MemoryStream SchreibeIstZeiten(Arbeitswoche woche, IList<Mitarbeiter> mitarbeiters)
         {

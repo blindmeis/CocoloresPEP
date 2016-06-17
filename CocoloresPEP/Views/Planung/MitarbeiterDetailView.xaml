@@ -18,6 +18,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <Label Grid.Row="0" Content="{Binding Path=Name}" ContentStringFormat="Mitarbeiter: {0}"/>
@@ -27,16 +29,25 @@
                  VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"
                  Text="{Binding Path=WochenStunden}"/>
 
-        <Label Grid.Row="3" Content="Gruppe:"/>
-        <controls:DefaultGruppenControl Grid.Row="4"  MinWidth="150"
+        <StackPanel Grid.Row="3" Orientation="Horizontal">
+            <Label Content="FSJ/ BUFTI/ ...:"/> 
+            <CheckBox VerticalAlignment="Center"
+                  IsChecked="{Binding Path=IsHelfer}"></CheckBox>
+        </StackPanel>
+        
+       
+       
+
+        <Label Grid.Row="4" Content="Gruppe:"/>
+        <controls:DefaultGruppenControl Grid.Row="5"  MinWidth="150"
                   VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"
                   SelectedValue="{Binding DefaultGruppe, Mode=TwoWay}"
                   DisplayMemberPath="Key"
                   SelectedValuePath="Value"
                   IsSynchronizedWithCurrentItem="True"/>
 
-        <Label Grid.Row="5" Grid.Column="0" Content="Wunschdienste:"/>
-        <controls:WunschdienstControl Grid.Row="6" Margin="0,5,0,0"
+        <Label Grid.Row="6" Grid.Column="0" Content="Wunschdienste:"/>
+        <controls:WunschdienstControl Grid.Row="7" Margin="0,5,0,0"
                                           Wunschdienste="{Binding Path=Wunschdienste, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <controls:WunschdienstControl.ItemTemplate>
                 <DataTemplate>
@@ -48,8 +59,8 @@
             </controls:WunschdienstControl.ItemTemplate>
         </controls:WunschdienstControl>
 
-        <Label Grid.Row="7" Content="Urlaub/Nicht anwesend:"/>
-        <Calendar Grid.Row="8" SelectionMode="MultipleRange" HorizontalAlignment="Left"
+        <Label Grid.Row="8" Content="Urlaub/Nicht anwesend:"/>
+        <Calendar Grid.Row="9" SelectionMode="MultipleRange" HorizontalAlignment="Left"
                   IsTodayHighlighted="False"
                   x:Name="CalUrlaub">
             <i:Interaction.Behaviors>

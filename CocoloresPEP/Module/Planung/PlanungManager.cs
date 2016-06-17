@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using CocoloresPEP.Common;
@@ -32,13 +33,14 @@ namespace CocoloresPEP.Module.Planung
         private readonly Lazy<DelegateCommand> _lazySavePlanungswocheCommand;
         private readonly Lazy<DelegateCommand> _lazyDeletePlanungswocheCommand;
         private readonly Lazy<DelegateCommand> _lazyRunPlanungCommand;
+        private readonly Lazy<DelegateCommand> _lazyRunPlanungCheckCommand;
 
 
         public PlanungManager()
         {
             _serializationService = new SerializationService();
 
-            var planungen = _serializationService.ReadPlanungListe();
+            var planungen = _serializationService.ReadPlanungListe() ?? new List<Arbeitswoche>();
             ArbeitswochenCollection = new ObservableCollection<ArbeitswocheViewmodel>(planungen.Select(x=>x.MapArbeitswocheToViewmodel()));
 
             PlanungView = CollectionViewSource.GetDefaultView(ArbeitswochenCollection);
@@ -51,11 +53,13 @@ namespace CocoloresPEP.Module.Planung
             _lazySavePlanungswocheCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(SavePlanungswocheCommandExecute, CanSavePlanungswocheCommandExecute));
             _lazyDeletePlanungswocheCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(DeletePlanungswocheCommandExecute, CanDeletePlanungswocheCommandExecute));
             _lazyRunPlanungCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(RunPlanungCommandExecute, CanRunPlanungCommandExecute));
+            _lazyRunPlanungCheckCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(RunPlanungCheckCommandExecute, CanRunPlanungCheckCommandExecute));
 
             Jahr = DateTime.Now.Year;
         }
 
-   
+    
+
 
         public ICollectionView PlanungView { get; set; }
 
@@ -124,16 +128,33 @@ namespace CocoloresPEP.Module.Planung
 
         private bool CanSavePlanungswocheCommandExecute()
         {
-            return true;
+            return !IsBusy && ArbeitswochenCollection.Count > 0;
         }
 
-        private void SavePlanungswocheCommandExecute()
+        private async void SavePlanungswocheCommandExecute()
         {
             if (!CanSavePlanungswocheCommandExecute())
                 return;
 
-            var sr = new SerializationService();
-            sr.WritePlanungListe(ArbeitswochenCollection.Select(x=>x.MapViewmodelToArbeitswoche()).ToList());
+            IsBusy = true;
+
+            try
+            {
+                await Task.Run(() =>
+                {
+                    var sr = new SerializationService();
+                    sr.WritePlanungListe(ArbeitswochenCollection.Select(x=>x.MapViewmodelToArbeitswoche()).ToList());
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler beim Speichern der Planung.{Environment.NewLine}{ex.GetAllErrorMessages()}");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+           
         }
         #endregion
 
@@ -192,24 +213,80 @@ namespace CocoloresPEP.Module.Planung
             return !IsBusy && SelectedArbeitswoche != null;
         }
 
-        private void RunPlanungCommandExecute()
+        private async void RunPlanungCommandExecute()
         {
             if(!CanRunPlanungCommandExecute())
                 return;
-            
-            var woche = SelectedArbeitswoche.MapViewmodelToArbeitswoche();
 
-            PlanService.ErstelleWochenplan(woche, woche.Mitarbeiter);
+            IsBusy = true;
 
-            var neu = woche.MapArbeitswocheToViewmodel();
+            try
+            {
+                var woche = SelectedArbeitswoche.MapViewmodelToArbeitswoche();
 
-            ArbeitswochenCollection.Remove(SelectedArbeitswoche);
-            ArbeitswochenCollection.Add(neu);
-            SelectedArbeitswoche = neu;
+                await Task.Run(() => PlanService.ErstelleWochenplan(woche, woche.Mitarbeiter));
 
-            ArbeitswocheVorschau.Refresh();
+                var neu = woche.MapArbeitswocheToViewmodel();
+
+                ArbeitswochenCollection.Remove(SelectedArbeitswoche);
+                ArbeitswochenCollection.Add(neu);
+                SelectedArbeitswoche = neu;
+
+                ArbeitswocheVorschau.Refresh();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler beim Ausführen der Planung.{Environment.NewLine}{ex.GetAllErrorMessages()}");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+           
         }
 
+        #endregion
+
+        #region RunPlanungCheckCommand
+
+        public ICommand RunPlanungCheckCommand { get { return _lazyRunPlanungCheckCommand.Value; } }
+
+        private bool CanRunPlanungCheckCommandExecute()
+        {
+            return !IsBusy && SelectedArbeitswoche != null;
+        }
+
+        private async void RunPlanungCheckCommandExecute()
+        {
+            if (!CanRunPlanungCheckCommandExecute())
+                return;
+
+            IsBusy = true;
+
+            try
+            {
+                var woche = SelectedArbeitswoche.MapViewmodelToArbeitswoche();
+                await Task.Run(() => PlanService.CheckPlanung(woche));
+
+                var neu = woche.MapArbeitswocheToViewmodel();
+
+                ArbeitswochenCollection.Remove(SelectedArbeitswoche);
+                ArbeitswochenCollection.Add(neu);
+                SelectedArbeitswoche = neu;
+
+                ArbeitswocheVorschau.Refresh();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler beim Ausführen der Planung.{Environment.NewLine}{ex.GetAllErrorMessages()}");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
         #endregion
 
         private ICollectionView TransformArbeitswocheToPreview(ArbeitswocheViewmodel woche)
@@ -217,7 +294,12 @@ namespace CocoloresPEP.Module.Planung
             if (woche == null)
                 return null;
           
-            var ordered = woche.PlanungProMitarbeiterListe.OrderBy(x => x.Mitarbeiter.DefaultGruppe).ThenBy(x => x.Mitarbeiter.Name).ToList();
+            var ordered = woche.PlanungProMitarbeiterListe
+                               .OrderBy(x => x.Mitarbeiter.DefaultGruppe)
+                               .ThenBy(x => x.Mitarbeiter.IsHelfer)
+                               .ThenBy(x => x.Mitarbeiter.Name)
+                               .ToList();
+
             var view = CollectionViewSource.GetDefaultView(ordered);
             return view;
         }

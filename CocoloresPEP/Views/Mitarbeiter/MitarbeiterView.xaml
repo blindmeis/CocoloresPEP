@@ -5,13 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CocoloresPEP.Views.Mitarbeiter"
              xmlns:images="clr-namespace:CocoloresPEP.Images"
+             xmlns:entities="clr-namespace:CocoloresPEP.Common.Entities"
              x:Name="Uc">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
+
         <ToolBar Grid.Row="0" IsOverflowOpen="False">
             <Button ToolTip="Speichern" 
                     Command="{Binding Path=SaveMitarbeiterCommand}"
@@ -20,14 +21,14 @@
                 <Viewbox Width="24" Height="24">
                     <images:Speichern/>
                 </Viewbox>
-            </Button> 
+            </Button>
             <Separator/>
             <Button ToolTip="Mitarbeiter anlegen" 
                     Command="{Binding Path=CreateMitarbeiterCommand}"
                     Style="{DynamicResource ToolbarButtonStyle}"
                     >
                 <Viewbox Width="24" Height="24">
-                   <images:Plus/>
+                    <images:AddUser/>
                 </Viewbox>
             </Button>
             <Button ToolTip="Mitarbeiter entfernen" 
@@ -35,29 +36,52 @@
                     Style="{DynamicResource ToolbarButtonStyle}"
                     >
                 <Viewbox Width="24" Height="24">
-                    <images:Minus/>
+                    <images:Delete/>
                 </Viewbox>
             </Button>
-           
+
         </ToolBar>
-        
+
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" MinWidth="250"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            
-            <ListBox Grid.Column="0"
-                     ItemsSource="{Binding MitarbeiterView}"
-                     IsSynchronizedWithCurrentItem="True"
-                     SelectedValue="{Binding SelectedMitarbeiter, Mode=TwoWay}"
-                     SelectionMode="Single">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Name}"/>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+
+            <DataGrid Grid.Column="0" 
+                          ItemsSource="{Binding MitarbeiterView}"
+                          AutoGenerateColumns="False" IsReadOnly="True"
+                          CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False"
+                          SelectedValue="{Binding SelectedMitarbeiter, Mode=TwoWay}"
+                          SelectionMode="Single"
+                          SelectionUnit="FullRow"
+                          IsSynchronizedWithCurrentItem="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Mitarbeiter" MinWidth="150"
+                                            Binding="{Binding Name}"
+                                            >
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding DefaultGruppe}" Value="{x:Static entities:GruppenTyp.Blau}">
+                                        <Setter Property="Background" Value="{StaticResource ColorGruppeBlau}"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding DefaultGruppe}" Value="{x:Static entities:GruppenTyp.Gruen}">
+                                        <Setter Property="Background" Value="{StaticResource ColorGruppeGruen}"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding DefaultGruppe}" Value="{x:Static entities:GruppenTyp.Rot}">
+                                        <Setter Property="Background" Value="{StaticResource ColorGruppeRot}"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding DefaultGruppe}" Value="{x:Static entities:GruppenTyp.Nest}">
+                                        <Setter Property="Background" Value="{StaticResource ColorGruppeNest}"></Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+
 
             <local:MitarbeiterDetailView Grid.Column="1" DataContext="{Binding Path=SelectedMitarbeiter}"
                                          Margin="10,0,0,0">

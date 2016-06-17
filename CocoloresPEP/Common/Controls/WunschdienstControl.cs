@@ -14,12 +14,12 @@ namespace CocoloresPEP.Common.Controls
     {
         public WunschdienstControl()
         {
-            var fd = new WunschdienstWrapper() {Dienst = SollTyp.Frühdienst, Displayname = "Frühdienst"};
-            var d8 = new WunschdienstWrapper() {Dienst = SollTyp.AchtUhrDienst, Displayname = "08.00Uhr Dienst"};
-            var d830 = new WunschdienstWrapper() {Dienst = SollTyp.AchtUhr30Dienst, Displayname = "08.30Uhr Dienst"};
-            var d9 = new WunschdienstWrapper() {Dienst = SollTyp.NeunUhrDienst, Displayname = "09.00Uhr Dienst"};
-            var d10 = new WunschdienstWrapper() {Dienst = SollTyp.ZehnUhrDienst, Displayname = "10.00Uhr Dienst"};
-            var sd = new WunschdienstWrapper() {Dienst = SollTyp.Spätdienst, Displayname = "Spätdienst"};
+            var fd = new WunschdienstWrapper() {Dienst = DienstTyp.Frühdienst, Displayname = "Frühdienst"};
+            var d8 = new WunschdienstWrapper() {Dienst = DienstTyp.AchtUhrDienst, Displayname = "08.00Uhr Dienst"};
+            var d830 = new WunschdienstWrapper() {Dienst = DienstTyp.AchtUhr30Dienst, Displayname = "08.30Uhr Dienst"};
+            var d9 = new WunschdienstWrapper() {Dienst = DienstTyp.NeunUhrDienst, Displayname = "09.00Uhr Dienst"};
+            var d10 = new WunschdienstWrapper() {Dienst = DienstTyp.ZehnUhrDienst, Displayname = "10.00Uhr Dienst"};
+            var sd = new WunschdienstWrapper() {Dienst = DienstTyp.SpätdienstEnde, Displayname = "Spätdienst"};
 
             fd.PropertyChanged -= SelectionChanged;
             fd.PropertyChanged += SelectionChanged;
@@ -52,7 +52,7 @@ namespace CocoloresPEP.Common.Controls
                 if (Items.Cast<WunschdienstWrapper>().Any(x => x.IsSelected))
                 {
                     var wd = Items.Cast<WunschdienstWrapper>().Where(x => x.IsSelected).ToList();
-                    SollTyp st = (SollTyp) 0;
+                    DienstTyp st = (DienstTyp) 0;
                     foreach (var item in wd)
                     {
                         st |= item.Dienst;
@@ -61,7 +61,7 @@ namespace CocoloresPEP.Common.Controls
                 }
                 else
                 {
-                    Wunschdienste = SollTyp.None;
+                    Wunschdienste = DienstTyp.None;
                 }
 
             }
@@ -69,11 +69,11 @@ namespace CocoloresPEP.Common.Controls
 
 
         public static readonly DependencyProperty WunschdiensteProperty =
-            DependencyProperty.Register("Wunschdienste", typeof(SollTyp), typeof(WunschdienstControl), new FrameworkPropertyMetadata(OnWunschdienstChanged));
+            DependencyProperty.Register("Wunschdienste", typeof(DienstTyp), typeof(WunschdienstControl), new FrameworkPropertyMetadata(OnWunschdienstChanged));
 
-        public SollTyp Wunschdienste
+        public DienstTyp Wunschdienste
         {
-            get { return (SollTyp)GetValue(WunschdiensteProperty); }
+            get { return (DienstTyp)GetValue(WunschdiensteProperty); }
             set { SetValue(WunschdiensteProperty, value); }
         }
 
@@ -81,9 +81,9 @@ namespace CocoloresPEP.Common.Controls
         {
             var wd = d as WunschdienstControl;
 
-            if (e.NewValue is SollTyp && wd !=null)
+            if (e.NewValue is DienstTyp && wd !=null)
             {
-                var neu = (SollTyp)e.NewValue;
+                var neu = (DienstTyp)e.NewValue;
 
                 //sync enum und Checkboxen
                 wd._handleIsSelectedChanged = false;
@@ -104,7 +104,7 @@ namespace CocoloresPEP.Common.Controls
         private bool _isSelected;
 
         public string Displayname { get; set; }
-        public SollTyp Dienst { get; set; }
+        public DienstTyp Dienst { get; set; }
 
         public bool IsSelected
         {

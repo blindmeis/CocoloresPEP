@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:CocoloresPEP.Views.Mitarbeiter"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:behaviors="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors"
-             xmlns:controls="clr-namespace:CocoloresPEP.Common.Controls">
+             xmlns:controls="clr-namespace:CocoloresPEP.Common.Controls"
+             xmlns:controls1="clr-namespace:CocoloresPEP.Common.WpfCore.Controls">
     <Grid>   
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -27,26 +28,30 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="Name:" />
+            <Label Grid.Row="0" Grid.Column="0" Content="Name:" />
             <TextBox Grid.Row="0" Grid.Column="1" MinWidth="200"
                  VerticalAlignment="Center"  VerticalContentAlignment="Center" HorizontalAlignment="Left"
                  Text="{Binding Path=Name}"/>
 
-            <TextBlock Grid.Row="1" Grid.Column="0" Text="Arbeitsstunden (Vertrag):"/>
+            <Label Grid.Row="1" Grid.Column="0" Content="Arbeitsstunden (Vertrag):"/>
             <TextBox Grid.Row="1" Grid.Column="1" MinWidth="100"
                  VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"
                  Text="{Binding Path=WochenStunden}"/>
 
-            <TextBlock Grid.Row="2" Grid.Column="0" Text="Gruppe:"/>
-            <controls:DefaultGruppenControl Grid.Row="2" Grid.Column="1" MinWidth="150"
+            <Label Grid.Row="2" Grid.Column="0" Content="FSJ/ BUFTI/ ...:"/>
+            <CheckBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center"
+                      IsChecked="{Binding Path=IsHelfer}"></CheckBox>
+
+            <Label Grid.Row="3" Grid.Column="0" Content="Gruppe:"/>
+            <controls:DefaultGruppenControl Grid.Row="3" Grid.Column="1" MinWidth="150"
                   VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"
                   SelectedValue="{Binding DefaultGruppe, Mode=TwoWay}"
                   DisplayMemberPath="Key"
                   SelectedValuePath="Value"
                   IsSynchronizedWithCurrentItem="True"/>
 
-            <TextBlock Grid.Row="3" Grid.Column="0" Text="Wunschdienste:"/>
-            <controls:WunschdienstControl Grid.Row="3" Grid.Column="1" Margin="0,5,0,0"
+            <Label Grid.Row="4" Grid.Column="0" Content="Wunschdienste:"/>
+            <controls:WunschdienstControl Grid.Row="4" Grid.Column="1" Margin="0,5,0,0"
                                           Wunschdienste="{Binding Path=Wunschdienste, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <controls:WunschdienstControl.ItemTemplate>
                     <DataTemplate>
@@ -66,7 +71,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Text="Urlaub/Nicht anwesend:"/>
+            <Label Grid.Row="0" Content="Urlaub/Nicht anwesend:"/>
             <Calendar Grid.Row="1" SelectionMode="MultipleRange"
                   IsTodayHighlighted="False"
                   x:Name="CalUrlaub">
@@ -75,7 +80,11 @@
                 </i:Interaction.Behaviors>
             </Calendar>
         </Grid>
-        
-      
+
+        <!--IsBusy Anzeige-->
+        <controls1:BusyControl Grid.Column="0" Grid.ColumnSpan="2"
+                              ProgressbarSize="120"
+                              IsBusy="{Binding IsBusy}" >
+        </controls1:BusyControl>
     </Grid>
 </UserControl>

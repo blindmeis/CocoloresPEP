@@ -12,13 +12,13 @@ namespace CocoloresPEP.Common.Controls
     {
         public DefaultGruppenControl()
         {
-            this.ItemsSource = new Dictionary<string, SollTyp>
+            this.ItemsSource = new Dictionary<string, GruppenTyp>
             {
-                {" ", SollTyp.None},
-                {"Blau", SollTyp.Blau},
-                {"Rot", SollTyp.Rot},
-                {"Grün", SollTyp.Gruen},
-                {"Nest", SollTyp.Nest}
+                {" ", GruppenTyp.None},
+                {"Blau", GruppenTyp.Blau},
+                {"Rot", GruppenTyp.Rot},
+                {"Grün", GruppenTyp.Gruen},
+                {"Nest", GruppenTyp.Nest}
             };
 
         }

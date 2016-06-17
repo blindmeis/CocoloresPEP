@@ -11,9 +11,10 @@ namespace CocoloresPEP.Module.Mitarbeiter
 {
     public class MitarbeiterViewmodel : ViewmodelBase
     {
-        private SollTyp _wunschdienste;
+        private DienstTyp _wunschdienste;
         private string _name;
-        private SollTyp _defaultGruppe;
+        private GruppenTyp _defaultGruppe;
+        private bool _isHelfer;
 
         public MitarbeiterViewmodel()
         {
@@ -36,7 +37,7 @@ namespace CocoloresPEP.Module.Mitarbeiter
         
         public ObservableCollection<DateTime> NichtDaZeiten { get; set; }
 
-        public SollTyp DefaultGruppe
+        public GruppenTyp DefaultGruppe
         {
             get { return _defaultGruppe; }
             set
@@ -46,12 +47,22 @@ namespace CocoloresPEP.Module.Mitarbeiter
             }
         }
 
-        public SollTyp Wunschdienste
+        public DienstTyp Wunschdienste
         {
             get { return _wunschdienste; }
             set
             {
                 _wunschdienste = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsHelfer
+        {
+            get { return _isHelfer; }
+            set
+            {
+                _isHelfer = value;
                 OnPropertyChanged();
             }
         }

@@ -1,0 +1,9 @@
+﻿<UserControl x:Class="CocoloresPEP.Images.ExportExcel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" >
+    <Path Style="{StaticResource PathImageStyle}" 
+          Data="F1 M0,0 L22.25,0 35,12.75 35,20 31,20 31,16 19,16 19,4 4,4 4,38 15.25,38 12,42 0,42 0,0 z M35,39.75 L31,34 31,30 35,25 35,39.75 z M21.25,42 L24.235,38.3453 26.5,42 21.25,42 z M22,5.25 L22.185596,13.01662 29.75,13 22,5.25 z M13.25,21 L20.5,21 25.0374,27.4221 30,21 36.5,21 28.0067,31.7036 38,46 30.5,46 24.2223,36.5201 19,43 12.5,43 21.2529,32.2387 13.25,21 z" Height="46" Width="38"/>
+
+</UserControl>

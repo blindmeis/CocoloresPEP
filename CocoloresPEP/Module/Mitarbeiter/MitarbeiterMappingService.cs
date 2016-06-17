@@ -18,6 +18,7 @@ namespace CocoloresPEP.Module.Mitarbeiter
                 DefaultGruppe = ma.DefaultGruppe,
                 Wunschdienste = ma.Wunschdienste,
                 SaldoWochenStunden = ma.SaldoWochenStunden,
+                IsHelfer = ma.IsHelfer
             };
 
            vm.NichtDaZeiten = new ObservableCollection<DateTime>(ma.NichtDaZeiten);
@@ -30,11 +31,12 @@ namespace CocoloresPEP.Module.Mitarbeiter
         {
             var ma = new Common.Entities.Mitarbeiter()
             {
-                      Name = vm.Name,
-                      WochenStunden = vm.WochenStunden,
-                      DefaultGruppe = vm.DefaultGruppe,
-                      Wunschdienste = vm.Wunschdienste,
-                      SaldoWochenStunden = vm.SaldoWochenStunden,
+                Name = vm.Name,
+                WochenStunden = vm.WochenStunden,
+                DefaultGruppe = vm.DefaultGruppe,
+                Wunschdienste = vm.Wunschdienste,
+                SaldoWochenStunden = vm.SaldoWochenStunden,
+                IsHelfer = vm.IsHelfer
             };
 
             ma.NichtDaZeiten = new ObservableCollection<DateTime>(vm.NichtDaZeiten);
