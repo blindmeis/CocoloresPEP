@@ -16,5 +16,6 @@ namespace CocoloresPEP.Common.Entities
         AchtUhr30Dienst = 1 << 4,
         NeunUhrDienst = 1 << 5,
         ZehnUhrDienst = 1 << 6,
+        KernzeitEndeDienst = 1 << 6,
     }
 }

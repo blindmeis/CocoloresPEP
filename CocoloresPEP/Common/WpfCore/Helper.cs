@@ -39,7 +39,8 @@ namespace CocoloresPEP.Common.WpfCore
                     if (btn != null)
                     {
                         if (!btn.Focus())
-                            MoveKeyboardFocusToNext();
+                            if (MoveKeyboardFocusToNext())
+                                MoveKeyboardFocusToPrevious();
                     }
                 }));
 
@@ -184,14 +185,18 @@ namespace CocoloresPEP.Common.WpfCore
         /// <summary>
         /// Probiert vom aktuellen KeyBoard.FocusedElement den Focus eins weiter zu rücken
         /// </summary>
-        public static void MoveKeyboardFocusToNext()
+        public static bool MoveKeyboardFocusToNext()
         {
             var fe = Keyboard.FocusedElement as UIElement;
 
-            if (fe != null)
-            {
-                fe.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
-            }
+            return fe?.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next)) ?? false;
+        }
+
+        public static bool MoveKeyboardFocusToPrevious()
+        {
+            var fe = Keyboard.FocusedElement as UIElement;
+
+            return fe?.MoveFocus(new TraversalRequest(FocusNavigationDirection.Previous)) ?? false;
         }
 
 

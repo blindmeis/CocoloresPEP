@@ -36,18 +36,20 @@
         </StackPanel>
         
        
-       
-
-        <Label Grid.Row="4" Content="Gruppe:"/>
-        <controls:DefaultGruppenControl Grid.Row="5"  MinWidth="150"
+       <StackPanel Grid.Row="4" Orientation="Horizontal">
+               <Label Content="Gruppe:"/>
+        <controls:DefaultGruppenControl MinWidth="150"
                   VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"
                   SelectedValue="{Binding DefaultGruppe, Mode=TwoWay}"
                   DisplayMemberPath="Key"
                   SelectedValuePath="Value"
                   IsSynchronizedWithCurrentItem="True"/>
+       </StackPanel>
+
+    
 
         <Label Grid.Row="6" Grid.Column="0" Content="Wunschdienste:"/>
-        <controls:WunschdienstControl Grid.Row="7" Margin="0,5,0,0"
+        <controls:WunschdienstControl Grid.Row="7" Margin="20,0,0,0"
                                           Wunschdienste="{Binding Path=Wunschdienste, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <controls:WunschdienstControl.ItemTemplate>
                 <DataTemplate>

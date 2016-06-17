@@ -80,19 +80,19 @@ namespace CocoloresPEP.Services
                 var restMas = alledieDaSind.Where(x => !schonEingeteilt.Contains(x)).ToList();
 
                 var nestMas = restMas.Where(x => x.DefaultGruppe.HasFlag(GruppenTyp.Nest)).ToList();
-                FillGruppenDienste(nestMas, arbeitstag, GruppenTyp.Nest, schonEingeteilt);
+                FillGruppenDiensteMitKernzeitPrio(nestMas, arbeitstag, GruppenTyp.Nest, schonEingeteilt);
 
                 var blauMas = restMas.Where(x => x.DefaultGruppe.HasFlag(GruppenTyp.Blau)).ToList();
-                FillGruppenDienste(blauMas, arbeitstag, GruppenTyp.Blau, schonEingeteilt);
+                FillGruppenDiensteMitKernzeitPrio(blauMas, arbeitstag, GruppenTyp.Blau, schonEingeteilt);
 
                 var gruenMas = restMas.Where(x => x.DefaultGruppe.HasFlag(GruppenTyp.Gruen)).ToList();
-                FillGruppenDienste(gruenMas, arbeitstag, GruppenTyp.Gruen, schonEingeteilt);
+                FillGruppenDiensteMitKernzeitPrio(gruenMas, arbeitstag, GruppenTyp.Gruen, schonEingeteilt);
 
                 var rotMas = restMas.Where(x => x.DefaultGruppe.HasFlag(GruppenTyp.Rot)).ToList();
-                FillGruppenDienste(rotMas, arbeitstag, GruppenTyp.Rot, schonEingeteilt);
+                FillGruppenDiensteMitKernzeitPrio(rotMas, arbeitstag, GruppenTyp.Rot, schonEingeteilt);
 
                 var rest = alledieDaSind.Where(x => !schonEingeteilt.Contains(x)).ToList();
-                FillGruppenDienste(rest, arbeitstag, GruppenTyp.None, schonEingeteilt);
+                FillGruppenDiensteMitKernzeitPrio(rest, arbeitstag, GruppenTyp.None, schonEingeteilt);
 
                 #endregion
 
@@ -103,9 +103,9 @@ namespace CocoloresPEP.Services
                 {
                     var planitems = arbeitstag.Planzeiten.Where(x => (x.ErledigtDurch.DefaultGruppe & helferlein.DefaultGruppe) == helferlein.DefaultGruppe).ToList();
 
-                    var planitemOhneHelfer = planitems.GroupBy(x => x.Startzeit).FirstOrDefault(x => !x.Any(h => h.ErledigtDurch.IsHelfer))?.FirstOrDefault();
+                    var planitemMitarbeiter = planitems.GroupBy(x => x.Startzeit).FirstOrDefault(x => !x.Any(h => h.ErledigtDurch.IsHelfer))?.FirstOrDefault();
 
-                    if (planitemOhneHelfer == null)
+                    if (planitemMitarbeiter == null)
                     {
                         schonEingeteilt.Add(helferlein);
                         var plan = CreatePlanItem(helferlein, arbeitstag.AchtUhr30Dienst, helferlein.TagesQuarterTicks, helferlein.DefaultGruppe, DienstTyp.AchtUhr30Dienst );
@@ -113,8 +113,15 @@ namespace CocoloresPEP.Services
                     }
                     else
                     {
+                        var helferleinStartzeit = planitemMitarbeiter.Startzeit;
+                        if (helferlein.TagesQuarterTicks > planitemMitarbeiter.AllTicks)
+                            helferleinStartzeit = helferleinStartzeit.AddMinutes(-1* (helferlein.TagesQuarterTicks - planitemMitarbeiter.AllTicks));
+
+                        if (helferleinStartzeit < arbeitstag.Frühdienst)
+                            helferleinStartzeit = arbeitstag.Frühdienst;
+
                         schonEingeteilt.Add(helferlein);
-                        var plan = CreatePlanItem(helferlein, planitemOhneHelfer.Startzeit, helferlein.TagesQuarterTicks,helferlein.DefaultGruppe, planitemOhneHelfer.Dienst );
+                        var plan = CreatePlanItem(helferlein, helferleinStartzeit, helferlein.TagesQuarterTicks,helferlein.DefaultGruppe, planitemMitarbeiter.Dienst );
                         arbeitstag.Planzeiten.Add(plan);
                     }
                 }
@@ -193,7 +200,7 @@ namespace CocoloresPEP.Services
             return result;
         }
 
-        private static void FillGruppenDienste(List<Mitarbeiter> maList, Arbeitstag arbeitstag, GruppenTyp gruppe, List<Mitarbeiter> schonEingeteilt)
+        private static void FillGruppenDiensteMitKernzeitPrio(List<Mitarbeiter> maList, Arbeitstag arbeitstag, GruppenTyp gruppe, List<Mitarbeiter> schonEingeteilt)
         {
             //Todo eigentlich müsste man rechnen ob wer von der startzeit drunter liegt und mit Ticks bis zu KernzeitStart kommt
             if (!arbeitstag.Planzeiten.Any(x =>
@@ -209,7 +216,24 @@ namespace CocoloresPEP.Services
                 arbeitstag.Planzeiten.Add(plan);
             }
 
-            //ab hier gibts ein "Frühen Dienst"
+            DateTime startzeit;
+            short ticks;
+            if (!CheckKernzeitAbgedeckt(arbeitstag, gruppe, out startzeit, out ticks))
+            {
+                var maKernzeitende = NextMitarbeiter(maList, schonEingeteilt);
+                if (maKernzeitende == null)
+                    return;
+
+                var kernzeitEndeStart = arbeitstag.KernzeitGruppeEnde.AddMinutes(-1*15*maKernzeitende.TagesQuarterTicks);
+                if (kernzeitEndeStart < startzeit)
+                    startzeit = kernzeitEndeStart;
+
+                schonEingeteilt.Add(maKernzeitende);
+                var planKernzeitende = CreatePlanItem(maKernzeitende, startzeit, maKernzeitende.TagesQuarterTicks, maKernzeitende.DefaultGruppe, DienstTyp.KernzeitEndeDienst);
+                arbeitstag.Planzeiten.Add(planKernzeitende);
+            }
+
+            //ab hier gibts ein "Frühen Dienst" und wenn möglich ein Dienst bis Kernzeitende oder drüber
             var ma9 = NextMitarbeiter(maList, schonEingeteilt, DienstTyp.NeunUhrDienst);
             if (ma9 == null)
                 return;
