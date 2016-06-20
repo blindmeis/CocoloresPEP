@@ -32,12 +32,7 @@ namespace CocoloresPEP.Common.Entities
         {
             get { return new DateTime(Datum.Year, Datum.Month, Datum.Day, 8, 0, 0); }
         }
-
-        public DateTime AchtUhr30Dienst
-        {
-            get { return new DateTime(Datum.Year, Datum.Month, Datum.Day, 8, 30, 0); }
-        }
-
+        
         public DateTime NeunUhrDienst
         {
             get { return new DateTime(Datum.Year, Datum.Month, Datum.Day, 9, 0, 0); }

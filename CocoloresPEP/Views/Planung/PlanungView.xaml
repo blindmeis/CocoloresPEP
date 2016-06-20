@@ -125,17 +125,13 @@
 
                 <Label Grid.Row="0" Content="{Binding SelectedArbeitswocheInfo}"></Label>
 
-                <DataGrid Grid.Row="1" x:Name="GridPlanung"
+                <controls:DataGridEx Grid.Row="1"
                           ItemsSource="{Binding ArbeitswocheVorschau}"
                           AutoGenerateColumns="False" IsReadOnly="True"
                           CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False"
-                          SelectedValue="{Binding SelectedMitarbeiter, Mode=TwoWay}"
                           SelectionMode="Single"
-                          SelectionUnit="FullRow"
-                          IsSynchronizedWithCurrentItem="True">
-                    <DataGrid.Resources>
-                      
-                    </DataGrid.Resources>
+                          SelectionUnit="Cell"
+                          SelectedItemEx="{Binding SelectedPlanungswocheMitarbeiterItem, Mode=TwoWay}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Name" MinWidth="150"
                                             Binding="{Binding Mitarbeiter.Name}"
@@ -268,7 +264,7 @@
                             </DataGridTextColumn.CellStyle>
                         </DataGridTextColumn>
                     </DataGrid.Columns>
-                </DataGrid>
+                </controls:DataGridEx>
             </Grid>
        
             <Grid Grid.Column="2" HorizontalAlignment="Left" Margin="25,0,0,0">
@@ -276,7 +272,7 @@
                     <Style TargetType="Grid">
                         <Setter Property="Visibility" Value="Visible"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding ElementName=GridPlanung, Path=SelectedItem}" Value="{x:Null}">
+                            <DataTrigger Binding="{Binding Path=SelectedPlanungswocheMitarbeiterItem}" Value="{x:Null}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                             </DataTrigger>
                         </Style.Triggers>
@@ -285,7 +281,7 @@
                 
                 <Border BorderBrush="Black" BorderThickness="1" Padding="10,5">
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                        <planung:MitarbeiterDetailView DataContext="{Binding ElementName=GridPlanung, Path=SelectedItem.Mitarbeiter}"/>
+                        <planung:MitarbeiterDetailView DataContext="{Binding Path=SelectedPlanungswocheMitarbeiter, Mode=OneWay}"/>
                     </ScrollViewer>
                 </Border>
                 

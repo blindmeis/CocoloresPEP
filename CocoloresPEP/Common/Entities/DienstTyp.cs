@@ -13,7 +13,7 @@ namespace CocoloresPEP.Common.Entities
         Frühdienst = 1 << 1,
         SpätdienstEnde = 1 << 2,
         AchtUhrDienst = 1 << 3,
-        AchtUhr30Dienst = 1 << 4,
+        KernzeitStartDienst = 1 << 4,
         NeunUhrDienst = 1 << 5,
         ZehnUhrDienst = 1 << 6,
         KernzeitEndeDienst = 1 << 6,

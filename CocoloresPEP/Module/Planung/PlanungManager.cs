@@ -15,6 +15,7 @@ using CocoloresPEP.Common;
 using CocoloresPEP.Common.Entities;
 using CocoloresPEP.Common.Extensions;
 using CocoloresPEP.Common.WpfCore.Commanding;
+using CocoloresPEP.Common.WpfCore.Service.MessageBox;
 using CocoloresPEP.Module.Mitarbeiter;
 using CocoloresPEP.Services;
 using CocoloresPEP.Views.Mitarbeiter;
@@ -34,11 +35,14 @@ namespace CocoloresPEP.Module.Planung
         private readonly Lazy<DelegateCommand> _lazyDeletePlanungswocheCommand;
         private readonly Lazy<DelegateCommand> _lazyRunPlanungCommand;
         private readonly Lazy<DelegateCommand> _lazyRunPlanungCheckCommand;
+        private PlanungswocheMitarbeiterViewmodel _selectedPlanungswocheMitarbeiterItem;
+        private WpfMessageBoxService _msg;
 
 
         public PlanungManager()
         {
             _serializationService = new SerializationService();
+            _msg = new WpfMessageBoxService();
 
             var planungen = _serializationService.ReadPlanungListe() ?? new List<Arbeitswoche>();
             ArbeitswochenCollection = new ObservableCollection<ArbeitswocheViewmodel>(planungen.Select(x=>x.MapArbeitswocheToViewmodel()));
@@ -57,9 +61,6 @@ namespace CocoloresPEP.Module.Planung
 
             Jahr = DateTime.Now.Year;
         }
-
-    
-
 
         public ICollectionView PlanungView { get; set; }
 
@@ -90,6 +91,25 @@ namespace CocoloresPEP.Module.Planung
                     $"Jahr: {SelectedArbeitswoche.Jahr}  Kalendarwoche: {SelectedArbeitswoche.KalenderWoche}  vom {von.ToString("dd.MM.")}-{bis.ToString("dd.MM.")}";
 
             }
+        }
+
+        public PlanungswocheMitarbeiterViewmodel SelectedPlanungswocheMitarbeiterItem
+        {
+            get { return _selectedPlanungswocheMitarbeiterItem; }
+            set
+            {
+                _selectedPlanungswocheMitarbeiterItem = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(SelectedPlanungswocheMitarbeiter));
+            }
+        }
+        public MitarbeiterViewmodel SelectedPlanungswocheMitarbeiter
+        {
+            get
+            {
+                return SelectedPlanungswocheMitarbeiterItem?.Mitarbeiter;
+            }
+
         }
 
         public ICollectionView ArbeitswocheVorschau
@@ -222,6 +242,13 @@ namespace CocoloresPEP.Module.Planung
 
             try
             {
+                if (SelectedArbeitswoche.PlanungProMitarbeiterListe.Count != 0)
+                {
+                    var dlg = _msg.ShowYesNo("Wollen Sie eine neue Planung durchführen?",CustomDialogIcons.Question);
+                    if (dlg == CustomDialogResults.No)
+                        return;
+                }
+
                 var woche = SelectedArbeitswoche.MapViewmodelToArbeitswoche();
 
                 await Task.Run(() => PlanService.ErstelleWochenplan(woche, woche.Mitarbeiter));
@@ -267,15 +294,15 @@ namespace CocoloresPEP.Module.Planung
             try
             {
                 var woche = SelectedArbeitswoche.MapViewmodelToArbeitswoche();
-                await Task.Run(() => PlanService.CheckPlanung(woche));
+                //await Task.Run(() => PlanService.CheckPlanung(woche));
 
-                var neu = woche.MapArbeitswocheToViewmodel();
+                //var neu = woche.MapArbeitswocheToViewmodel();
 
-                ArbeitswochenCollection.Remove(SelectedArbeitswoche);
-                ArbeitswochenCollection.Add(neu);
-                SelectedArbeitswoche = neu;
+                //ArbeitswochenCollection.Remove(SelectedArbeitswoche);
+                //ArbeitswochenCollection.Add(neu);
+                //SelectedArbeitswoche = neu;
 
-                ArbeitswocheVorschau.Refresh();
+                //ArbeitswocheVorschau.Refresh();
             }
             catch (Exception ex)
             {

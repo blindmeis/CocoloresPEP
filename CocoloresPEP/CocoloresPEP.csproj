@@ -91,6 +91,7 @@
     <Compile Include="Common\WpfCore\Adorner\BorderAdorner.cs" />
     <Compile Include="Common\WpfCore\Behaviors\AttachableForStyleBehavior.cs" />
     <Compile Include="Common\WpfCore\Behaviors\CalendarBehavior.cs" />
+    <Compile Include="Common\WpfCore\Behaviors\DataGridSelectedItemWhileSelectionUnitCellBehavior.cs" />
     <Compile Include="Common\WpfCore\Behaviors\Focus\FocusBorderAdornerBehavior.cs" />
     <Compile Include="Common\WpfCore\Behaviors\TextBoxInputBehavior.cs" />
     <Compile Include="Common\WpfCore\Behaviors\TreeViewSelectedItemBehavior.cs" />
@@ -101,9 +102,12 @@
     <Compile Include="Common\WpfCore\Controls\CircularProgressBar.xaml.cs">
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\WpfCore\Controls\DataGridEx.cs" />
     <Compile Include="Common\WpfCore\Controls\DesignModeTool.cs" />
     <Compile Include="Common\WpfCore\Converter\EnumHasFlagConverter.cs" />
     <Compile Include="Common\WpfCore\Helper.cs" />
+    <Compile Include="Common\WpfCore\Service\MessageBox\IMessageBoxService.cs" />
+    <Compile Include="Common\WpfCore\Service\MessageBox\WpfMessageBoxService.cs" />
     <Compile Include="Images\AddUser.xaml.cs">
       <DependentUpon>AddUser.xaml</DependentUpon>
     </Compile>
@@ -270,6 +274,7 @@
   <ItemGroup>
     <Resource Include="Cocolores.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
