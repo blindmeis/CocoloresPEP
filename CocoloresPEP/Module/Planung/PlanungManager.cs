@@ -192,6 +192,10 @@ namespace CocoloresPEP.Module.Planung
                 return;
 
             ArbeitswochenCollection.Remove(SelectedArbeitswoche);
+            if(ArbeitswochenCollection.Count==0)
+                return;
+
+            SelectedArbeitswoche = ArbeitswochenCollection.First();
             ArbeitswocheVorschau.Refresh();
         }
         #endregion
@@ -242,7 +246,7 @@ namespace CocoloresPEP.Module.Planung
 
             try
             {
-                if (SelectedArbeitswoche.PlanungProMitarbeiterListe.Count != 0)
+                if (SelectedArbeitswoche.PlanungProMitarbeiterListe.Any(x=>x.HasPlanzeitenEntries))
                 {
                     var dlg = _msg.ShowYesNo("Wollen Sie eine neue Planung durchführen?",CustomDialogIcons.Question);
                     if (dlg == CustomDialogResults.No)
@@ -260,6 +264,10 @@ namespace CocoloresPEP.Module.Planung
                 SelectedArbeitswoche = neu;
 
                 ArbeitswocheVorschau.Refresh();
+
+                SelectedPlanungswocheMitarbeiterItem = SelectedArbeitswoche.PlanungProMitarbeiterListe.First();
+
+                FocusToBindingPath = nameof(ArbeitswocheVorschau);
             }
             catch (Exception ex)
             {

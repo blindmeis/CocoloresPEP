@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using CocoloresPEP.Common.Entities;
+using CocoloresPEP.Common.Extensions;
 
 namespace CocoloresPEP.Common.Controls
 {
@@ -14,12 +15,12 @@ namespace CocoloresPEP.Common.Controls
     {
         public WunschdienstControl()
         {
-            var fd = new WunschdienstWrapper() {Dienst = DienstTyp.Frühdienst, Displayname = "Frühdienst"};
-            var d8 = new WunschdienstWrapper() {Dienst = DienstTyp.AchtUhrDienst, Displayname = "08.00Uhr Dienst"};
-            var d830 = new WunschdienstWrapper() {Dienst = DienstTyp.KernzeitStartDienst, Displayname = "08.30Uhr Dienst"};
-            var d9 = new WunschdienstWrapper() {Dienst = DienstTyp.NeunUhrDienst, Displayname = "09.00Uhr Dienst"};
-            var d10 = new WunschdienstWrapper() {Dienst = DienstTyp.ZehnUhrDienst, Displayname = "10.00Uhr Dienst"};
-            var sd = new WunschdienstWrapper() {Dienst = DienstTyp.SpätdienstEnde, Displayname = "Spätdienst"};
+            var fd = new WunschdienstWrapper() {Dienst = DienstTyp.Frühdienst, Displayname = DienstTyp.Frühdienst.GetDisplayname() };
+            var d8 = new WunschdienstWrapper() {Dienst = DienstTyp.AchtUhrDienst, Displayname = DienstTyp.AchtUhrDienst.GetDisplayname() };
+            var d830 = new WunschdienstWrapper() {Dienst = DienstTyp.KernzeitStartDienst, Displayname = DienstTyp.KernzeitStartDienst.GetDisplayname() };
+            var d9 = new WunschdienstWrapper() {Dienst = DienstTyp.NeunUhrDienst, Displayname = DienstTyp.NeunUhrDienst.GetDisplayname() };
+            var d10 = new WunschdienstWrapper() {Dienst = DienstTyp.ZehnUhrDienst, Displayname = DienstTyp.ZehnUhrDienst.GetDisplayname() };
+            var sd = new WunschdienstWrapper() {Dienst = DienstTyp.SpätdienstEnde, Displayname = DienstTyp.SpätdienstEnde.GetDisplayname() };
 
             fd.PropertyChanged -= SelectionChanged;
             fd.PropertyChanged += SelectionChanged;

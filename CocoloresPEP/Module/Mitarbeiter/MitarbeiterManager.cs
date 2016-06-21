@@ -74,9 +74,11 @@ namespace CocoloresPEP.Module.Mitarbeiter
             if (!CanCreateMitarbeiterCommandExecute())
                 return;
 
-            SelectedMitarbeiter = new MitarbeiterViewmodel() {Name = "Neu"};
+            SelectedMitarbeiter = new MitarbeiterViewmodel() {Name = ""};
             MitarbeiterCollection.Add(SelectedMitarbeiter);
             MitarbeiterView.Refresh();
+
+            FocusToBindingPath = "Name";
         }
 
         #endregion

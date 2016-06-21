@@ -8,8 +8,13 @@
              xmlns:behaviors="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors"
              xmlns:planung="clr-namespace:CocoloresPEP.Views.Planung"
              xmlns:entities="clr-namespace:CocoloresPEP.Common.Entities"
-             xmlns:controls="clr-namespace:CocoloresPEP.Common.WpfCore.Controls">
-    
+             xmlns:controls="clr-namespace:CocoloresPEP.Common.WpfCore.Controls"
+             xmlns:focus="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors.Focus"
+             x:Name="Uc">
+    <i:Interaction.Behaviors>
+        <focus:SetFocusToBindingBehavior BindingName="KalenderWoche" SetFocusToBindingPath="{Binding Path=FocusToBindingPath, Mode=TwoWay}"/>
+    </i:Interaction.Behaviors>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -40,6 +45,7 @@
                     <KeyBinding Key="Enter" Command="{Binding Path=CreatePlanungswocheCommand}"></KeyBinding>
                 </TextBox.InputBindings>
                 <i:Interaction.Behaviors>
+                    <behaviors:TextBoxSelectAllOnFocusBehavior/>
                     <behaviors:TextBoxInputBehavior InputMode="DigitInput" />
                 </i:Interaction.Behaviors>
             </TextBox>
@@ -128,15 +134,21 @@
                 <controls:DataGridEx Grid.Row="1"
                           ItemsSource="{Binding ArbeitswocheVorschau}"
                           AutoGenerateColumns="False" IsReadOnly="True"
-                          CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False"
+                          CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" 
+                          CanUserResizeColumns="False" CanUserResizeRows="False"
                           SelectionMode="Single"
-                          SelectionUnit="Cell"
-                          SelectedItemEx="{Binding SelectedPlanungswocheMitarbeiterItem, Mode=TwoWay}">
+                          SelectionUnit="FullRow"
+                          SelectedItem="{Binding SelectedPlanungswocheMitarbeiterItem, Mode=TwoWay}"
+                          IsSynchronizedWithCurrentItem="True">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Name" MinWidth="150"
-                                            Binding="{Binding Mitarbeiter.Name}"
-                                            >
-                          <DataGridTextColumn.CellStyle>
+                        <DataGridTemplateColumn MinWidth="150">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Mitarbeiter.Name}" HorizontalAlignment="Stretch">
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.CellStyle>
                                 <Style TargetType="DataGridCell">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Mitarbeiter.DefaultGruppe}" Value="{x:Static entities:GruppenTyp.Blau}">
@@ -153,11 +165,26 @@
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </DataGridTextColumn.CellStyle>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn Header="Montag" MinWidth="100" 
-                                            Binding="{Binding Montag.IstZeitenInfo}">
-                            <DataGridTextColumn.CellStyle>
+                            </DataGridTemplateColumn.CellStyle>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn MinWidth="130" >
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Montag" 
+                                                   HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsMontagFeiertag, Mode=TwoWay}"
+                                                  Margin="10,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                  ToolTip="Feiertag/ nicht planen"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <planung:PlanungMitarbeiterTagControl PlanungstagViewmodel="{Binding Path=Montag}" MitarbeiterViewmodel="{Binding Mitarbeiter}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.CellStyle>
                                 <Style TargetType="DataGridCell">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Montag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Blau}}" Value="true">
@@ -174,12 +201,27 @@
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </DataGridTextColumn.CellStyle>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn Header="Dienstag" MinWidth="100"
-                                            Binding="{Binding Dienstag.IstZeitenInfo}"
-                                            >
-                            <DataGridTextColumn.CellStyle>
+                            </DataGridTemplateColumn.CellStyle>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn MinWidth="130">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <planung:PlanungMitarbeiterTagControl PlanungstagViewmodel="{Binding Path=Dienstag}" MitarbeiterViewmodel="{Binding Mitarbeiter}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Dienstag" 
+                                                   HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsDienstagFeiertag, Mode=TwoWay}"
+                                                  Margin="10,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                  ToolTip="Feiertag/ nicht planen"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.CellStyle>
                                 <Style TargetType="DataGridCell">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Dienstag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Blau}}" Value="true">
@@ -196,12 +238,26 @@
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </DataGridTextColumn.CellStyle>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn Header="Mittwoch" MinWidth="100"
-                                            Binding="{Binding Mittwoch.IstZeitenInfo}"
-                                            >
-                            <DataGridTextColumn.CellStyle>
+                            </DataGridTemplateColumn.CellStyle>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn MinWidth="130">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <planung:PlanungMitarbeiterTagControl PlanungstagViewmodel="{Binding Path=Mittwoch}" MitarbeiterViewmodel="{Binding Mitarbeiter}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Mittwoch" 
+                                                   HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsMittwochFeiertag, Mode=TwoWay}"
+                                                  Margin="10,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                  ToolTip="Feiertag/ nicht planen"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.CellStyle>
                                 <Style TargetType="DataGridCell">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Mittwoch.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Blau}}" Value="true">
@@ -218,12 +274,26 @@
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </DataGridTextColumn.CellStyle>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn Header="Donnerstag" MinWidth="100"
-                                            Binding="{Binding Donnerstag.IstZeitenInfo}"
-                                            >
-                            <DataGridTextColumn.CellStyle>
+                            </DataGridTemplateColumn.CellStyle>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn MinWidth="130" >
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <planung:PlanungMitarbeiterTagControl PlanungstagViewmodel="{Binding Path=Donnerstag}" MitarbeiterViewmodel="{Binding Mitarbeiter}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Donnerstag" 
+                                                   HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsDonnerstagFeiertag, Mode=TwoWay}"
+                                                  Margin="10,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                  ToolTip="Feiertag/ nicht planen"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.CellStyle>
                                 <Style TargetType="DataGridCell">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Donnerstag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Blau}}" Value="true">
@@ -240,11 +310,26 @@
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </DataGridTextColumn.CellStyle>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn Header="Freitag" MinWidth="100"
-                                            Binding="{Binding Freitag.IstZeitenInfo}">
-                            <DataGridTextColumn.CellStyle>
+                            </DataGridTemplateColumn.CellStyle>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn MinWidth="130">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <planung:PlanungMitarbeiterTagControl PlanungstagViewmodel="{Binding Path=Freitag}" MitarbeiterViewmodel="{Binding Mitarbeiter}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Freitag" 
+                                                   HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsFreitagFeiertag, Mode=TwoWay}"
+                                                  Margin="10,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                  ToolTip="Feiertag/ nicht planen"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.CellStyle>
                                 <Style TargetType="DataGridCell">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Freitag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Blau}}" Value="true">
@@ -261,8 +346,8 @@
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </DataGridTextColumn.CellStyle>
-                        </DataGridTextColumn>
+                            </DataGridTemplateColumn.CellStyle>
+                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </controls:DataGridEx>
             </Grid>

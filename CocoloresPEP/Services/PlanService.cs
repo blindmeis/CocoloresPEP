@@ -20,6 +20,15 @@ namespace CocoloresPEP.Services
             {
                 arbeitstag.Planzeiten.Clear();
 
+                if (arbeitstag.IsFeiertag)
+                {
+                    foreach (var mitarbeiter in maList)
+                    {
+                        arbeitstag.Planzeiten.Add(CreatePlanItem(mitarbeiter,arbeitstag.KernzeitGruppeStart, mitarbeiter.TagesQuarterTicks,GruppenTyp.None, DienstTyp.None));
+                    }
+                    continue;
+                }
+
                 //Nur richtige Mitarbeiter die auch da sind
                 var alledieDaSind = maList.Where(x => !x.NichtDaZeiten.Any(dt => dt == arbeitstag.Datum) && !x.IsHelfer).ToList();
 
@@ -264,20 +273,23 @@ namespace CocoloresPEP.Services
         /// <param name="woche"></param>
         private static void OptimizePlanung(Arbeitswoche woche)
         {
+            var gruppen = woche.Mitarbeiter.Select(x => x.DefaultGruppe).Distinct().ToList();
             //prüfen ob alle Gruppen in der Kernzeit besetzt sind
             foreach (var arbeitstag in woche.Arbeitstage)
             {
-                var gruppen = arbeitstag.Planzeiten.GroupBy(x => x.Gruppe).ToList();
 
                 foreach (var gruppe in gruppen)
                 {
+                    if(gruppe == 0)
+                        continue;
+
                     DateTime startzeit;
                     short ticks;
 
-                    if (!CheckKernzeitAbgedeckt(arbeitstag, gruppe.Key, out startzeit, out ticks))
+                    if (!CheckKernzeitAbgedeckt(arbeitstag, gruppe, out startzeit, out ticks))
                     {
-                        //erstmal beim Tag schauen in andern Gruppen
-                        var wirHabenvlltZeit = arbeitstag.Planzeiten.Where(x => x.Gruppe != gruppe.Key && !x.ErledigtDurch.IsHelfer)
+                        //beim Tag schauen in andern Gruppen
+                        var wirHabenvlltZeit = arbeitstag.Planzeiten.Where(x => x.ErledigtDurch.DefaultGruppe != gruppe && !x.ErledigtDurch.IsHelfer)
                                                                     .GroupBy(g => g.Gruppe)
                                                                     .OrderByDescending(o => o.Count())
                                                                     .ToList();
@@ -295,7 +307,25 @@ namespace CocoloresPEP.Services
                             mitarbeiterDieInDerEigentlichenGruppeGebrauchtWerden.Add(erster.ErledigtDurch);
                             var bisAbgedeckt = erster.Startzeit.AddMinutes(15 * erster.AllTicks);
 
-                            var kanditaten = SucheTauschKanditaten(nachDienstbegin, bisAbgedeckt, arbeitstag, mitarbeiterDieInDerEigentlichenGruppeGebrauchtWerden);
+                            //gucken ohne Zeiten zu ändern
+                            while (bisAbgedeckt < arbeitstag.KernzeitGruppeEnde)
+                            {
+                                var nächster = vllt.FirstOrDefault(x => !mitarbeiterDieInDerEigentlichenGruppeGebrauchtWerden.Contains(x.ErledigtDurch)
+                                                                        && x.Startzeit.AddMinutes(15 * x.AllTicks)>=arbeitstag.KernzeitGruppeEnde);
+
+                                if (nächster == null)
+                                {
+                                    var alle = vllt.Where(x => !mitarbeiterDieInDerEigentlichenGruppeGebrauchtWerden.Contains(x.ErledigtDurch))
+                                                   .Select(x => x.ErledigtDurch);
+                                    mitarbeiterDieInDerEigentlichenGruppeGebrauchtWerden.AddRange(alle);
+                                    break;
+                                }
+
+                                mitarbeiterDieInDerEigentlichenGruppeGebrauchtWerden.Add(nächster.ErledigtDurch);
+                                bisAbgedeckt = nächster.Startzeit.AddMinutes(15*nächster.AllTicks);
+                            }
+
+                            var kanditaten = vllt.Where(x => !mitarbeiterDieInDerEigentlichenGruppeGebrauchtWerden.Contains(x.ErledigtDurch)).ToList();
 
                             if (kanditaten.Count == 0)
                                 continue;
@@ -306,7 +336,7 @@ namespace CocoloresPEP.Services
                                 continue;
 
                             var eigentlicherDienstschluss = erstbesten.Startzeit.AddMinutes(15 * erstbesten.AllTicks);
-                            erstbesten.Gruppe = gruppe.Key;
+                            erstbesten.Gruppe = gruppe;
 
                             //wenn die Zeiten nicht passen, dann anpassen
                             if (erstbesten.Startzeit > startzeit || eigentlicherDienstschluss < arbeitstag.KernzeitGruppeEnde)
@@ -325,30 +355,6 @@ namespace CocoloresPEP.Services
               
             }
         }
-
-        private static IList<PlanItem> SucheTauschKanditaten(IOrderedEnumerable<PlanItem> nachDienstbegin, DateTime bisAbgedeckt, Arbeitstag arbeitstag, List<Mitarbeiter> mitarbeiterDieInDerEigentlichenGruppeGebrauchtWerden)
-        {
-            //alle Mitarbeiter der Gruppe die vllt nicht gebraucht werden
-            var nächster = nachDienstbegin.Where(x => !mitarbeiterDieInDerEigentlichenGruppeGebrauchtWerden.Contains(x.ErledigtDurch)
-                                                      && x.Startzeit < bisAbgedeckt)
-                                          .OrderBy(x => x.Startzeit.AddMinutes(15*x.AllTicks))
-                                          .LastOrDefault();
-
-            if (nächster != null)
-            {
-                //wenn der nächste noch unter dem kernzeitende ist
-                if (nächster.Startzeit.AddMinutes(15*nächster.AllTicks) < arbeitstag.KernzeitGruppeEnde)
-                {
-                    mitarbeiterDieInDerEigentlichenGruppeGebrauchtWerden.Add(nächster.ErledigtDurch);
-                    return SucheTauschKanditaten(nachDienstbegin, nächster.Startzeit.AddMinutes(15 * nächster.AllTicks), arbeitstag,mitarbeiterDieInDerEigentlichenGruppeGebrauchtWerden);
-                }
-                
-                return nachDienstbegin.Where(x => !mitarbeiterDieInDerEigentlichenGruppeGebrauchtWerden.Contains(x.ErledigtDurch)).ToList();
-            }
-
-            return new List<PlanItem>();
-        }
-
 
 
         /// <summary>

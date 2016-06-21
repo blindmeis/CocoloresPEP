@@ -6,7 +6,9 @@
              xmlns:local="clr-namespace:CocoloresPEP.Views.Planung"
              xmlns:controls="clr-namespace:CocoloresPEP.Common.Controls"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:behaviors="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors">
+             xmlns:behaviors="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors"
+             xmlns:focus="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors.Focus">
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -62,8 +64,8 @@
         </controls:WunschdienstControl>
 
         <Label Grid.Row="8" Content="Urlaub/Nicht anwesend:"/>
-        <Calendar Grid.Row="9" SelectionMode="MultipleRange" HorizontalAlignment="Left"
-                  IsTodayHighlighted="False"
+        <Calendar Grid.Row="9" SelectionMode="MultipleRange" HorizontalAlignment="Left" FontSize="16"
+                  IsTodayHighlighted="False" 
                   x:Name="CalUrlaub">
             <i:Interaction.Behaviors>
                 <behaviors:CalendarBehavior SelectedDatesCollection="{Binding NichtDaZeiten, Mode=TwoWay}"/>

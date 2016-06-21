@@ -11,6 +11,8 @@ namespace CocoloresPEP.Common
     public abstract class ViewmodelBase : INotifyPropertyChanged
     {
         private bool _isBusy;
+        private string _focusToBindingPath;
+
         public bool IsBusy
         {
             get { return _isBusy; }
@@ -26,6 +28,16 @@ namespace CocoloresPEP.Common
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public string FocusToBindingPath
+        {
+            get { return _focusToBindingPath; }
+            set
+            {
+                _focusToBindingPath = value; 
+                OnPropertyChanged();
+            }
         }
     }
 }

@@ -23,6 +23,8 @@ namespace CocoloresPEP.Common.Entities
         
         public ObservableCollection<PlanItem> Planzeiten { get;  set; }
 
+        public bool IsFeiertag { get; set; }
+
         public DateTime Frühdienst
         {
             get { return new DateTime(Datum.Year, Datum.Month, Datum.Day, 7, 0, 0); }

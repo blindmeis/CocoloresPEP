@@ -16,6 +16,12 @@ namespace CocoloresPEP.Module.Planung
         {
             var vm = new ArbeitswocheViewmodel(aw.Jahr, aw.KalenderWoche);
             vm.Mitarbeiter = new List<MitarbeiterViewmodel>(aw.Mitarbeiter.Select(x => x.MapMitarbeiterToViewmodel()));
+            vm.IsMontagFeiertag = aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Monday).IsFeiertag;
+            vm.IsDienstagFeiertag = aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Tuesday).IsFeiertag;
+            vm.IsMittwochFeiertag = aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Wednesday).IsFeiertag;
+            vm.IsDonnerstagFeiertag = aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Thursday).IsFeiertag;
+            vm.IsFreitagFeiertag = aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Friday).IsFeiertag;
+
 
             var pwmvms = new List<PlanungswocheMitarbeiterViewmodel>();
 
@@ -29,7 +35,8 @@ namespace CocoloresPEP.Module.Planung
                     var ptvm = new PlanungstagViewmodel()
                     {
                         Datum = arbeitstag.Datum,
-                        Planzeiten = arbeitstag.Planzeiten.Where(x => x.ErledigtDurch.Name == ma.Name).ToList()
+                        Planzeiten = arbeitstag.Planzeiten.Where(x => x.ErledigtDurch.Name == ma.Name).ToList(),
+                        IsFeiertag =  arbeitstag.IsFeiertag
                     };
 
                     switch (dow)
@@ -76,18 +83,23 @@ namespace CocoloresPEP.Module.Planung
 
             aw.Arbeitstage.Single(x=>x.Datum.DayOfWeek == DayOfWeek.Monday).Planzeiten = 
                 new ObservableCollection<PlanItem>(vm.PlanungProMitarbeiterListe.SelectMany(x => x.Montag?.Planzeiten ?? new List<PlanItem>()).ToList());
+            aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Monday).IsFeiertag = vm.IsMontagFeiertag;
 
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Tuesday).Planzeiten =
                new ObservableCollection<PlanItem>(vm.PlanungProMitarbeiterListe.SelectMany(x => x.Dienstag?.Planzeiten ?? new List<PlanItem>()));
+            aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Tuesday).IsFeiertag = vm.IsDienstagFeiertag;
 
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Wednesday).Planzeiten =
                  new ObservableCollection<PlanItem>(vm.PlanungProMitarbeiterListe.SelectMany(x => x.Mittwoch?.Planzeiten ?? new List<PlanItem>()));
+            aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Wednesday).IsFeiertag = vm.IsMittwochFeiertag;
 
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Thursday).Planzeiten =
                new ObservableCollection<PlanItem>(vm.PlanungProMitarbeiterListe.SelectMany(x => x.Donnerstag?.Planzeiten ?? new List<PlanItem>()));
+            aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Thursday).IsFeiertag = vm.IsDonnerstagFeiertag;
 
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Friday).Planzeiten =
                new ObservableCollection<PlanItem>(vm.PlanungProMitarbeiterListe.SelectMany(x => x.Freitag?.Planzeiten ?? new List<PlanItem>()));
+            aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Friday).IsFeiertag = vm.IsFreitagFeiertag;
 
             return aw;
         }

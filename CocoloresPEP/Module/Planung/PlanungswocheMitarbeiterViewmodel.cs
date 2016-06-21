@@ -18,5 +18,16 @@ namespace CocoloresPEP.Module.Planung
         public PlanungstagViewmodel Mittwoch { get; set; }
         public PlanungstagViewmodel Donnerstag { get; set; }
         public PlanungstagViewmodel Freitag { get; set; }
+
+        public bool HasPlanzeitenEntries
+        {
+            get
+            {
+                return (Montag.Planzeiten.Any()
+                        || Dienstag.Planzeiten.Any()
+                        || Mittwoch.Planzeiten.Any()
+                        || Donnerstag.Planzeiten.Any()
+                        || Freitag.Planzeiten.Any());
+            } }
     }
 }

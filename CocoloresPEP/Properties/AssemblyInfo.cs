@@ -10,9 +10,9 @@ using System.Windows;
 [assembly: AssemblyTitle("CocoloresPEP")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("LFF")]
+[assembly: AssemblyCompany("Von Privat")]
 [assembly: AssemblyProduct("CocoloresPEP")]
-[assembly: AssemblyCopyright("Copyright © LFF 2016")]
+[assembly: AssemblyCopyright("Copyright © Von Privat 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
