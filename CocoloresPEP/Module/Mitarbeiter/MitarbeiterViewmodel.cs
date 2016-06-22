@@ -33,8 +33,15 @@ namespace CocoloresPEP.Module.Mitarbeiter
 
         public decimal WochenStunden { get; set; }
 
-        public decimal SaldoWochenStunden { get; set; }
-        
+
+        public int TagesArbeitszeitInMinuten
+        {
+            get
+            {
+                var minuten = WochenStunden*60/5;
+                return (int)minuten;
+            }
+        }
         public ObservableCollection<DateTime> NichtDaZeiten { get; set; }
 
         public GruppenTyp DefaultGruppe

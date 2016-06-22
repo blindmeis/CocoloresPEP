@@ -21,6 +21,7 @@ namespace CocoloresPEP.Module.Planung
             _lazyChangePlanzeitCommand = new Lazy<DelegateCommand<DienstTyp>>(() => new DelegateCommand<DienstTyp>(ChangePlanzeitCommandExecute, CanChangePlanzeitCommandExecute));
         }
 
+        #region ChangePlanzeitCommand
         public ICommand ChangePlanzeitCommand { get { return _lazyChangePlanzeitCommand.Value; } }
 
 
@@ -56,19 +57,21 @@ namespace CocoloresPEP.Module.Planung
                     plan.Startzeit = at.ZehnUhrDienst;
                     break;
                 case DienstTyp.KernzeitEndeDienst:
-                    plan.Startzeit = at.KernzeitGruppeEnde.AddMinutes(-1*15*plan.AllTicks);
+                    plan.Startzeit = at.KernzeitGruppeEnde.AddMinutes(-1 * 15 * plan.AllTicks);
                     break;
                 case DienstTyp.SpätdienstEnde:
-                    plan.Startzeit = at.SpätdienstEnde.AddMinutes(-1*15*plan.AllTicks);
+                    plan.Startzeit = at.SpätdienstEnde.AddMinutes(-1 * 15 * plan.AllTicks);
                     break;
             }
 
-            if(plan.Startzeit.AddMinutes(15*plan.AllTicks)> at.SpätdienstEnde)
+            if (plan.Startzeit.AddMinutes(15 * plan.AllTicks) > at.SpätdienstEnde)
                 plan.Startzeit = at.SpätdienstEnde.AddMinutes(-1 * 15 * plan.AllTicks);
 
             OnPropertyChanged(nameof(IstZeitenInfo));
         }
+        #endregion
 
+        #region ChangePlanGruppeCommand
         public ICommand ChangePlanGruppeCommand { get { return _lazyChangePlanGruppeCommand.Value; } }
 
         private bool CanChangePlanGruppeCommandExecute(GruppenTyp gt)
@@ -87,7 +90,8 @@ namespace CocoloresPEP.Module.Planung
             }
 
             OnPropertyChanged(nameof(EingeteiltSollTyp));
-        }
+        } 
+        #endregion
 
         public DateTime Datum { get; set; }
         public IEnumerable<PlanItem> Planzeiten { get; set; }

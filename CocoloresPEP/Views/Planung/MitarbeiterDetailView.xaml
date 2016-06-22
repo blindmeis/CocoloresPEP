@@ -7,10 +7,12 @@
              xmlns:controls="clr-namespace:CocoloresPEP.Common.Controls"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:behaviors="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors"
-             xmlns:focus="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors.Focus">
+             xmlns:focus="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors.Focus"
+             x:Name="Uc">
 
-    <Grid>
+    <Grid DataContext="{Binding ElementName=Uc, Path=MitarbeiterViewmodel}">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -66,7 +68,8 @@
         <Label Grid.Row="8" Content="Urlaub/Nicht anwesend:"/>
         <Calendar Grid.Row="9" SelectionMode="MultipleRange" HorizontalAlignment="Left" FontSize="16"
                   IsTodayHighlighted="False" 
-                  x:Name="CalUrlaub">
+                  DisplayDateStart="{Binding ElementName=Uc, Path=DisplayDateStart, Mode=OneWay}"
+                  DisplayDateEnd="{Binding ElementName=Uc, Path=DisplayDateEnd, Mode=OneWay}" >
             <i:Interaction.Behaviors>
                 <behaviors:CalendarBehavior SelectedDatesCollection="{Binding NichtDaZeiten, Mode=TwoWay}"/>
             </i:Interaction.Behaviors>

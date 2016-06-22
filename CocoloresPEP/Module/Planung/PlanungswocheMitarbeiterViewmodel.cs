@@ -28,6 +28,30 @@ namespace CocoloresPEP.Module.Planung
                         || Mittwoch.Planzeiten.Any()
                         || Donnerstag.Planzeiten.Any()
                         || Freitag.Planzeiten.Any());
-            } }
+            }
+        }
+
+        public decimal PlusMinusStunden
+        {
+            get
+            {
+                var sumPlanQuarterticks = Montag.Planzeiten.Sum(x => x.QuarterTicks)
+                          + Dienstag.Planzeiten.Sum(x => x.QuarterTicks)
+                          + Mittwoch.Planzeiten.Sum(x => x.QuarterTicks)
+                          + Donnerstag.Planzeiten.Sum(x => x.QuarterTicks)
+                          + Freitag.Planzeiten.Sum(x => x.QuarterTicks);
+
+                var minuten = sumPlanQuarterticks*15;
+                if (Mitarbeiter.NichtDaZeiten.Any())
+                {
+                    var frei = Mitarbeiter.NichtDaZeiten.Count(x => x >= Montag.Datum && x <= Freitag.Datum);
+                    minuten += frei*Mitarbeiter.TagesArbeitszeitInMinuten;
+                }
+
+                var saldo = (minuten - Mitarbeiter.WochenStunden*60)/60;
+
+                return saldo;
+            }
+        }
     }
 }

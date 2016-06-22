@@ -47,6 +47,7 @@ namespace CocoloresPEP.Common.WpfCore.Behaviors
             base.OnAttached();
             AssociatedObject.PreviewMouseRightButtonDown += AssociatedObjectOnPreviewMouseRightButtonDown;
             AssociatedObject.SelectedDatesChanged += AssociatedObjectOnSelectedDatesChanged;
+            AssociatedObject.GotMouseCapture += AssociatedObjectOnGotMouseCapture;
         }
 
         protected override void OnDetaching()
@@ -54,6 +55,7 @@ namespace CocoloresPEP.Common.WpfCore.Behaviors
             base.OnDetaching();
             AssociatedObject.PreviewMouseRightButtonDown -= AssociatedObjectOnPreviewMouseRightButtonDown;
             AssociatedObject.SelectedDatesChanged -= AssociatedObjectOnSelectedDatesChanged;
+            AssociatedObject.GotMouseCapture -= AssociatedObjectOnGotMouseCapture;
         }
 
         private void AssociatedObjectOnSelectedDatesChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
@@ -103,6 +105,12 @@ namespace CocoloresPEP.Common.WpfCore.Behaviors
                         AssociatedObject.BlackoutDates.Remove(bd);
                 }
             }
+        }
+
+        private void AssociatedObjectOnGotMouseCapture(object sender, MouseEventArgs mouseEventArgs)
+        {
+            UIElement originalElement = mouseEventArgs.OriginalSource as UIElement;
+            originalElement?.ReleaseMouseCapture();
         }
     }
 

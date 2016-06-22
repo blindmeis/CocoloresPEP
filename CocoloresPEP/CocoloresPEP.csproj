@@ -110,7 +110,6 @@
     <Compile Include="Common\WpfCore\Adorner\BorderAdorner.cs" />
     <Compile Include="Common\WpfCore\Behaviors\AttachableForStyleBehavior.cs" />
     <Compile Include="Common\WpfCore\Behaviors\CalendarBehavior.cs" />
-    <Compile Include="Common\WpfCore\Behaviors\DataGridSelectedItemWhileSelectionUnitCellBehavior.cs" />
     <Compile Include="Common\WpfCore\Behaviors\Focus\FocusBorderAdornerBehavior.cs" />
     <Compile Include="Common\WpfCore\Behaviors\Focus\SetFocusToBindingBehavior.cs" />
     <Compile Include="Common\WpfCore\Behaviors\TextBoxInputBehavior.cs" />

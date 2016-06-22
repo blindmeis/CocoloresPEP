@@ -17,7 +17,6 @@ namespace CocoloresPEP.Module.Mitarbeiter
                 WochenStunden = ma.WochenStunden,
                 DefaultGruppe = ma.DefaultGruppe,
                 Wunschdienste = ma.Wunschdienste,
-                SaldoWochenStunden = ma.SaldoWochenStunden,
                 IsHelfer = ma.IsHelfer
             };
 
@@ -35,7 +34,6 @@ namespace CocoloresPEP.Module.Mitarbeiter
                 WochenStunden = vm.WochenStunden,
                 DefaultGruppe = vm.DefaultGruppe,
                 Wunschdienste = vm.Wunschdienste,
-                SaldoWochenStunden = vm.SaldoWochenStunden,
                 IsHelfer = vm.IsHelfer
             };
 
