@@ -11,6 +11,11 @@ namespace CocoloresPEP.Common.Entities
     {
         public DateTime Startzeit { get; set; }
 
+        /// <summary>
+        /// Sollte nur per "Hand" gesetzt werden
+        /// </summary>
+        public DateTime? Endzeit { get; set; }
+
         public short QuarterTicks { get; set; }
 
         public short BreakTicks
@@ -46,6 +51,14 @@ namespace CocoloresPEP.Common.Entities
 
 
             }
+        }
+
+        public DateTime GetEndzeit()
+        {
+            if (Endzeit.HasValue)
+                return Endzeit.Value;
+
+            return Startzeit.AddMinutes(15*AllTicks);
         }
     }
 }

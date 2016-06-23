@@ -42,16 +42,16 @@ namespace CocoloresPEP.Module.Planung
                           + Freitag.Planzeiten.Sum(x => x.QuarterTicks);
 
                 var minuten = sumPlanQuarterticks*15;
-                if (Mitarbeiter.NichtDaZeiten.Any())
-                {
-                    var frei = Mitarbeiter.NichtDaZeiten.Count(x => x >= Montag.Datum && x <= Freitag.Datum);
-                    minuten += frei*Mitarbeiter.TagesArbeitszeitInMinuten;
-                }
 
                 var saldo = (minuten - Mitarbeiter.WochenStunden*60)/60;
 
                 return saldo;
             }
+        }
+
+        public void Refresh()
+        {
+            OnPropertyChanged(nameof(PlusMinusStunden));
         }
     }
 }

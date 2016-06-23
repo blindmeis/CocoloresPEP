@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="CocoloresPEP.Common.Controls.VonBisUhrzeitControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CocoloresPEP.Common.Controls"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:behaviors="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors"
+             x:Name="Uc">
+    <StackPanel Orientation="Horizontal">
+        <local:StundenControl Width="25" IsEditable="True" VerticalAlignment="Center"
+                              SelectedValue="{Binding ElementName=Uc,Path=SelectedHourVon, Mode=TwoWay}"
+                              SelectedValuePath="Value"
+                              DisplayMemberPath="Key"
+                              IsSynchronizedWithCurrentItem="True">
+            <i:Interaction.Behaviors>
+                <behaviors:ComboboxIsEditableItemsFromListBehavior BehaviorMode="IsIDictionary"/>
+            </i:Interaction.Behaviors>
+        </local:StundenControl>
+        <TextBlock Text=":" VerticalAlignment="Center"/>
+        <local:MinutenControl Width="25" IsEditable="True" VerticalAlignment="Center"
+                              SelectedValue="{Binding ElementName=Uc,Path=SelectedMinuteVon, Mode=TwoWay}"
+                              SelectedValuePath="Value"
+                              DisplayMemberPath="Key"
+                              IsSynchronizedWithCurrentItem="True">
+            <i:Interaction.Behaviors>
+                <behaviors:ComboboxIsEditableItemsFromListBehavior BehaviorMode="IsIDictionary"/>
+            </i:Interaction.Behaviors>
+        </local:MinutenControl>
+        <TextBlock Text="-" VerticalAlignment="Center" Margin="2,0,2,0"/>
+        <local:StundenControl Width="25" IsEditable="True" VerticalAlignment="Center"
+                              SelectedValue="{Binding ElementName=Uc,Path=SelectedHourBis, Mode=TwoWay}"
+                              SelectedValuePath="Value"
+                              DisplayMemberPath="Key"
+                              IsSynchronizedWithCurrentItem="True">
+            <i:Interaction.Behaviors>
+                <behaviors:ComboboxIsEditableItemsFromListBehavior BehaviorMode="IsIDictionary"/>
+            </i:Interaction.Behaviors>
+        </local:StundenControl>
+        <TextBlock Text=":" VerticalAlignment="Center"/>
+        <local:MinutenControl Width="25" IsEditable="True" VerticalAlignment="Center"
+                              SelectedValue="{Binding ElementName=Uc,Path=SelectedMinuteBis, Mode=TwoWay}"
+                              SelectedValuePath="Value"
+                              DisplayMemberPath="Key"
+                              IsSynchronizedWithCurrentItem="True">
+            <i:Interaction.Behaviors>
+                <behaviors:ComboboxIsEditableItemsFromListBehavior BehaviorMode="IsIDictionary"/>
+            </i:Interaction.Behaviors>
+        </local:MinutenControl>
+    </StackPanel>
+</UserControl>

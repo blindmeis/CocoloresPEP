@@ -27,9 +27,16 @@ namespace CocoloresPEP.Services
                 {
                     foreach (var mitarbeiter in maList)
                     {
-                        arbeitstag.Planzeiten.Add(CreatePlanItem(mitarbeiter, arbeitstag.KernzeitGruppeStart, mitarbeiter.TagesQuarterTicks, GruppenTyp.None, DienstTyp.None));
+                        arbeitstag.Planzeiten.Add(CreatePlanItem(mitarbeiter, arbeitstag.KernzeitGruppeStart, mitarbeiter.TagesQuarterTicks, GruppenTyp.None, DienstTyp.Frei));
                     }
                     continue;
+                }
+
+                //Wenn wer nicht da ist, dann seinen Tagessatz
+                var mitarbeiterNichtDa = maList.Where(x => x.NichtDaZeiten.Any(dt => dt == arbeitstag.Datum)).ToList();
+                foreach (var mitarbeiter in mitarbeiterNichtDa)
+                {
+                    arbeitstag.Planzeiten.Add(CreatePlanItem(mitarbeiter, arbeitstag.KernzeitGruppeStart, mitarbeiter.TagesQuarterTicks, GruppenTyp.None, DienstTyp.Frei));
                 }
 
                 //Nur richtige Mitarbeiter die auch da sind
@@ -113,7 +120,7 @@ namespace CocoloresPEP.Services
                 var helferleins = maList.Where(x => !x.NichtDaZeiten.Any(dt => dt == arbeitstag.Datum) && x.IsHelfer).ToList();
                 foreach (var helferlein in helferleins)
                 {
-                    var planitems = arbeitstag.Planzeiten.Where(x => (x.ErledigtDurch.DefaultGruppe & helferlein.DefaultGruppe) == helferlein.DefaultGruppe).ToList();
+                    var planitems = arbeitstag.Planzeiten.Where(x => (x.Gruppe & helferlein.DefaultGruppe) == helferlein.DefaultGruppe).ToList();
 
                     var planitemMitarbeiter = planitems.GroupBy(x => x.Startzeit).FirstOrDefault(x => !x.Any(h => h.ErledigtDurch.IsHelfer))?.FirstOrDefault();
 
@@ -151,11 +158,11 @@ namespace CocoloresPEP.Services
                 var freiTage = 0;
 
                 var minuten = planzeiten.Sum(x => (decimal)x.QuarterTicks) * 15;
-                if (mitarbeiter.NichtDaZeiten.Any())
-                {
-                    freiTage = mitarbeiter.NichtDaZeiten.Count(x => x >= woche.Arbeitstage.Min(a => a.Datum) && x <= woche.Arbeitstage.Max(a => a.Datum));
-                    minuten += freiTage * (mitarbeiter.WochenStunden * 60 / 5);
-                }
+                //if (mitarbeiter.NichtDaZeiten.Any())
+                //{
+                //    freiTage = mitarbeiter.NichtDaZeiten.Count(x => x >= woche.Arbeitstage.Min(a => a.Datum) && x <= woche.Arbeitstage.Max(a => a.Datum));
+                //    minuten += freiTage * (mitarbeiter.WochenStunden * 60 / 5);
+                //}
 
                 var saldoInMinuten = minuten - (mitarbeiter.WochenStunden * 60);
 
@@ -209,7 +216,7 @@ namespace CocoloresPEP.Services
             } 
             #endregion
 
-            OptimizePlanung(woche);
+           // OptimizePlanung(woche);
         }
 
         private static Mitarbeiter NextMitarbeiter(IList<Mitarbeiter> alleDieDaSind, IList<Mitarbeiter> schonEingeteilt, DienstTyp ma4Diensttyp = DienstTyp.None)
@@ -348,7 +355,7 @@ namespace CocoloresPEP.Services
             //prüfen ob alle Gruppen in der Kernzeit besetzt sind
             foreach (var arbeitstag in woche.Arbeitstage)
             {
-
+                //var gruppen = arbeitstag.Planzeiten.Select(x => x.ErledigtDurch.DefaultGruppe).Distinct().ToList();
                 foreach (var gruppe in gruppen)
                 {
                     if (gruppe == 0)
@@ -360,7 +367,7 @@ namespace CocoloresPEP.Services
                     if (!CheckKernzeitAbgedeckt(arbeitstag, gruppe, out startzeit, out ticks))
                     {
                         //beim Tag schauen in andern Gruppen
-                        var wirHabenvlltZeit = arbeitstag.Planzeiten.Where(x => x.ErledigtDurch.DefaultGruppe != gruppe && !x.ErledigtDurch.IsHelfer)
+                        var wirHabenvlltZeit = arbeitstag.Planzeiten.Where(x => x.ErledigtDurch.DefaultGruppe != gruppe && !x.ErledigtDurch.IsHelfer && x.Gruppe!=0)
                                                                     .GroupBy(g => g.Gruppe)
                                                                     .OrderByDescending(o => o.Count())
                                                                     .ToList();

@@ -98,6 +98,11 @@
     </ApplicationDefinition>
     <Compile Include="Common\Controls\DefaultDienstAuswahlControl.cs" />
     <Compile Include="Common\Controls\DefaultGruppenControl.cs" />
+    <Compile Include="Common\Controls\MinutenControl.cs" />
+    <Compile Include="Common\Controls\StundenControl.cs" />
+    <Compile Include="Common\Controls\VonBisUhrzeitControl.xaml.cs">
+      <DependentUpon>VonBisUhrzeitControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Common\Controls\WunschdienstControl.cs" />
     <Compile Include="Common\Entities\DienstTyp.cs" />
     <Compile Include="Common\Entities\GruppenTyp.cs" />
@@ -110,6 +115,7 @@
     <Compile Include="Common\WpfCore\Adorner\BorderAdorner.cs" />
     <Compile Include="Common\WpfCore\Behaviors\AttachableForStyleBehavior.cs" />
     <Compile Include="Common\WpfCore\Behaviors\CalendarBehavior.cs" />
+    <Compile Include="Common\WpfCore\Behaviors\ComboboxIsEditableItemsFromListBehavior.cs" />
     <Compile Include="Common\WpfCore\Behaviors\Focus\FocusBorderAdornerBehavior.cs" />
     <Compile Include="Common\WpfCore\Behaviors\Focus\SetFocusToBindingBehavior.cs" />
     <Compile Include="Common\WpfCore\Behaviors\TextBoxInputBehavior.cs" />
@@ -122,6 +128,7 @@
     <Compile Include="Common\WpfCore\Controls\CircularProgressBar.xaml.cs">
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\WpfCore\Controls\ComboBoxWithoutDropdown.cs" />
     <Compile Include="Common\WpfCore\Controls\DataGridEx.cs" />
     <Compile Include="Common\WpfCore\Controls\DesignModeTool.cs" />
     <Compile Include="Common\WpfCore\Converter\CheckPositivNegativeZeroNumberConverter.cs" />
@@ -164,6 +171,7 @@
     <Compile Include="Module\Planung\PlanungMappingService.cs" />
     <Compile Include="Module\Planung\PlanungstagViewmodel.cs" />
     <Compile Include="Module\Planung\PlanungswocheMitarbeiterViewmodel.cs" />
+    <Compile Include="Module\Planung\PlanungszeitVonBisWrapper.cs" />
     <Compile Include="Services\ArbeitswochenService.cs" />
     <Compile Include="Services\ExcelExportService.cs" />
     <Compile Include="Services\PlanService.cs" />
@@ -184,6 +192,10 @@
     <Compile Include="Views\Planung\PlanungView.xaml.cs">
       <DependentUpon>PlanungView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Common\Controls\VonBisUhrzeitControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Common\WpfCore\Controls\BusyControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

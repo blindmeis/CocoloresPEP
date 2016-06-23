@@ -26,5 +26,6 @@ namespace CocoloresPEP.Common.Entities
         ZehnUhrDienst = 1 << 6,
         [Display(Name = @"Kernzeitende Dienst")]
         KernzeitEndeDienst = 1 << 7,
+        Frei = 1 << 8,
     }
 }
