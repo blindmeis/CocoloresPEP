@@ -37,6 +37,9 @@ namespace CocoloresPEP.Common.Extensions
             FileStream fs = null;
             try
             {
+                if (!Directory.Exists(Path.GetDirectoryName(path)))
+                    Directory.CreateDirectory(Path.GetDirectoryName(path));
+
                 fs = new FileStream(path, FileMode.Create);
                 ms.WriteTo(fs);
             }

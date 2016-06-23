@@ -51,6 +51,8 @@ namespace CocoloresPEP.Services
             get
             {
                 var path = ConfigurationManager.AppSettings["PfadMitarbeiter"];
+                if (path.IndexOf("%BASEDIR%", StringComparison.Ordinal) >= 0)
+                    path = path.Replace("%BASEDIR%", AppDomain.CurrentDomain.BaseDirectory.TrimEnd(new char[] { '\\', '/' }));
                 return path;
             }
         }
@@ -95,6 +97,9 @@ namespace CocoloresPEP.Services
             get
             {
                 var path = ConfigurationManager.AppSettings["PfadPlanungen"];
+                if (path.IndexOf("%BASEDIR%", StringComparison.Ordinal) >= 0)
+                    path = path.Replace("%BASEDIR%", AppDomain.CurrentDomain.BaseDirectory.TrimEnd(new char[] { '\\', '/' }));
+
                 return path;
             }
         }

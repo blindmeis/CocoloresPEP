@@ -124,7 +124,10 @@
     </Compile>
     <Compile Include="Common\WpfCore\Controls\DataGridEx.cs" />
     <Compile Include="Common\WpfCore\Controls\DesignModeTool.cs" />
+    <Compile Include="Common\WpfCore\Converter\CheckPositivNegativeZeroNumberConverter.cs" />
     <Compile Include="Common\WpfCore\Converter\EnumHasFlagConverter.cs" />
+    <Compile Include="Common\WpfCore\Converter\NumberToAbsolutOneWayConverter.cs" />
+    <Compile Include="Common\WpfCore\Converter\StundenToMinutenConverter.cs" />
     <Compile Include="Common\WpfCore\Helper.cs" />
     <Compile Include="Common\WpfCore\Service\MessageBox\IMessageBoxService.cs" />
     <Compile Include="Common\WpfCore\Service\MessageBox\WpfMessageBoxService.cs" />

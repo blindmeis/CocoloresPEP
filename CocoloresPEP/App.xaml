@@ -11,6 +11,10 @@
         <ResourceDictionary>
 
             <converter:EnumHasFlagConverter x:Key="MyEnumHasFlagConverter"/>
+            <converter:CheckPositivNegativeZeroNumberConverter x:Key="MyCheckPositivNegativeZeroNumberConverter"/>
+            <converter:NumberToAbsolutOneWayConverter x:Key="MyNumberToAbsolutOneWayConverter"/>
+            <converter:StundenToMinutenConverter x:Key="MyStundenToMinutenConverter"/>
+                
 
             <system:Double x:Key="FontSize">16</system:Double>
             <system:Double x:Key="FontSizeSmall">14</system:Double>

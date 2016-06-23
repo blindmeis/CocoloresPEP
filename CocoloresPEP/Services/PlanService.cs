@@ -143,6 +143,7 @@ namespace CocoloresPEP.Services
                 #endregion
             }
 
+            #region nach "Minusstunden" gucken, passiert weil TagesTicks abgerundet werden
             //nach "Minusstunden" gucken, passiert weil TagesTicks abgerundet werden
             foreach (var mitarbeiter in maList)
             {
@@ -159,7 +160,7 @@ namespace CocoloresPEP.Services
                 var saldoInMinuten = minuten - (mitarbeiter.WochenStunden * 60);
 
                 //vorkommazahl bleibt übrig
-                var tickstoAdd =Math.Abs((int)saldoInMinuten / 15);
+                var tickstoAdd = Math.Abs((int)saldoInMinuten / 15);
 
                 if (tickstoAdd < 1)
                     continue;
@@ -201,11 +202,12 @@ namespace CocoloresPEP.Services
                     }
                     else
                     {
-                        planitem.Startzeit = planitem.Startzeit.AddMinutes(-15*ticks);
+                        planitem.Startzeit = planitem.Startzeit.AddMinutes(-15 * ticks);
                         planitem.QuarterTicks += (short)ticks;
                     }
                 }
-            }
+            } 
+            #endregion
 
             OptimizePlanung(woche);
         }

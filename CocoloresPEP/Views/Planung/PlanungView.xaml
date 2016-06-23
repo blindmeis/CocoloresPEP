@@ -181,21 +181,50 @@
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                </Style>
+                            </DataGridTemplateColumn.HeaderStyle>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                        <TextBlock Text="{Binding PlusMinusStunden}" />
+                                    <TextBlock Text="{Binding PlusMinusStunden, Converter={StaticResource MyNumberToAbsolutOneWayConverter}}" HorizontalAlignment="Center"
+                                               FontWeight="Bold">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock>
+                                                <Run Text="{Binding PlusMinusStunden, Mode=OneWay, Converter={StaticResource MyStundenToMinutenConverter}, StringFormat={}{0:#,#.}, FallbackValue=0, TargetNullValue=0}"/>
+                                                <Run Text="Minuten"/>
+                                            </TextBlock>
+                                        </TextBlock.ToolTip>
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding PlusMinusStunden, Converter={StaticResource MyCheckPositivNegativeZeroNumberConverter}}" Value="true">
+                                                        <Setter Property="Foreground" Value="Green"></Setter>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding PlusMinusStunden, Converter={StaticResource MyCheckPositivNegativeZeroNumberConverter}}" Value="false">
+                                                        <Setter Property="Foreground" Value="Red"></Setter>
+                                                    </DataTrigger>
+                                                     <DataTrigger Binding="{Binding PlusMinusStunden, Converter={StaticResource MyCheckPositivNegativeZeroNumberConverter}}" Value="{x:Null}">
+                                                        <Setter Property="ToolTip.Visibility" Value="Hidden"></Setter>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn MinWidth="130" >
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
+                                    <StackPanel Orientation="Vertical">
                                         <TextBlock Text="Montag" 
                                                    HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                         <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsMontagFeiertag, Mode=TwoWay}"
-                                                  Margin="10,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Center"
-                                                  ToolTip="Feiertag/ nicht planen"/>
+                                                  Content="Feiertag"
+                                                  HorizontalAlignment="Left" VerticalAlignment="Center"
+                                                  ToolTip="nicht planen"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
@@ -232,12 +261,13 @@
                             </DataGridTemplateColumn.CellTemplate>
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
+                                    <StackPanel Orientation="Vertical">
                                         <TextBlock Text="Dienstag" 
                                                    HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                         <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsDienstagFeiertag, Mode=TwoWay}"
-                                                  Margin="10,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Center"
-                                                  ToolTip="Feiertag/ nicht planen"/>
+                                                  Content="Feiertag"
+                                                  HorizontalAlignment="Left" VerticalAlignment="Center"
+                                                  ToolTip="nicht planen"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
@@ -268,12 +298,13 @@
                             </DataGridTemplateColumn.CellTemplate>
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
+                                    <StackPanel Orientation="Vertical">
                                         <TextBlock Text="Mittwoch" 
                                                    HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                         <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsMittwochFeiertag, Mode=TwoWay}"
-                                                  Margin="10,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Center"
-                                                  ToolTip="Feiertag/ nicht planen"/>
+                                                  Content="Feiertag"
+                                                  HorizontalAlignment="Left" VerticalAlignment="Center"
+                                                  ToolTip="nicht planen"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
@@ -304,12 +335,13 @@
                             </DataGridTemplateColumn.CellTemplate>
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
+                                    <StackPanel Orientation="Vertical">
                                         <TextBlock Text="Donnerstag" 
                                                    HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                         <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsDonnerstagFeiertag, Mode=TwoWay}"
-                                                  Margin="10,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Center"
-                                                  ToolTip="Feiertag/ nicht planen"/>
+                                                  Content="Feiertag"
+                                                  HorizontalAlignment="Left" VerticalAlignment="Center"
+                                                  ToolTip="nicht planen"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
@@ -340,12 +372,13 @@
                             </DataGridTemplateColumn.CellTemplate>
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
+                                    <StackPanel Orientation="Vertical">
                                         <TextBlock Text="Freitag" 
                                                    HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                         <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsFreitagFeiertag, Mode=TwoWay}"
-                                                  Margin="10,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Center"
-                                                  ToolTip="Feiertag/ nicht planen"/>
+                                                  Content="Feiertag"
+                                                  HorizontalAlignment="Left" VerticalAlignment="Center"
+                                                  ToolTip="nicht planen"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
