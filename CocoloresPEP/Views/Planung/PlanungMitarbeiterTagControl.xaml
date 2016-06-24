@@ -69,7 +69,14 @@
                                                                            />
 
 
-                                            <Button Grid.Column="2" 
+                                            <Button Grid.Column="1" 
+                                                    Command="{Binding Path=PlacementTarget.PlanungstagViewmodel.UpdatePlanzeitCommand, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
+                                                    CommandParameter="{Binding .}">
+                                                <Viewbox Width="16" Height="16">
+                                                    <images:Ok/>
+                                                </Viewbox>
+                                            </Button>
+                                            <Button Grid.Column="2" Margin="5,0,0,0"
                                                     Command="{Binding Path=PlacementTarget.PlanungstagViewmodel.DeletePlanzeitCommand, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
                                                     CommandParameter="{Binding .}">
                                                 <Viewbox Width="16" Height="16">

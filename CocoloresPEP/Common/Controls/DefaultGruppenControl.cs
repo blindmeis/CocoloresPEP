@@ -15,7 +15,7 @@ namespace CocoloresPEP.Common.Controls
             this.ItemsSource = new Dictionary<string, GruppenTyp>
             {
                 {" ", GruppenTyp.None},
-                {"Blau", GruppenTyp.Blau},
+                {"Blau", GruppenTyp.Gelb},
                 {"Rot", GruppenTyp.Rot},
                 {"Grün", GruppenTyp.Gruen},
                 {"Nest", GruppenTyp.Nest}

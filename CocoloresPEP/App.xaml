@@ -24,10 +24,10 @@
             <SolidColorBrush x:Key="IsDisabledForegroundBrush" Color="Black"/>
             <SolidColorBrush x:Key="BrushError" Color="Red"/>
 
-            <SolidColorBrush x:Key="ColorGruppeBlau" Color="LightBlue"/>
+            <SolidColorBrush x:Key="ColorGruppeGelb" Color="DarkGoldenrod"/>
             <SolidColorBrush x:Key="ColorGruppeGruen" Color="LightGreen"/>
             <SolidColorBrush x:Key="ColorGruppeRot" Color="LightCoral"/>
-            <SolidColorBrush x:Key="ColorGruppeNest" Color="DarkGoldenrod"/>
+            <SolidColorBrush x:Key="ColorGruppeNest" Color="LightBlue"/>
 
             <!--STYLES-->
             <Style x:Key="{x:Type Window}" TargetType="{x:Type Window}">

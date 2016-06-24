@@ -101,8 +101,8 @@ namespace CocoloresPEP.Services
                 var nestMas = restMas.Where(x => x.DefaultGruppe.HasFlag(GruppenTyp.Nest)).ToList();
                 FillGruppenDiensteMitKernzeitPrio(nestMas, arbeitstag, GruppenTyp.Nest, schonEingeteilt);
 
-                var blauMas = restMas.Where(x => x.DefaultGruppe.HasFlag(GruppenTyp.Blau)).ToList();
-                FillGruppenDiensteMitKernzeitPrio(blauMas, arbeitstag, GruppenTyp.Blau, schonEingeteilt);
+                var blauMas = restMas.Where(x => x.DefaultGruppe.HasFlag(GruppenTyp.Gelb)).ToList();
+                FillGruppenDiensteMitKernzeitPrio(blauMas, arbeitstag, GruppenTyp.Gelb, schonEingeteilt);
 
                 var gruenMas = restMas.Where(x => x.DefaultGruppe.HasFlag(GruppenTyp.Gruen)).ToList();
                 FillGruppenDiensteMitKernzeitPrio(gruenMas, arbeitstag, GruppenTyp.Gruen, schonEingeteilt);
@@ -216,7 +216,7 @@ namespace CocoloresPEP.Services
             } 
             #endregion
 
-           // OptimizePlanung(woche);
+           OptimizePlanung(woche);
         }
 
         private static Mitarbeiter NextMitarbeiter(IList<Mitarbeiter> alleDieDaSind, IList<Mitarbeiter> schonEingeteilt, DienstTyp ma4Diensttyp = DienstTyp.None)
@@ -367,7 +367,7 @@ namespace CocoloresPEP.Services
                     if (!CheckKernzeitAbgedeckt(arbeitstag, gruppe, out startzeit, out ticks))
                     {
                         //beim Tag schauen in andern Gruppen
-                        var wirHabenvlltZeit = arbeitstag.Planzeiten.Where(x => x.ErledigtDurch.DefaultGruppe != gruppe && !x.ErledigtDurch.IsHelfer && x.Gruppe!=0)
+                        var wirHabenvlltZeit = arbeitstag.Planzeiten.Where(x => x.ErledigtDurch.DefaultGruppe != gruppe && !x.ErledigtDurch.IsHelfer && !x.Dienst.HasFlag(DienstTyp.Frei))
                                                                     .GroupBy(g => g.Gruppe)
                                                                     .OrderByDescending(o => o.Count())
                                                                     .ToList();

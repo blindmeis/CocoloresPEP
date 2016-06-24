@@ -35,13 +35,13 @@ namespace CocoloresPEP.Module.Planung
         {
             get
             {
-                var sumPlanQuarterticks = Montag.Planzeiten.Sum(x => x.QuarterTicks)
-                          + Dienstag.Planzeiten.Sum(x => x.QuarterTicks)
-                          + Mittwoch.Planzeiten.Sum(x => x.QuarterTicks)
-                          + Donnerstag.Planzeiten.Sum(x => x.QuarterTicks)
-                          + Freitag.Planzeiten.Sum(x => x.QuarterTicks);
+                var minuten = Montag.Planzeiten.Sum(x =>x.ArbeitszeitOhnePauseInMinuten())
+                          + Dienstag.Planzeiten.Sum(x => x.ArbeitszeitOhnePauseInMinuten())
+                          + Mittwoch.Planzeiten.Sum(x => x.ArbeitszeitOhnePauseInMinuten())
+                          + Donnerstag.Planzeiten.Sum(x => x.ArbeitszeitOhnePauseInMinuten())
+                          + Freitag.Planzeiten.Sum(x => x.ArbeitszeitOhnePauseInMinuten());
 
-                var minuten = sumPlanQuarterticks*15;
+
 
                 var saldo = (minuten - Mitarbeiter.WochenStunden*60)/60;
 

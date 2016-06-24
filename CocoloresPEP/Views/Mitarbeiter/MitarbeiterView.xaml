@@ -68,8 +68,8 @@
                         <DataGridTextColumn.CellStyle>
                             <Style TargetType="DataGridCell">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding DefaultGruppe}" Value="{x:Static entities:GruppenTyp.Blau}">
-                                        <Setter Property="Background" Value="{StaticResource ColorGruppeBlau}"></Setter>
+                                    <DataTrigger Binding="{Binding DefaultGruppe}" Value="{x:Static entities:GruppenTyp.Gelb}">
+                                        <Setter Property="Background" Value="{StaticResource ColorGruppeGelb}"></Setter>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding DefaultGruppe}" Value="{x:Static entities:GruppenTyp.Gruen}">
                                         <Setter Property="Background" Value="{StaticResource ColorGruppeGruen}"></Setter>

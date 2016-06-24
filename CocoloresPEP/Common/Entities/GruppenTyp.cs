@@ -11,7 +11,7 @@ namespace CocoloresPEP.Common.Entities
     public enum GruppenTyp
     {
         None = 1 << 0,
-        Blau= 1 << 1,
+        Gelb= 1 << 1,
         Gruen = 1 << 2,
         Rot = 1 << 3,
         Nest = 1 << 4,

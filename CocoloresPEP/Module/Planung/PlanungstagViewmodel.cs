@@ -24,6 +24,7 @@ namespace CocoloresPEP.Module.Planung
         private readonly Lazy<DelegateCommand<GruppenTyp>> _lazyChangePlanGruppeCommand;
         private readonly Lazy<DelegateCommand<DienstTyp>> _lazyChangePlanzeitCommand;
         private readonly Lazy<DelegateCommand<PlanungszeitVonBisWrapper>> _lazyDeletePlanzeitCommand;
+        private readonly Lazy<DelegateCommand<PlanungszeitVonBisWrapper>> _lazyUpdatePlanzeitCommand;
         public PlanungstagViewmodel(IMessageBoxService msgService, Action refreshAction)
         {
             _msgService = msgService;
@@ -31,6 +32,7 @@ namespace CocoloresPEP.Module.Planung
             _lazyChangePlanGruppeCommand = new Lazy<DelegateCommand<GruppenTyp>>(() => new DelegateCommand<GruppenTyp>(ChangePlanGruppeCommandExecute, CanChangePlanGruppeCommandExecute));
             _lazyChangePlanzeitCommand = new Lazy<DelegateCommand<DienstTyp>>(() => new DelegateCommand<DienstTyp>(ChangePlanzeitCommandExecute, CanChangePlanzeitCommandExecute));
             _lazyDeletePlanzeitCommand = new Lazy<DelegateCommand<PlanungszeitVonBisWrapper>>(()=> new DelegateCommand<PlanungszeitVonBisWrapper>(DeletePlanzeitCommandExecute, CanDeletePlanzeitCommandExecute));
+            _lazyUpdatePlanzeitCommand = new Lazy<DelegateCommand<PlanungszeitVonBisWrapper>>(()=> new DelegateCommand<PlanungszeitVonBisWrapper>(UpdatePlanzeitCommandExecute, CanUpdatePlanzeitCommandExecute));
             _lazyPlanVonBisZeiten = new Lazy<ObservableCollection<PlanungszeitVonBisWrapper>>(()=> CreatePlanVonBisZeiten());
         }
 
@@ -51,12 +53,45 @@ namespace CocoloresPEP.Module.Planung
             return l;
         }
 
+        public ICommand UpdatePlanzeitCommand { get { return _lazyUpdatePlanzeitCommand.Value; } }
 
+        private bool CanUpdatePlanzeitCommandExecute(PlanungszeitVonBisWrapper arg)
+        {
+            return arg != null 
+                && new DateTime(1,1,1,arg.StundeVon,arg.MinuteVon,0)< new DateTime(1,1,1,arg.StundeBis,arg.MinuteBis,0)
+                && Planzeiten.Count == PlanVonBisZeiten.Count;
+        }
+
+        private void UpdatePlanzeitCommandExecute(PlanungszeitVonBisWrapper obj)
+        {
+            if (!CanUpdatePlanzeitCommandExecute(obj))
+                return;
+
+            try
+            {
+                var index = PlanVonBisZeiten.IndexOf(obj);
+                var planitem = Planzeiten[index];
+                planitem.Startzeit = new DateTime(planitem.Startzeit.Year, planitem.Startzeit.Month, planitem.Startzeit.Day,obj.StundeVon,obj.MinuteVon,0);
+                planitem.Endzeit = new DateTime(planitem.Startzeit.Year, planitem.Startzeit.Month, planitem.Startzeit.Day, obj.StundeBis, obj.MinuteBis, 0);
+
+                OnPropertyChanged(nameof(PlanZeitenInfo));
+                OnPropertyChanged(nameof(EingeteiltSollTyp));
+                OnPropertyChanged(nameof(PausenInfo));
+                _refreshAction();
+            }
+            catch (Exception ex)
+            {
+                _msgService.ShowError($"Fehler beim Änder einer Planzeit. {Environment.NewLine}{ex.GetAllErrorMessages()}");
+            }
+        }
+
+        #region DeletePlanzeitCommand
         public ICommand DeletePlanzeitCommand { get { return _lazyDeletePlanzeitCommand.Value; } }
 
         private bool CanDeletePlanzeitCommandExecute(PlanungszeitVonBisWrapper arg)
         {
-            return arg != null;
+            return arg != null
+                && Planzeiten.Count == PlanVonBisZeiten.Count;
         }
 
         private void DeletePlanzeitCommandExecute(PlanungszeitVonBisWrapper obj)
@@ -78,7 +113,8 @@ namespace CocoloresPEP.Module.Planung
             {
                 _msgService.ShowError($"Fehler beim Löschen einer Planzeit. {Environment.NewLine}{ex.GetAllErrorMessages()}");
             }
-        }
+        } 
+        #endregion
 
         #region ChangePlanzeitCommand
         public ICommand ChangePlanzeitCommand { get { return _lazyChangePlanzeitCommand.Value; } }
@@ -176,7 +212,7 @@ namespace CocoloresPEP.Module.Planung
 
                 var sb = (from zeiten in Planzeiten
                           where (zeiten.Dienst & DienstTyp.Frei) != DienstTyp.Frei
-                          let endzeit = zeiten.Startzeit.AddMinutes(15 * zeiten.AllTicks)
+                          let endzeit = zeiten.GetEndzeit()
                           select $"{zeiten.Startzeit.ToString("HH:mm")}-{endzeit.ToString("HH:mm")}"
                           ).ToList();
 

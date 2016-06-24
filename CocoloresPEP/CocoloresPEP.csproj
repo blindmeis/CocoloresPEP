@@ -156,6 +156,9 @@
     <Compile Include="Images\Minus.xaml.cs">
       <DependentUpon>Minus.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Images\Ok.xaml.cs">
+      <DependentUpon>Ok.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Images\Plus.xaml.cs">
       <DependentUpon>Plus.xaml</DependentUpon>
     </Compile>
@@ -225,6 +228,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Images\Minus.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Images\Ok.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -22,8 +22,10 @@ namespace CocoloresPEP.Common.Entities
         {
             get
             {
-                if (QuarterTicks > 4*6)
+                if (QuarterTicks * 15 > 360)
                     return 2;
+                if (QuarterTicks * 15 > 540)
+                    return 3;
                 return 0;
             }
         }
@@ -59,6 +61,21 @@ namespace CocoloresPEP.Common.Entities
                 return Endzeit.Value;
 
             return Startzeit.AddMinutes(15*AllTicks);
+        }
+
+        public int ArbeitszeitOhnePauseInMinuten()
+        {
+            var start = Startzeit;
+            var endzeit = GetEndzeit();
+
+            var minuten = (int) (endzeit - start).TotalMinutes;
+
+            if (minuten > 360)
+                return minuten -30;
+            if (minuten > 540)
+                return minuten-90;
+
+            return minuten;
         }
     }
 }
