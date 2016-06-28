@@ -65,15 +65,22 @@ namespace CocoloresPEP.Common.Entities
 
         public int ArbeitszeitOhnePauseInMinuten()
         {
-            var start = Startzeit;
-            var endzeit = GetEndzeit();
-
-            var minuten = (int) (endzeit - start).TotalMinutes;
+            var minuten = ArbeitszeitMitPauseInMinuten();
 
             if (minuten > 360)
                 return minuten -30;
             if (minuten > 540)
                 return minuten-90;
+
+            return minuten;
+        }
+
+        public int ArbeitszeitMitPauseInMinuten()
+        {
+            var start = Startzeit;
+            var endzeit = GetEndzeit();
+
+            var minuten = (int)(endzeit - start).TotalMinutes;
 
             return minuten;
         }

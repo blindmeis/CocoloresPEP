@@ -43,7 +43,7 @@ namespace CocoloresPEP.Module.Planung
 
 
 
-                var saldo = (minuten - Mitarbeiter.WochenStunden*60)/60;
+                var saldo = (decimal)(minuten - Mitarbeiter.WochenStunden*60)/60;
 
                 return saldo;
             }

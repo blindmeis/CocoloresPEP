@@ -20,23 +20,25 @@ namespace CocoloresPEP.Services
             {
                 arbeitstag.Planzeiten.Clear();
 
+                //Samstag und Sontag ignorieren bei Planung
                 if(arbeitstag.Datum.DayOfWeek == DayOfWeek.Saturday || arbeitstag.Datum.DayOfWeek==DayOfWeek.Sunday)
                     continue;
 
                 if (arbeitstag.IsFeiertag)
                 {
+                    //Wenn Feiertag, dann seinen Tagessatz minutengenau
                     foreach (var mitarbeiter in maList)
                     {
-                        arbeitstag.Planzeiten.Add(CreatePlanItem(mitarbeiter, arbeitstag.KernzeitGruppeStart, mitarbeiter.TagesQuarterTicks, GruppenTyp.None, DienstTyp.Frei));
+                        arbeitstag.Planzeiten.Add(CreatePlanItem(arbeitstag, mitarbeiter, arbeitstag.KernzeitGruppeStart, mitarbeiter.TagesQuarterTicks, GruppenTyp.None, DienstTyp.Frei, arbeitstag.KernzeitGruppeStart.AddMinutes(mitarbeiter.TagesSollMinuten)));
                     }
                     continue;
                 }
 
-                //Wenn wer nicht da ist, dann seinen Tagessatz
+                //Wenn wer nicht da ist, dann seinen Tagessatz minutengenau
                 var mitarbeiterNichtDa = maList.Where(x => x.NichtDaZeiten.Any(dt => dt == arbeitstag.Datum)).ToList();
                 foreach (var mitarbeiter in mitarbeiterNichtDa)
                 {
-                    arbeitstag.Planzeiten.Add(CreatePlanItem(mitarbeiter, arbeitstag.KernzeitGruppeStart, mitarbeiter.TagesQuarterTicks, GruppenTyp.None, DienstTyp.Frei));
+                    arbeitstag.Planzeiten.Add(CreatePlanItem(arbeitstag, mitarbeiter, arbeitstag.KernzeitGruppeStart, mitarbeiter.TagesQuarterTicks, GruppenTyp.None, DienstTyp.Frei, arbeitstag.KernzeitGruppeStart.AddMinutes(mitarbeiter.TagesSollMinuten)));
                 }
 
                 //Nur richtige Mitarbeiter die auch da sind
@@ -50,7 +52,7 @@ namespace CocoloresPEP.Services
                 if (maFrüh != null)
                 {
                     schonEingeteilt.Add(maFrüh);
-                    var istFrüh = CreatePlanItem(maFrüh, arbeitstag.Frühdienst, maFrüh.TagesQuarterTicks, maFrüh.DefaultGruppe, DienstTyp.Frühdienst);
+                    var istFrüh = CreatePlanItem(arbeitstag, maFrüh, arbeitstag.Frühdienst, maFrüh.TagesQuarterTicks, maFrüh.DefaultGruppe, DienstTyp.Frühdienst);
                     arbeitstag.Planzeiten.Add(istFrüh);
                 }
 
@@ -64,17 +66,17 @@ namespace CocoloresPEP.Services
                 {
                     schonEingeteilt.Add(maSpät1);
                     var spätdienstStart1 = arbeitstag.SpätdienstEnde.AddMinutes(-1 * 15 * maSpät1.TagesQuarterTicks);
-                    var istSpät1 = CreatePlanItem(maSpät1, spätdienstStart1, maSpät1.TagesQuarterTicks, maSpät1.DefaultGruppe, DienstTyp.SpätdienstEnde);
+                    var istSpät1 = CreatePlanItem(arbeitstag, maSpät1, spätdienstStart1, maSpät1.TagesQuarterTicks, maSpät1.DefaultGruppe, DienstTyp.SpätdienstEnde);
                     arbeitstag.Planzeiten.Add(istSpät1);
                 }
 
-                var maSpät2 = NextMitarbeiter(GetMitarbeiterDieNichtAlleinSindProGruppe(alledieDaSind, schonEingeteilt), schonEingeteilt, DienstTyp.SpätdienstEnde);
+                var maSpät2 = NextMitarbeiter(GetMitarbeiterDieNichtAlleinSindProGruppe(alledieDaSind, schonEingeteilt), schonEingeteilt, DienstTyp.SpätdienstEnde,GibAndereEtage(maSpät1));
 
                 if (maSpät2 != null)
                 {
                     schonEingeteilt.Add(maSpät2);
                     var spätdienstStart2 = arbeitstag.SpätdienstEnde.AddMinutes(-1 * 15 * maSpät2.TagesQuarterTicks);
-                    var istSpät2 = CreatePlanItem(maSpät2, spätdienstStart2, maSpät2.TagesQuarterTicks, maSpät2.DefaultGruppe, DienstTyp.SpätdienstEnde);
+                    var istSpät2 = CreatePlanItem(arbeitstag, maSpät2, spätdienstStart2, maSpät2.TagesQuarterTicks, maSpät2.DefaultGruppe, DienstTyp.SpätdienstEnde);
                     arbeitstag.Planzeiten.Add(istSpät2);
                 }
 
@@ -82,15 +84,15 @@ namespace CocoloresPEP.Services
 
                 #region 8 uhr Dienst
 
-                var ma8UhrErster = NextMitarbeiter(GetMitarbeiterDieNichtAlleinSindProGruppe(alledieDaSind, schonEingeteilt), schonEingeteilt, DienstTyp.AchtUhrDienst);
+                var ma8UhrErster = NextMitarbeiter(GetMitarbeiterDieNichtAlleinSindProGruppe(alledieDaSind, schonEingeteilt), schonEingeteilt, DienstTyp.AchtUhrDienst, GibAndereEtage(maFrüh));
                 schonEingeteilt.Add(ma8UhrErster);
-                var ist8UhrErster = CreatePlanItem(ma8UhrErster, arbeitstag.AchtUhrDienst, ma8UhrErster.TagesQuarterTicks, ma8UhrErster.DefaultGruppe, DienstTyp.AchtUhrDienst);
+                var ist8UhrErster = CreatePlanItem(arbeitstag, ma8UhrErster, arbeitstag.AchtUhrDienst, ma8UhrErster.TagesQuarterTicks, ma8UhrErster.DefaultGruppe, DienstTyp.AchtUhrDienst);
                 arbeitstag.Planzeiten.Add(ist8UhrErster);
 
-                var ma8UhrZweiter = NextMitarbeiter(GetMitarbeiterDieNichtAlleinSindProGruppe(alledieDaSind, schonEingeteilt), schonEingeteilt, DienstTyp.AchtUhrDienst);
-                schonEingeteilt.Add(ma8UhrZweiter);
-                var ist8UhrZweiter = CreatePlanItem(ma8UhrZweiter, arbeitstag.AchtUhrDienst, ma8UhrZweiter.TagesQuarterTicks, ma8UhrZweiter.DefaultGruppe, DienstTyp.AchtUhrDienst);
-                arbeitstag.Planzeiten.Add(ist8UhrZweiter);
+                //var ma8UhrZweiter = NextMitarbeiter(GetMitarbeiterDieNichtAlleinSindProGruppe(alledieDaSind, schonEingeteilt), schonEingeteilt, DienstTyp.AchtUhrDienst);
+                //schonEingeteilt.Add(ma8UhrZweiter);
+                //var ist8UhrZweiter = CreatePlanItem(ma8UhrZweiter, arbeitstag.AchtUhrDienst, ma8UhrZweiter.TagesQuarterTicks, ma8UhrZweiter.DefaultGruppe, DienstTyp.AchtUhrDienst);
+                //arbeitstag.Planzeiten.Add(ist8UhrZweiter);
 
                 #endregion
 
@@ -127,7 +129,7 @@ namespace CocoloresPEP.Services
                     if (planitemMitarbeiter == null)
                     {
                         schonEingeteilt.Add(helferlein);
-                        var plan = CreatePlanItem(helferlein, arbeitstag.KernzeitGruppeStart, helferlein.TagesQuarterTicks, helferlein.DefaultGruppe, DienstTyp.KernzeitStartDienst);
+                        var plan = CreatePlanItem(arbeitstag, helferlein, arbeitstag.KernzeitGruppeStart, helferlein.TagesQuarterTicks, helferlein.DefaultGruppe, DienstTyp.KernzeitStartDienst);
                         arbeitstag.Planzeiten.Add(plan);
                     }
                     else
@@ -143,26 +145,20 @@ namespace CocoloresPEP.Services
                             helferleinStartzeit = arbeitstag.KernzeitGruppeStart;
 
                         schonEingeteilt.Add(helferlein);
-                        var plan = CreatePlanItem(helferlein, helferleinStartzeit, helferlein.TagesQuarterTicks, helferlein.DefaultGruppe, planitemMitarbeiter.Dienst);
+                        var plan = CreatePlanItem(arbeitstag, helferlein, helferleinStartzeit, helferlein.TagesQuarterTicks, helferlein.DefaultGruppe, planitemMitarbeiter.Dienst);
                         arbeitstag.Planzeiten.Add(plan);
                     }
                 }
                 #endregion
             }
 
-            #region nach "Minusstunden" gucken, passiert weil TagesTicks abgerundet werden
+            #region nach "Minusstunden" gucken, passiert weil TagesTicks  und Tagesminuten nicht immer passen
             //nach "Minusstunden" gucken, passiert weil TagesTicks abgerundet werden
             foreach (var mitarbeiter in maList)
             {
                 var planzeiten = woche.Arbeitstage.SelectMany(x => x.Planzeiten.Where(p => p.ErledigtDurch == mitarbeiter)).ToList();
-                var freiTage = 0;
 
-                var minuten = planzeiten.Sum(x => (decimal)x.QuarterTicks) * 15;
-                //if (mitarbeiter.NichtDaZeiten.Any())
-                //{
-                //    freiTage = mitarbeiter.NichtDaZeiten.Count(x => x >= woche.Arbeitstage.Min(a => a.Datum) && x <= woche.Arbeitstage.Max(a => a.Datum));
-                //    minuten += freiTage * (mitarbeiter.WochenStunden * 60 / 5);
-                //}
+                var minuten = planzeiten.Sum(x => x.ArbeitszeitOhnePauseInMinuten());
 
                 var saldoInMinuten = minuten - (mitarbeiter.WochenStunden * 60);
 
@@ -177,7 +173,7 @@ namespace CocoloresPEP.Services
                 var ticksAdded = 0;
                 for (int i = 0; i < tickstoAdd; i++)
                 {
-                    if (planzeitenProTag.Count < i)
+                    if (planzeitenProTag.Count <= i)
                         break;
 
                     var planitem = planzeitenProTag[i].First();
@@ -195,7 +191,7 @@ namespace CocoloresPEP.Services
 
                     ticksAdded++;
                 }
-
+                //Fallback wenn Tage "fehlen"
                 if (tickstoAdd != ticksAdded)
                 {
                     var ticks = tickstoAdd - ticksAdded;
@@ -216,18 +212,42 @@ namespace CocoloresPEP.Services
             } 
             #endregion
 
-           OptimizePlanung(woche);
+           CheckKernzeitAbgedecktMitMitarbeiternVomTag(woche);
         }
 
-        private static Mitarbeiter NextMitarbeiter(IList<Mitarbeiter> alleDieDaSind, IList<Mitarbeiter> schonEingeteilt, DienstTyp ma4Diensttyp = DienstTyp.None)
+        private static GruppenTyp GibAndereEtage(Mitarbeiter ma)
+        {
+            var result = GruppenTyp.Nest | GruppenTyp.Gelb | GruppenTyp.Nest | GruppenTyp.Gelb;
+
+            if (ma==null)
+                return result;
+
+            if ((ma.DefaultGruppe & GruppenTyp.Nest) == GruppenTyp.Nest || (ma.DefaultGruppe & GruppenTyp.Gelb) == GruppenTyp.Gelb)
+                return GruppenTyp.Nest | GruppenTyp.Gelb;
+
+            if ((ma.DefaultGruppe & GruppenTyp.Gruen) == GruppenTyp.Gruen || (ma.DefaultGruppe & GruppenTyp.Rot) == GruppenTyp.Rot)
+                return GruppenTyp.Nest | GruppenTyp.Gelb;
+
+            return result;
+        }
+
+        private static Mitarbeiter NextMitarbeiter(IList<Mitarbeiter> alleDieDaSind, IList<Mitarbeiter> schonEingeteilt, DienstTyp ma4Diensttyp = DienstTyp.None, GruppenTyp etage = GruppenTyp.Gelb|GruppenTyp.Gruen|GruppenTyp.Nest|GruppenTyp.Rot)
         {
             var topf = alleDieDaSind.Except(schonEingeteilt).ToList();
 
             if (topf.Count == 0)
                 return null;
 
-            //die mit Wunschdienst
-            var mitarbeiter = topf.Where(x => (x.Wunschdienste & ma4Diensttyp) == ma4Diensttyp).ToList();
+            //die mit Wunschdienst aus Etage
+            var mitarbeiter = topf.Where(x => (x.Wunschdienste & ma4Diensttyp) == ma4Diensttyp && (etage & x.DefaultGruppe)==x.DefaultGruppe).ToList();
+
+            //die von Etage
+            if (mitarbeiter.Count == 0)
+                mitarbeiter = topf.Where(x => (etage & x.DefaultGruppe) == x.DefaultGruppe).ToList();
+
+            //Wunschdienst
+            if (mitarbeiter.Count == 0)
+                mitarbeiter = topf.Where(x => (x.Wunschdienste & ma4Diensttyp) == ma4Diensttyp).ToList();
 
             if (mitarbeiter.Count == 0)//bei allen gucken wenn keiner will
                 mitarbeiter = topf;
@@ -253,23 +273,22 @@ namespace CocoloresPEP.Services
             return result;
         }
 
-        private static PlanItem CreatePlanItem(Mitarbeiter ma, DateTime startzeit, short quarterticks, GruppenTyp gruppe, DienstTyp dienst)
+        private static PlanItem CreatePlanItem(Arbeitstag arbeitstag,Mitarbeiter ma, DateTime startzeit, short quarterticks, GruppenTyp gruppe, DienstTyp dienst, DateTime? endzeit = null)
         {
             var result = new PlanItem();
 
             result.ErledigtDurch = ma;
             result.Startzeit = startzeit;
+            result.Endzeit = endzeit;
             result.QuarterTicks = quarterticks;
             result.Gruppe = gruppe;
             result.Dienst = dienst;
-
-            //Pause nachbereiten, Startzeit für den Spätdienst vorziehen
-            if (result.BreakTicks != 0)
+            
+            if (result.GetEndzeit()> arbeitstag.SpätdienstEnde)
             {
-                if ((result.Dienst & DienstTyp.SpätdienstEnde) == DienstTyp.SpätdienstEnde)
-                {
-                    result.Startzeit = startzeit.AddMinutes(-1 * 15 * result.BreakTicks);
-                }
+                var minuten = (int)(result.GetEndzeit() - arbeitstag.SpätdienstEnde).TotalMinutes;
+
+                result.Startzeit = startzeit.AddMinutes(-1 * minuten);
             }
 
             return result;
@@ -289,7 +308,7 @@ namespace CocoloresPEP.Services
                     return;
 
                 schonEingeteilt.Add(ma);
-                var plan = CreatePlanItem(ma, arbeitstag.KernzeitGruppeStart, ma.TagesQuarterTicks, ma.DefaultGruppe, DienstTyp.KernzeitStartDienst);
+                var plan = CreatePlanItem(arbeitstag, ma, arbeitstag.KernzeitGruppeStart, ma.TagesQuarterTicks, ma.DefaultGruppe, DienstTyp.KernzeitStartDienst);
                 arbeitstag.Planzeiten.Add(plan);
             }
 
@@ -307,7 +326,7 @@ namespace CocoloresPEP.Services
                     startzeit = kernzeitEndeStart;
 
                 schonEingeteilt.Add(maKernzeitende);
-                var planKernzeitende = CreatePlanItem(maKernzeitende, startzeit, maKernzeitende.TagesQuarterTicks, maKernzeitende.DefaultGruppe, DienstTyp.KernzeitEndeDienst);
+                var planKernzeitende = CreatePlanItem(arbeitstag, maKernzeitende, startzeit, maKernzeitende.TagesQuarterTicks, maKernzeitende.DefaultGruppe, DienstTyp.KernzeitEndeDienst);
                 arbeitstag.Planzeiten.Add(planKernzeitende);
             }
 
@@ -317,7 +336,7 @@ namespace CocoloresPEP.Services
                 return;
 
             schonEingeteilt.Add(ma9);
-            var plan9 = CreatePlanItem(ma9, arbeitstag.NeunUhrDienst, ma9.TagesQuarterTicks, ma9.DefaultGruppe, DienstTyp.NeunUhrDienst);
+            var plan9 = CreatePlanItem(arbeitstag, ma9, arbeitstag.NeunUhrDienst, ma9.TagesQuarterTicks, ma9.DefaultGruppe, DienstTyp.NeunUhrDienst);
             arbeitstag.Planzeiten.Add(plan9);
 
             var ma10 = NextMitarbeiter(maList, schonEingeteilt, DienstTyp.ZehnUhrDienst);
@@ -325,7 +344,7 @@ namespace CocoloresPEP.Services
                 return;
 
             schonEingeteilt.Add(ma10);
-            var plan10 = CreatePlanItem(ma10, arbeitstag.ZehnUhrDienst, ma10.TagesQuarterTicks, ma10.DefaultGruppe, DienstTyp.ZehnUhrDienst);
+            var plan10 = CreatePlanItem(arbeitstag, ma10, arbeitstag.ZehnUhrDienst, ma10.TagesQuarterTicks, ma10.DefaultGruppe, DienstTyp.ZehnUhrDienst);
             arbeitstag.Planzeiten.Add(plan10);
 
             //hmm wenn immernoch welche übrig sind dann, halt um 9Uhr kommen
@@ -336,7 +355,7 @@ namespace CocoloresPEP.Services
                     return;
 
                 schonEingeteilt.Add(ma);
-                var plan = CreatePlanItem(ma, arbeitstag.NeunUhrDienst, ma.TagesQuarterTicks, ma.DefaultGruppe, DienstTyp.NeunUhrDienst);
+                var plan = CreatePlanItem(arbeitstag, ma, arbeitstag.NeunUhrDienst, ma.TagesQuarterTicks, ma.DefaultGruppe, DienstTyp.NeunUhrDienst);
                 arbeitstag.Planzeiten.Add(plan);
             }
         }
@@ -349,7 +368,7 @@ namespace CocoloresPEP.Services
         /// Prüfen ob immer jemand da ist :)
         /// </summary>
         /// <param name="woche"></param>
-        private static void OptimizePlanung(Arbeitswoche woche)
+        private static void CheckKernzeitAbgedecktMitMitarbeiternVomTag(Arbeitswoche woche)
         {
             var gruppen = woche.Mitarbeiter.Select(x => x.DefaultGruppe).Distinct().ToList();
             //prüfen ob alle Gruppen in der Kernzeit besetzt sind

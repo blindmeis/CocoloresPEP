@@ -59,6 +59,7 @@
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             
                                             <controls:VonBisUhrzeitControl Grid.Column="0" 
@@ -71,12 +72,21 @@
 
                                             <Button Grid.Column="1" 
                                                     Command="{Binding Path=PlacementTarget.PlanungstagViewmodel.UpdatePlanzeitCommand, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
-                                                    CommandParameter="{Binding .}">
+                                                    CommandParameter="{Binding .}"
+                                                    ToolTip="Planzeit ändern">
                                                 <Viewbox Width="16" Height="16">
                                                     <images:Ok/>
                                                 </Viewbox>
+                                            </Button> 
+                                            <Button Grid.Column="2" 
+                                                    Command="{Binding Path=PlacementTarget.PlanungstagViewmodel.AddPlanzeitCommand, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
+                                                    CommandParameter="{Binding .}"
+                                                    ToolTip="Neue Planzeit hinzufügen">
+                                                <Viewbox Width="16" Height="16">
+                                                    <images:Plus/>
+                                                </Viewbox>
                                             </Button>
-                                            <Button Grid.Column="2" Margin="5,0,0,0"
+                                            <Button Grid.Column="3" Margin="5,0,0,0"
                                                     Command="{Binding Path=PlacementTarget.PlanungstagViewmodel.DeletePlanzeitCommand, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
                                                     CommandParameter="{Binding .}">
                                                 <Viewbox Width="16" Height="16">

@@ -34,7 +34,7 @@ namespace CocoloresPEP.Module.Planung
                 foreach (var arbeitstag in aw.Arbeitstage)
                 {
                     var dow = arbeitstag.Datum.DayOfWeek;
-                    var ptvm = new PlanungstagViewmodel(msgService, new Action(()=>pwmvm.Refresh()))
+                    var ptvm = new PlanungstagViewmodel(ma,msgService, new Action(()=>pwmvm.Refresh()))
                     {
                         Datum = arbeitstag.Datum,
                         Planzeiten = new ObservableCollection<PlanItem>(arbeitstag.Planzeiten.Where(x => x.ErledigtDurch.Name == ma.Name).ToList()),

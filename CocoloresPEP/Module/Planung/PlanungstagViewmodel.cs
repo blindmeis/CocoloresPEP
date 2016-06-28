@@ -11,37 +11,43 @@ using CocoloresPEP.Common.Entities;
 using CocoloresPEP.Common.Extensions;
 using CocoloresPEP.Common.WpfCore.Commanding;
 using CocoloresPEP.Common.WpfCore.Service.MessageBox;
+using CocoloresPEP.Module.Mitarbeiter;
 
 namespace CocoloresPEP.Module.Planung
 {
     public class PlanungstagViewmodel : ViewmodelBase
     {
+        private readonly MitarbeiterViewmodel _mitarbeiter;
         private readonly IMessageBoxService _msgService;
         private readonly Action _refreshAction;
-        private readonly Action _action;
         private bool _isFeiertag;
-        private readonly Lazy<ObservableCollection<PlanungszeitVonBisWrapper>> _lazyPlanVonBisZeiten;
         private readonly Lazy<DelegateCommand<GruppenTyp>> _lazyChangePlanGruppeCommand;
         private readonly Lazy<DelegateCommand<DienstTyp>> _lazyChangePlanzeitCommand;
         private readonly Lazy<DelegateCommand<PlanungszeitVonBisWrapper>> _lazyDeletePlanzeitCommand;
         private readonly Lazy<DelegateCommand<PlanungszeitVonBisWrapper>> _lazyUpdatePlanzeitCommand;
-        public PlanungstagViewmodel(IMessageBoxService msgService, Action refreshAction)
+        private readonly Lazy<DelegateCommand<PlanungszeitVonBisWrapper>> _lazyAddPlanzeitCommand;
+        private ObservableCollection<PlanItem> _planzeiten;
+
+        public PlanungstagViewmodel(MitarbeiterViewmodel mitarbeiter, IMessageBoxService msgService, Action refreshAction)
         {
+            _mitarbeiter = mitarbeiter;
             _msgService = msgService;
             _refreshAction = refreshAction;
             _lazyChangePlanGruppeCommand = new Lazy<DelegateCommand<GruppenTyp>>(() => new DelegateCommand<GruppenTyp>(ChangePlanGruppeCommandExecute, CanChangePlanGruppeCommandExecute));
             _lazyChangePlanzeitCommand = new Lazy<DelegateCommand<DienstTyp>>(() => new DelegateCommand<DienstTyp>(ChangePlanzeitCommandExecute, CanChangePlanzeitCommandExecute));
             _lazyDeletePlanzeitCommand = new Lazy<DelegateCommand<PlanungszeitVonBisWrapper>>(()=> new DelegateCommand<PlanungszeitVonBisWrapper>(DeletePlanzeitCommandExecute, CanDeletePlanzeitCommandExecute));
             _lazyUpdatePlanzeitCommand = new Lazy<DelegateCommand<PlanungszeitVonBisWrapper>>(()=> new DelegateCommand<PlanungszeitVonBisWrapper>(UpdatePlanzeitCommandExecute, CanUpdatePlanzeitCommandExecute));
-            _lazyPlanVonBisZeiten = new Lazy<ObservableCollection<PlanungszeitVonBisWrapper>>(()=> CreatePlanVonBisZeiten());
+            _lazyAddPlanzeitCommand = new Lazy<DelegateCommand<PlanungszeitVonBisWrapper>>(()=> new DelegateCommand<PlanungszeitVonBisWrapper>(AddPlanzeitCommandExecute, CanAddPlanzeitCommandExecute));
+
+            PlanVonBisZeiten = new ObservableCollection<PlanungszeitVonBisWrapper>();
         }
 
-        private ObservableCollection<PlanungszeitVonBisWrapper> CreatePlanVonBisZeiten()
+        private void RefreshPlanVonBisZeiten()
         {
-            var l = new ObservableCollection<PlanungszeitVonBisWrapper>();
+            PlanVonBisZeiten.Clear();
             foreach (var planItem in Planzeiten)
             {
-                l.Add(new PlanungszeitVonBisWrapper()
+                PlanVonBisZeiten.Add(new PlanungszeitVonBisWrapper()
                 {
                     StundeVon = planItem.Startzeit.Hour,
                     MinuteVon = planItem.Startzeit.Minute,
@@ -49,19 +55,71 @@ namespace CocoloresPEP.Module.Planung
                     MinuteBis = planItem.GetEndzeit().Minute,
                 });
             }
-
-            return l;
         }
+
+        #region AddPlanzeitCommand
+        public ICommand AddPlanzeitCommand { get { return _lazyAddPlanzeitCommand.Value; } }
+        private bool CanAddPlanzeitCommandExecute(PlanungszeitVonBisWrapper arg)
+        {
+            DateTime start;
+            DateTime ende;
+            GetStartAndEndzeit(arg, out start, out ende);
+
+            return arg != null
+                   && start < ende
+                   && !Planzeiten.Any(x => (start >= x.Startzeit && start <= x.GetEndzeit())
+                                          || (ende >= x.Startzeit && ende <= x.GetEndzeit()));
+        }
+
+        private void AddPlanzeitCommandExecute(PlanungszeitVonBisWrapper obj)
+        {
+            if (!CanAddPlanzeitCommandExecute(obj))
+                return;
+
+            try
+            {
+                DateTime start;
+                DateTime ende;
+                GetStartAndEndzeit(obj, out start, out ende);
+
+                Planzeiten.Add(new PlanItem()
+                {
+                    Dienst = DienstTyp.None,
+                    Startzeit = start,
+                    Endzeit = ende,
+                    ErledigtDurch = _mitarbeiter.MapViewmodelToMitarbeiter(),
+                    Gruppe = _mitarbeiter.DefaultGruppe,
+                });
+
+                RefreshPlanVonBisZeiten();
+
+                OnPropertyChanged(nameof(PlanZeitenInfo));
+                OnPropertyChanged(nameof(EingeteiltSollTyp));
+                OnPropertyChanged(nameof(PausenInfo));
+                _refreshAction();
+            }
+            catch (Exception ex)
+            {
+                _msgService.ShowError($"Fehler beim Hinzufügen einer Planzeit. {Environment.NewLine}{ex.GetAllErrorMessages()}");
+            }
+        }
+
+        #endregion
+
+        #region UpdatePlanzeitCommand
 
         public ICommand UpdatePlanzeitCommand { get { return _lazyUpdatePlanzeitCommand.Value; } }
 
         private bool CanUpdatePlanzeitCommandExecute(PlanungszeitVonBisWrapper arg)
         {
-            return arg != null 
-                && new DateTime(1,1,1,arg.StundeVon,arg.MinuteVon,0)< new DateTime(1,1,1,arg.StundeBis,arg.MinuteBis,0)
+            DateTime start;
+            DateTime ende;
+            GetStartAndEndzeit(arg, out start, out ende);
+
+            return arg != null
+                && start < ende
                 && Planzeiten.Count == PlanVonBisZeiten.Count;
         }
-
         private void UpdatePlanzeitCommandExecute(PlanungszeitVonBisWrapper obj)
         {
             if (!CanUpdatePlanzeitCommandExecute(obj))
@@ -71,7 +129,7 @@ namespace CocoloresPEP.Module.Planung
             {
                 var index = PlanVonBisZeiten.IndexOf(obj);
                 var planitem = Planzeiten[index];
-                planitem.Startzeit = new DateTime(planitem.Startzeit.Year, planitem.Startzeit.Month, planitem.Startzeit.Day,obj.StundeVon,obj.MinuteVon,0);
+                planitem.Startzeit = new DateTime(planitem.Startzeit.Year, planitem.Startzeit.Month, planitem.Startzeit.Day, obj.StundeVon, obj.MinuteVon, 0);
                 planitem.Endzeit = new DateTime(planitem.Startzeit.Year, planitem.Startzeit.Month, planitem.Startzeit.Day, obj.StundeBis, obj.MinuteBis, 0);
 
                 OnPropertyChanged(nameof(PlanZeitenInfo));
@@ -81,9 +139,10 @@ namespace CocoloresPEP.Module.Planung
             }
             catch (Exception ex)
             {
-                _msgService.ShowError($"Fehler beim Änder einer Planzeit. {Environment.NewLine}{ex.GetAllErrorMessages()}");
+                _msgService.ShowError($"Fehler beim Ändern einer Planzeit. {Environment.NewLine}{ex.GetAllErrorMessages()}");
             }
-        }
+        } 
+        #endregion
 
         #region DeletePlanzeitCommand
         public ICommand DeletePlanzeitCommand { get { return _lazyDeletePlanzeitCommand.Value; } }
@@ -189,8 +248,19 @@ namespace CocoloresPEP.Module.Planung
         #endregion
 
         public DateTime Datum { get; set; }
-        public ObservableCollection<PlanItem> Planzeiten { get; set; }
-        public ObservableCollection<PlanungszeitVonBisWrapper> PlanVonBisZeiten { get { return _lazyPlanVonBisZeiten.Value; } }
+
+        public ObservableCollection<PlanItem> Planzeiten
+        {
+            get { return _planzeiten; }
+            set
+            {
+                _planzeiten = value;
+                if(value != null)
+                    RefreshPlanVonBisZeiten();
+            }
+        }
+
+        public ObservableCollection<PlanungszeitVonBisWrapper> PlanVonBisZeiten { get; private set; }
              
         public bool IsFeiertag
         {
@@ -249,6 +319,12 @@ namespace CocoloresPEP.Module.Planung
         public string PausenInfo
         {
             get { return Planzeiten.Any(x => x.BreakTicks > 0) ? "P" : " "; }
+        }
+
+        private void GetStartAndEndzeit(PlanungszeitVonBisWrapper arg, out DateTime start, out DateTime ende)
+        {
+            start = new DateTime(Datum.Year, Datum.Month, Datum.Day, arg.StundeVon, arg.MinuteVon, 0);
+            ende = new DateTime(Datum.Year, Datum.Month, Datum.Day, arg.StundeBis, arg.MinuteBis, 0);
         }
     }
 }

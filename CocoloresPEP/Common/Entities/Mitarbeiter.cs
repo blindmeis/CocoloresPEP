@@ -30,6 +30,15 @@ namespace CocoloresPEP.Common.Entities
             }
         }
 
+        public int TagesSollMinuten
+        {
+            get
+            {
+                var result = WochenStunden * 60 /5;
+                return (int)result;
+            }
+        }
+
         public ObservableCollection<DateTime> NichtDaZeiten { get; set; }
 
         public GruppenTyp DefaultGruppe { get; set; }
