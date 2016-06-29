@@ -9,7 +9,7 @@
             <ContextMenu.Template>
                 <ControlTemplate>
                     <Border BorderThickness="2" BorderBrush="DarkCyan" Padding="5"
-                            Background="WhiteSmoke" >
+                            Background="DarkGray" >
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition/>
@@ -88,7 +88,8 @@
                                             </Button>
                                             <Button Grid.Column="3" Margin="5,0,0,0"
                                                     Command="{Binding Path=PlacementTarget.PlanungstagViewmodel.DeletePlanzeitCommand, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
-                                                    CommandParameter="{Binding .}">
+                                                    CommandParameter="{Binding .}"
+                                                    ToolTip="Planzeit löschen">
                                                 <Viewbox Width="16" Height="16">
                                                     <images:Delete/>
                                                 </Viewbox>

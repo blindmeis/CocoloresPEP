@@ -15,6 +15,8 @@ namespace CocoloresPEP.Module.Mitarbeiter
         private string _name;
         private GruppenTyp _defaultGruppe;
         private bool _isHelfer;
+        private decimal _wochenStunden;
+        private decimal _kindFreieZeit;
 
         public MitarbeiterViewmodel()
         {
@@ -31,7 +33,25 @@ namespace CocoloresPEP.Module.Mitarbeiter
             }
         }
 
-        public decimal WochenStunden { get; set; }
+        public decimal WochenStunden
+        {
+            get { return _wochenStunden; }
+            set
+            {
+                _wochenStunden = value; 
+                OnPropertyChanged();
+            }
+        }
+
+        public decimal KindFreieZeit
+        {
+            get { return _kindFreieZeit; }
+            set
+            {
+                _kindFreieZeit = value; 
+                OnPropertyChanged();
+            }
+        }
 
 
         public int TagesArbeitszeitInMinuten
@@ -73,5 +93,7 @@ namespace CocoloresPEP.Module.Mitarbeiter
                 OnPropertyChanged();
             }
         }
+
+       
     }
 }

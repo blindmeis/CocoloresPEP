@@ -24,6 +24,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <Label Grid.Row="0" Content="{Binding Path=Name}" ContentStringFormat="Mitarbeiter: {0}"/>
@@ -32,7 +34,7 @@
         <TextBox Grid.Row="2" MinWidth="100"
                  VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"
                  Text="{Binding Path=WochenStunden}"/>
-
+        
         <StackPanel Grid.Row="3" Orientation="Horizontal">
             <Label Content="FSJ/ BUFTI/ ...:"/> 
             <CheckBox VerticalAlignment="Center"
@@ -74,5 +76,14 @@
                 <behaviors:CalendarBehavior SelectedDatesCollection="{Binding NichtDaZeiten, Mode=TwoWay}"/>
             </i:Interaction.Behaviors>
         </Calendar>
+
+        <StackPanel Grid.Row="10" Orientation="Horizontal">
+            <Label Content="KFZ in Stunden:"/>
+            <TextBox MinWidth="50"
+                 VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"
+                 Text="{Binding Path=KindFreieZeit}"/>
+        </StackPanel>
+        
+        
     </Grid>
 </UserControl>

@@ -63,6 +63,11 @@
                 </controls:WunschdienstControl.ItemTemplate>
             </controls:WunschdienstControl>
 
+            <Label Grid.Row="5" Grid.Column="0" Content="KFZ in Stunden:"/>
+            <TextBox Grid.Row="5" Grid.Column="1" MinWidth="100"
+                 VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"
+                 Text="{Binding Path=KindFreieZeit}"/>
+
         </Grid>
         
        <Grid Grid.Column="1" Margin="50,0,0,0">

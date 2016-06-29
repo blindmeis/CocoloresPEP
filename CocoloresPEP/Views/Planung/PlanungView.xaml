@@ -215,6 +215,28 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="50">
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                        <TextBlock Text="AAK" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                   ToolTip="Arbeit am Kind (Stunden)"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                </Style>
+                            </DataGridTemplateColumn.HeaderStyle>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding ArbeitAmKindStunden, Converter={StaticResource MyNumberToAbsolutOneWayConverter}, StringFormat={}{0:#,##0.00}}" HorizontalAlignment="Center"
+                                               FontWeight="Bold">
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                         <DataGridTemplateColumn MinWidth="130" >
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>

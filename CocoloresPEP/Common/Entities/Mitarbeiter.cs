@@ -18,7 +18,7 @@ namespace CocoloresPEP.Common.Entities
 
         public decimal WochenStunden { get; set; }
 
-        public decimal SaldoWochenStunden { get; set; }
+        public decimal KindFreieZeit { get; set; }
 
         public short TagesQuarterTicks
         {
@@ -30,11 +30,17 @@ namespace CocoloresPEP.Common.Entities
             }
         }
 
-        public int TagesSollMinuten
+        public int TagesSollMinutenMitPause
         {
             get
             {
                 var result = WochenStunden * 60 /5;
+
+                if (result > 540)
+                    return (int)result + 45;
+                if (result > 360)
+                    return (int)result + 30;
+                
                 return (int)result;
             }
         }

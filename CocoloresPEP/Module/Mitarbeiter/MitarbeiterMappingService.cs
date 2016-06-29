@@ -15,9 +15,11 @@ namespace CocoloresPEP.Module.Mitarbeiter
             {
                 Name = ma.Name,
                 WochenStunden = ma.WochenStunden,
+                KindFreieZeit = ma.KindFreieZeit,
                 DefaultGruppe = ma.DefaultGruppe,
                 Wunschdienste = ma.Wunschdienste,
                 IsHelfer = ma.IsHelfer
+
             };
 
            vm.NichtDaZeiten = new ObservableCollection<DateTime>(ma.NichtDaZeiten);
@@ -32,6 +34,7 @@ namespace CocoloresPEP.Module.Mitarbeiter
             {
                 Name = vm.Name,
                 WochenStunden = vm.WochenStunden,
+                KindFreieZeit = vm.KindFreieZeit,
                 DefaultGruppe = vm.DefaultGruppe,
                 Wunschdienste = vm.Wunschdienste,
                 IsHelfer = vm.IsHelfer

@@ -22,10 +22,12 @@ namespace CocoloresPEP.Common.Entities
         {
             get
             {
-                if (QuarterTicks * 15 > 360)
-                    return 2;
                 if (QuarterTicks * 15 > 540)
                     return 3;
+
+                if (QuarterTicks * 15 > 360)
+                    return 2;
+                
                 return 0;
             }
         }
@@ -67,10 +69,10 @@ namespace CocoloresPEP.Common.Entities
         {
             var minuten = ArbeitszeitMitPauseInMinuten();
 
+            if (minuten > 540)
+                return minuten - 45;
             if (minuten > 360)
                 return minuten -30;
-            if (minuten > 540)
-                return minuten-90;
 
             return minuten;
         }

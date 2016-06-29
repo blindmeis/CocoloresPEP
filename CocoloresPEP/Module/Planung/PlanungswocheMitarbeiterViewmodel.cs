@@ -31,19 +31,34 @@ namespace CocoloresPEP.Module.Planung
             }
         }
 
+        public decimal ArbeitAmKindStunden
+        {
+            get
+            {
+                var arbeitAmKindMinuten = Montag.Planzeiten.Sum(x => x.ArbeitszeitOhnePauseInMinuten())
+                         + Dienstag.Planzeiten.Sum(x => x.ArbeitszeitOhnePauseInMinuten())
+                         + Mittwoch.Planzeiten.Sum(x => x.ArbeitszeitOhnePauseInMinuten())
+                         + Donnerstag.Planzeiten.Sum(x => x.ArbeitszeitOhnePauseInMinuten())
+                         + Freitag.Planzeiten.Sum(x => x.ArbeitszeitOhnePauseInMinuten());
+
+                return (decimal)arbeitAmKindMinuten/60;
+            }
+        }
+
         public decimal PlusMinusStunden
         {
             get
             {
-                var minuten = Montag.Planzeiten.Sum(x =>x.ArbeitszeitOhnePauseInMinuten())
+                var arbeitAmKindMinuten = Montag.Planzeiten.Sum(x =>x.ArbeitszeitOhnePauseInMinuten())
                           + Dienstag.Planzeiten.Sum(x => x.ArbeitszeitOhnePauseInMinuten())
                           + Mittwoch.Planzeiten.Sum(x => x.ArbeitszeitOhnePauseInMinuten())
                           + Donnerstag.Planzeiten.Sum(x => x.ArbeitszeitOhnePauseInMinuten())
                           + Freitag.Planzeiten.Sum(x => x.ArbeitszeitOhnePauseInMinuten());
 
 
-
-                var saldo = (decimal)(minuten - Mitarbeiter.WochenStunden*60)/60;
+                var sollWochenstundenMinuten = Mitarbeiter.WochenStunden *60;
+                var kfzInMinuten = Mitarbeiter.KindFreieZeit * 60;
+                var saldo = (decimal)(arbeitAmKindMinuten + kfzInMinuten - sollWochenstundenMinuten) /60;
 
                 return saldo;
             }
