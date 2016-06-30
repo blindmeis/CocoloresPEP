@@ -9,7 +9,10 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
-
+            <!--<ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/PresentationFramework.Aero;component/themes/Aero.NormalColor.xaml"/>
+            </ResourceDictionary.MergedDictionaries>-->
+            
             <converter:EnumHasFlagConverter x:Key="MyEnumHasFlagConverter"/>
             <converter:CheckPositivNegativeZeroNumberConverter x:Key="MyCheckPositivNegativeZeroNumberConverter"/>
             <converter:NumberToAbsolutOneWayConverter x:Key="MyNumberToAbsolutOneWayConverter"/>

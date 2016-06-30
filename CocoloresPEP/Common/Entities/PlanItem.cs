@@ -9,6 +9,7 @@ namespace CocoloresPEP.Common.Entities
 {
     public class PlanItem
     {
+        public Arbeitstag Arbeitstag { get; set; }
         public DateTime Startzeit { get; set; }
 
         /// <summary>
@@ -56,6 +57,8 @@ namespace CocoloresPEP.Common.Entities
 
             }
         }
+
+        public int DauerInMinuten { get { return (int) (GetEndzeit() - Startzeit).TotalMinutes; } }
 
         public DateTime GetEndzeit()
         {

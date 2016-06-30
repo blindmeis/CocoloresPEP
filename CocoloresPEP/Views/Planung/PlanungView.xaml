@@ -95,33 +95,42 @@
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" MinWidth="175"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <TreeView Grid.Column="0" 
-                      ItemsSource="{Binding PlanungView.Groups}"
-                      >
-                <TreeView.Resources>
-                    <HierarchicalDataTemplate DataType="{x:Type CollectionViewGroup}" ItemsSource="{Binding Items}">
-                        <TextBlock Text="{Binding Name}"/>
-                        <HierarchicalDataTemplate.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Path=KalenderWoche, StringFormat='Woche {0}'}"/>
-                            </DataTemplate>
-                        </HierarchicalDataTemplate.ItemTemplate>
-                    </HierarchicalDataTemplate>
-                </TreeView.Resources>
-                <TreeView.ItemContainerStyle>
-                    <Style TargetType="{x:Type TreeViewItem}">
-                        <Setter Property="IsExpanded" Value="True"/>
-                    </Style>
-                </TreeView.ItemContainerStyle>
-                <i:Interaction.Behaviors>
-                    <behaviors:TreeViewSelectedItemBehavior SelectedItem="{Binding SelectedArbeitswoche, Mode=TwoWay}" />
-                </i:Interaction.Behaviors>
-            </TreeView>
+            <Expander Grid.Column="0" ExpandDirection="Right" IsExpanded="True">
+                <Expander.Header>
+                    <TextBlock Text="Arbeitswochen">
+                        <TextBlock.LayoutTransform>
+                            <RotateTransform Angle="-90"/>
+                        </TextBlock.LayoutTransform>
+                    </TextBlock>
+                </Expander.Header>
+                <TreeView  MinWidth="175"
+                      ItemsSource="{Binding PlanungView.Groups}">
+                    <TreeView.Resources>
+                        <HierarchicalDataTemplate DataType="{x:Type CollectionViewGroup}" ItemsSource="{Binding Items}">
+                            <TextBlock Text="{Binding Name}"/>
+                            <HierarchicalDataTemplate.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=KalenderWoche, StringFormat='Woche {0}'}"/>
+                                </DataTemplate>
+                            </HierarchicalDataTemplate.ItemTemplate>
+                        </HierarchicalDataTemplate>
+                    </TreeView.Resources>
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="{x:Type TreeViewItem}">
+                            <Setter Property="IsExpanded" Value="True"/>
+                        </Style>
+                    </TreeView.ItemContainerStyle>
+                    <i:Interaction.Behaviors>
+                        <behaviors:TreeViewSelectedItemBehavior SelectedItem="{Binding SelectedArbeitswoche, Mode=TwoWay}" />
+                    </i:Interaction.Behaviors>
+                </TreeView>
+
+            </Expander>
 
             <Grid Grid.Column="1" Margin="50,0,0,0" HorizontalAlignment="Left">
                 <Grid.RowDefinitions>
@@ -176,6 +185,80 @@
                         <DataGridTemplateColumn Width="50">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
+                                    <Grid>
+                                        <Viewbox Width="24" Height="24">
+                                            <images:Uhr/>
+                                        </Viewbox>
+                                        <Rectangle ToolTip="Arbeitsstunden (angeordnet)"
+                                                   Fill="Transparent" IsHitTestVisible="True"
+                                                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                </Style>
+                            </DataGridTemplateColumn.HeaderStyle>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Mitarbeiter.WochenStunden}" HorizontalAlignment="Center"
+                                               FontWeight="Bold">
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Width="50">
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                        <TextBlock Text="AAK" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                   ToolTip="Arbeit am Kind bzw. Frei"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                </Style>
+                            </DataGridTemplateColumn.HeaderStyle>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding ArbeitAmKindStunden}" HorizontalAlignment="Center"
+                                               FontWeight="Bold">
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Width="50">
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                        <TextBlock Text="KFZ" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                   ToolTip="Kind freie Zeit (Planstunden)"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                </Style>
+                            </DataGridTemplateColumn.HeaderStyle>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Mitarbeiter.KindFreieZeit}" HorizontalAlignment="Center"
+                                               FontWeight="Bold">
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+
+                        <DataGridTemplateColumn Width="50">
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                                         <TextBlock Text="+-" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </StackPanel>
@@ -215,28 +298,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Width="50">
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                                        <TextBlock Text="AAK" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                   ToolTip="Arbeit am Kind (Stunden)"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.HeaderStyle>
-                                <Style TargetType="DataGridColumnHeader">
-                                    <Setter Property="HorizontalContentAlignment" Value="Center" />
-                                </Style>
-                            </DataGridTemplateColumn.HeaderStyle>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding ArbeitAmKindStunden, Converter={StaticResource MyNumberToAbsolutOneWayConverter}, StringFormat={}{0:#,##0.00}}" HorizontalAlignment="Center"
-                                               FontWeight="Bold">
-                                    </TextBlock>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+
                         <DataGridTemplateColumn MinWidth="130" >
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
@@ -439,15 +501,23 @@
                     </Style>
                 </Grid.Style>
 
-                <Border BorderBrush="Black" BorderThickness="1" Padding="10,5">
+                <Expander ExpandDirection="Left" IsExpanded="True"
+                          Background="DarkSalmon" Padding="15,0,5,0">
+                    <Expander.Header>
+                        <TextBlock Text="Mitarbeiterdetails">
+                            <TextBlock.LayoutTransform>
+                                <RotateTransform Angle="90"/>
+                            </TextBlock.LayoutTransform>
+                        </TextBlock>
+                    </Expander.Header>
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                         <planung:MitarbeiterDetailView MitarbeiterViewmodel="{Binding Path=SelectedPlanungswocheMitarbeiter, Mode=OneWay}"
                                                        DisplayDateStart="{Binding Path=SelectedPlanungswocheMitarbeiterItem.Montag.Datum}"
-                                                       DisplayDateEnd="{Binding Path=SelectedPlanungswocheMitarbeiterItem.Freitag.Datum}"/>
+                                                       DisplayDateEnd="{Binding Path=SelectedPlanungswocheMitarbeiterItem.Freitag.Datum}"
+                                                       />
                     </ScrollViewer>
-                </Border>
-
-
+                </Expander>
+             
             </Grid>
         </Grid>
 

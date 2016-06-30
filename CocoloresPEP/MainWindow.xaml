@@ -11,6 +11,7 @@
         Icon="Cocolores.ico"
         MinHeight="768" MinWidth="1024"
         WindowStartupLocation="CenterScreen" 
+        WindowState="Maximized"
         Style="{DynamicResource {x:Type Window}}"
         >
     <Grid>

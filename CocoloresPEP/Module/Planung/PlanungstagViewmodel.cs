@@ -190,37 +190,40 @@ namespace CocoloresPEP.Module.Planung
                 return;
 
             var plan = Planzeiten.Single();
-
+            var dauer = plan.DauerInMinuten;
             var at = new Arbeitstag(plan.Startzeit);
 
             switch (obj)
             {
                 case DienstTyp.Frühdienst:
                     plan.Startzeit = at.Frühdienst;
+                    plan.Endzeit = plan.Startzeit.AddMinutes(dauer);
                     break;
                 case DienstTyp.AchtUhrDienst:
                     plan.Startzeit = at.AchtUhrDienst;
+                    plan.Endzeit = plan.Startzeit.AddMinutes(dauer);
                     break;
                 case DienstTyp.KernzeitStartDienst:
                     plan.Startzeit = at.KernzeitGruppeStart;
+                    plan.Endzeit = plan.Startzeit.AddMinutes(dauer);
                     break;
                 case DienstTyp.NeunUhrDienst:
                     plan.Startzeit = at.NeunUhrDienst;
+                    plan.Endzeit = plan.Startzeit.AddMinutes(dauer);
                     break;
                 case DienstTyp.ZehnUhrDienst:
                     plan.Startzeit = at.ZehnUhrDienst;
+                    plan.Endzeit = plan.Startzeit.AddMinutes(dauer);
                     break;
                 case DienstTyp.KernzeitEndeDienst:
-                    plan.Startzeit = at.KernzeitGruppeEnde.AddMinutes(-1 * 15 * plan.AllTicks);
+                    plan.Endzeit = at.KernzeitGruppeEnde;
+                    plan.Startzeit = plan.Endzeit.Value.AddMinutes(-1*dauer);
                     break;
                 case DienstTyp.SpätdienstEnde:
-                    plan.Startzeit = at.SpätdienstEnde.AddMinutes(-1 * 15 * plan.AllTicks);
+                    plan.Endzeit = at.SpätdienstEnde;
+                    plan.Startzeit = plan.Endzeit.Value.AddMinutes(-1 * dauer);
                     break;
             }
-
-            if (plan.Startzeit.AddMinutes(15 * plan.AllTicks) > at.SpätdienstEnde)
-                plan.Startzeit = at.SpätdienstEnde.AddMinutes(-1 * 15 * plan.AllTicks);
-
             OnPropertyChanged(nameof(PlanZeitenInfo));
         }
         #endregion
@@ -277,8 +280,8 @@ namespace CocoloresPEP.Module.Planung
         {
             get
             {
-                if (IsFeiertag)
-                    return " ";
+                if (IsFeiertag || Planzeiten.All(x=>(x.Dienst&DienstTyp.Frei)==DienstTyp.Frei))
+                    return " - ";
 
                 var sb = (from zeiten in Planzeiten
                           where (zeiten.Dienst & DienstTyp.Frei) != DienstTyp.Frei
@@ -318,7 +321,7 @@ namespace CocoloresPEP.Module.Planung
 
         public string PausenInfo
         {
-            get { return Planzeiten.Any(x => x.BreakTicks > 0) ? "P" : " "; }
+            get { return Planzeiten.Any(x => x.ArbeitszeitMitPauseInMinuten()!=x.ArbeitszeitOhnePauseInMinuten()) ? "P" : " "; }
         }
 
         private void GetStartAndEndzeit(PlanungszeitVonBisWrapper arg, out DateTime start, out DateTime ende)

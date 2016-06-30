@@ -49,12 +49,12 @@ namespace CocoloresPEP.Module.Planung
         {
             get
             {
+                //inclusive Frei
                 var arbeitAmKindMinuten = Montag.Planzeiten.Sum(x =>x.ArbeitszeitOhnePauseInMinuten())
                           + Dienstag.Planzeiten.Sum(x => x.ArbeitszeitOhnePauseInMinuten())
                           + Mittwoch.Planzeiten.Sum(x => x.ArbeitszeitOhnePauseInMinuten())
                           + Donnerstag.Planzeiten.Sum(x => x.ArbeitszeitOhnePauseInMinuten())
                           + Freitag.Planzeiten.Sum(x => x.ArbeitszeitOhnePauseInMinuten());
-
 
                 var sollWochenstundenMinuten = Mitarbeiter.WochenStunden *60;
                 var kfzInMinuten = Mitarbeiter.KindFreieZeit * 60;
@@ -67,6 +67,8 @@ namespace CocoloresPEP.Module.Planung
         public void Refresh()
         {
             OnPropertyChanged(nameof(PlusMinusStunden));
+            OnPropertyChanged(nameof(ArbeitAmKindStunden));
+
         }
     }
 }

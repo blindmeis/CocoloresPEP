@@ -165,6 +165,9 @@
     <Compile Include="Images\Speichern.xaml.cs">
       <DependentUpon>Speichern.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Images\Uhr.xaml.cs">
+      <DependentUpon>Uhr.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainViewModel.cs" />
     <Compile Include="Module\Mitarbeiter\MitarbeiterManager.cs" />
     <Compile Include="Module\Mitarbeiter\MitarbeiterMappingService.cs" />
@@ -240,6 +243,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Images\Speichern.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Images\Uhr.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -109,8 +109,11 @@ namespace CocoloresPEP.Common.WpfCore.Behaviors
 
         private void AssociatedObjectOnGotMouseCapture(object sender, MouseEventArgs mouseEventArgs)
         {
-            UIElement originalElement = mouseEventArgs.OriginalSource as UIElement;
-            originalElement?.ReleaseMouseCapture();
+            if (mouseEventArgs.OriginalSource is CalendarDayButton || mouseEventArgs.OriginalSource is CalendarItem)
+            {
+                UIElement originalElement = mouseEventArgs.OriginalSource as UIElement;
+                originalElement?.ReleaseMouseCapture();
+            }
         }
     }
 
