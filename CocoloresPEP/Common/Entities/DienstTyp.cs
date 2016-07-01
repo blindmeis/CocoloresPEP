@@ -27,5 +27,7 @@ namespace CocoloresPEP.Common.Entities
         [Display(Name = @"Kernzeitende Dienst")]
         KernzeitEndeDienst = 1 << 7,
         Frei = 1 << 8,
+        FsjFrühdienst = 1 << 9,
+        FsjSpätdienst = 1 << 10,
     }
 }

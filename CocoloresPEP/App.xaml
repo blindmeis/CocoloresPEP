@@ -31,6 +31,7 @@
             <SolidColorBrush x:Key="ColorGruppeGruen" Color="LightGreen"/>
             <SolidColorBrush x:Key="ColorGruppeRot" Color="LightCoral"/>
             <SolidColorBrush x:Key="ColorGruppeNest" Color="LightBlue"/>
+            <SolidColorBrush x:Key="ColorExpanderBackground" Color="DarkSalmon"/>
 
             <!--STYLES-->
             <Style x:Key="{x:Type Window}" TargetType="{x:Type Window}">

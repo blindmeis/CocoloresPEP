@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -14,13 +15,21 @@ namespace CocoloresPEP.Common.Extensions
     {
         public static void ToFile<T>(this object obj, string filename)
         {
-            using (var ms = new MemoryStream())
+            try
             {
-                var xmlSerializer = new XmlSerializer(typeof(T));
-                xmlSerializer.Serialize(ms, obj);
+                using (var ms = new MemoryStream())
+                {
+                    var serializer = new DataContractSerializer(typeof(T));
+                    serializer.WriteObject(ms, obj);
 
-                ms.CreateFile(false, filename);
+                    ms.CreateFile(false, filename);
+                }
             }
+            catch (Exception ex)
+            {
+                throw new Exception($"Fehler beim Serialisieren von {filename}", ex);
+            }
+            
         }
 
         public static T FromFile<T>(string filename)
@@ -31,22 +40,10 @@ namespace CocoloresPEP.Common.Extensions
 
             try
             {
-                XmlDocument xmlDocument = new XmlDocument();
-                xmlDocument.Load(filename);
-                string xmlString = xmlDocument.OuterXml;
-
-                using (StringReader read = new StringReader(xmlString))
+                var serializer = new DataContractSerializer(typeof(T));
+                using (var stream = File.OpenRead(filename))
                 {
-                    Type outType = typeof(T);
-
-                    XmlSerializer serializer = new XmlSerializer(outType);
-                    using (XmlReader reader = new XmlTextReader(read))
-                    {
-                        objectOut = (T)serializer.Deserialize(reader);
-                        reader.Close();
-                    }
-
-                    read.Close();
+                    objectOut = (T)serializer.ReadObject(stream);
                 }
             }
             catch (Exception ex)

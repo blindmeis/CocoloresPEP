@@ -118,35 +118,32 @@ namespace CocoloresPEP.Services
                 #region Buftis und Co
 
                 var helferleins = maList.Where(x => !x.NichtDaZeiten.Any(dt => dt == arbeitstag.Datum) && x.IsHelfer).ToList();
-                foreach (var helferlein in helferleins)
+
+                //Frühdiesnt
+                var h1 = helferleins.Except(schonEingeteilt).FirstOrDefault();
+
+                if (h1 != null)
                 {
-                    var planitems = arbeitstag.Planzeiten.Where(x => (x.Gruppe & helferlein.DefaultGruppe) == helferlein.DefaultGruppe).ToList();
+                    schonEingeteilt.Add(h1);
+                    var h1Früh = CreatePlanItem(arbeitstag, h1, arbeitstag.FrühdienstFsj, h1.TagesQuarterTicks, h1.DefaultGruppe, DienstTyp.FsjFrühdienst);
+                    arbeitstag.Planzeiten.Add(h1Früh);
+                }
 
-                    var planitemMitarbeiter = planitems.GroupBy(x => x.Startzeit).FirstOrDefault(x => !x.Any(h => h.ErledigtDurch.IsHelfer))?.FirstOrDefault();
+                var h2 = helferleins.Except(schonEingeteilt).FirstOrDefault();
 
-                    //if (planitemMitarbeiter == null)
-                    //{
+                if (h2 != null)
+                {
+                    schonEingeteilt.Add(h2);
+                    var spätdienstStartFsj = arbeitstag.SpätdienstEndeFsj.AddMinutes(-1 * 15 * h2.TagesQuarterTicks);
+                    var h2Spät = CreatePlanItem(arbeitstag, h2, spätdienstStartFsj, h2.TagesQuarterTicks, h2.DefaultGruppe, DienstTyp.FsjSpätdienst);
+                    arbeitstag.Planzeiten.Add(h2Spät);
+                }
+
+                foreach (var helferlein in helferleins.Except(schonEingeteilt).ToList())
+                {
                     schonEingeteilt.Add(helferlein);
-                    var helferleinEndzeit = arbeitstag.KernzeitGruppeStart.AddMinutes(15 * helferlein.TagesQuarterTicks);
-                    var plan = CreatePlanItem(arbeitstag, helferlein, arbeitstag.KernzeitGruppeStart, helferlein.TagesQuarterTicks, helferlein.DefaultGruppe, DienstTyp.KernzeitStartDienst, helferleinEndzeit);
+                    var plan = CreatePlanItem(arbeitstag, helferlein, arbeitstag.KernzeitGruppeStart, helferlein.TagesQuarterTicks, helferlein.DefaultGruppe, DienstTyp.KernzeitStartDienst);
                     arbeitstag.Planzeiten.Add(plan);
-                    //}
-                    //else
-                    //{
-                    //    var helferleinStartzeit = planitemMitarbeiter.Startzeit;
-                    //    if (helferlein.TagesQuarterTicks > planitemMitarbeiter.AllTicks)
-                    //        helferleinStartzeit = helferleinStartzeit.AddMinutes(-1 * 15 * (helferlein.TagesQuarterTicks - planitemMitarbeiter.AllTicks));
-
-                    //    if (helferleinStartzeit < arbeitstag.Frühdienst)
-                    //        helferleinStartzeit = arbeitstag.Frühdienst;
-
-                    //    if (helferleinStartzeit.AddMinutes(15 * helferlein.TagesQuarterTicks) > arbeitstag.KernzeitGruppeEnde)
-                    //        helferleinStartzeit = arbeitstag.KernzeitGruppeStart;
-
-                    //    schonEingeteilt.Add(helferlein);
-                    //    var plan = CreatePlanItem(arbeitstag, helferlein, helferleinStartzeit, helferlein.TagesQuarterTicks, helferlein.DefaultGruppe, planitemMitarbeiter.Dienst);
-                    //    arbeitstag.Planzeiten.Add(plan);
-                    //}
                 }
                 #endregion
             }

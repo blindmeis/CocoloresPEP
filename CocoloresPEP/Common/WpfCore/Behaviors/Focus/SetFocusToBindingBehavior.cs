@@ -163,16 +163,31 @@ namespace CocoloresPEP.Common.WpfCore.Behaviors.Focus
             {
                 var tab = obj as TabControl;
 
-                foreach (TabItem tt in tab.Items.OfType<TabItem>())
-                {
-                    if (tt == null)
-                        continue;
+                var selected = tab.SelectedIndex;
+                tab.UpdateLayout();
+                var selektierteZuerstchild = VisualTreeHelper.GetChild(tab, 0);
+                var selektierteZuerst = CheckForBinding(selektierteZuerstchild, bindingpath);
+                if (selektierteZuerst != null)
+                    return selektierteZuerst;
 
-                    tt.UpdateLayout();
-                    var result = CheckForBinding(tt, bindingpath);
-                    if (result != null)
-                        return result;
+                //hier alle Tabitems behandlen ausser dem Selektierten, da der sowieso im VisualTree ist
+                for (int i = 0; i < tab.Items.Count; i++)
+                {
+                    if (selected != i)
+                    {
+                        tab.SelectedIndex = i;
+                        tab.UpdateLayout();
+                        var child = VisualTreeHelper.GetChild(tab, 0);
+                        var result = CheckForBinding(child, bindingpath);
+                        if (result != null)
+                        {
+                            return result;
+                        }
+                    }
                 }
+                //wieder zurück aufs original
+                tab.SelectedIndex = selected;
+                tab.UpdateLayout();
             }
 
             //ich hatte einen Absturz wenn ein Hyperlink bei VisualTreeHelper.GetChildrenCount(obj) übergeben wird 

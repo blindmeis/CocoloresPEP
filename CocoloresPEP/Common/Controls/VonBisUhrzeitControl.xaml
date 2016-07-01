@@ -8,7 +8,7 @@
              xmlns:behaviors="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors"
              x:Name="Uc">
     <StackPanel Orientation="Horizontal">
-        <local:StundenControl Width="25" IsEditable="True" VerticalAlignment="Center"
+        <local:StundenControl IsEditable="True" VerticalAlignment="Center"
                               SelectedValue="{Binding ElementName=Uc,Path=SelectedHourVon, Mode=TwoWay}"
                               SelectedValuePath="Value"
                               DisplayMemberPath="Key"
@@ -18,7 +18,7 @@
             </i:Interaction.Behaviors>
         </local:StundenControl>
         <TextBlock Text=":" VerticalAlignment="Center"/>
-        <local:MinutenControl Width="25" IsEditable="True" VerticalAlignment="Center"
+        <local:MinutenControl IsEditable="True" VerticalAlignment="Center"
                               SelectedValue="{Binding ElementName=Uc,Path=SelectedMinuteVon, Mode=TwoWay}"
                               SelectedValuePath="Value"
                               DisplayMemberPath="Key"
@@ -28,7 +28,7 @@
             </i:Interaction.Behaviors>
         </local:MinutenControl>
         <TextBlock Text="-" VerticalAlignment="Center" Margin="2,0,2,0"/>
-        <local:StundenControl Width="25" IsEditable="True" VerticalAlignment="Center"
+        <local:StundenControl IsEditable="True" VerticalAlignment="Center"
                               SelectedValue="{Binding ElementName=Uc,Path=SelectedHourBis, Mode=TwoWay}"
                               SelectedValuePath="Value"
                               DisplayMemberPath="Key"
@@ -38,7 +38,7 @@
             </i:Interaction.Behaviors>
         </local:StundenControl>
         <TextBlock Text=":" VerticalAlignment="Center"/>
-        <local:MinutenControl Width="25" IsEditable="True" VerticalAlignment="Center"
+        <local:MinutenControl IsEditable="True" VerticalAlignment="Center"
                               SelectedValue="{Binding ElementName=Uc,Path=SelectedMinuteBis, Mode=TwoWay}"
                               SelectedValuePath="Value"
                               DisplayMemberPath="Key"

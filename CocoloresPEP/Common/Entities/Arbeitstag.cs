@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace CocoloresPEP.Common.Entities
 {
-    public class Arbeitstag
+    public class Arbeitstag 
     {
         public Arbeitstag()
         {
@@ -17,6 +19,16 @@ namespace CocoloresPEP.Common.Entities
         {
             Datum = dt;
             Planzeiten = new ObservableCollection<PlanItem>();
+        }
+
+        [OnDeserialized()]
+        internal void OnSerializedMethod(StreamingContext context)
+        {
+            // Setting this as parent property for Child object
+            foreach (var planItem in Planzeiten)
+            {
+                planItem.Arbeitstag = this;
+            }
         }
 
         public DateTime Datum { get;  set; }
@@ -58,6 +70,16 @@ namespace CocoloresPEP.Common.Entities
         public DateTime SpätdienstEnde
         {
             get { return new DateTime(Datum.Year, Datum.Month, Datum.Day, 17, 15, 0); }
+        }
+
+        public DateTime FrühdienstFsj
+        {
+            get { return new DateTime(Datum.Year, Datum.Month, Datum.Day, 7, 30, 0); }
+        }
+
+        public DateTime SpätdienstEndeFsj
+        {
+            get { return new DateTime(Datum.Year, Datum.Month, Datum.Day, 16, 30, 0); }
         }
     }
 }

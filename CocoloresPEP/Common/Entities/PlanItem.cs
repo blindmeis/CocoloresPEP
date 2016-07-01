@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace CocoloresPEP.Common.Entities
 {
     public class PlanItem
     {
+        [IgnoreDataMember]
         public Arbeitstag Arbeitstag { get; set; }
         public DateTime Startzeit { get; set; }
 
