@@ -256,7 +256,7 @@ namespace CocoloresPEP.Services
                 return result;
 
             if ((ma.DefaultGruppe & GruppenTyp.Nest) == GruppenTyp.Nest || (ma.DefaultGruppe & GruppenTyp.Gelb) == GruppenTyp.Gelb)
-                return GruppenTyp.Nest | GruppenTyp.Gelb;
+                return GruppenTyp.Gruen | GruppenTyp.Rot;
 
             if ((ma.DefaultGruppe & GruppenTyp.Gruen) == GruppenTyp.Gruen || (ma.DefaultGruppe & GruppenTyp.Rot) == GruppenTyp.Rot)
                 return GruppenTyp.Nest | GruppenTyp.Gelb;

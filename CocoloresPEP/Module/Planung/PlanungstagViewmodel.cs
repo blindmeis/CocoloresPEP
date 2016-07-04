@@ -341,7 +341,7 @@ namespace CocoloresPEP.Module.Planung
                 TimePeriodCombiner<TimeRange> periodCombiner = new TimePeriodCombiner<TimeRange>();
                 ITimePeriodCollection combinedPeriods = periodCombiner.CombinePeriods(periods);
 
-                return Planzeiten.Any(x => 1==1) ? "P" : " ";
+                return Planzeiten.Any(x => x.Zeitraum.Duration.GetArbeitsminutenOhnePause()!=(int)x.Zeitraum.Duration.TotalMinutes) ? "P" : " ";
             }
         }
 

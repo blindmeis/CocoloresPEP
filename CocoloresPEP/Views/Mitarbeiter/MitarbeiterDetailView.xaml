@@ -38,7 +38,7 @@
                  VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"
                  Text="{Binding Path=WochenStunden}"/>
 
-            <Label Grid.Row="2" Grid.Column="0" Content="FSJ/ BUFTI/ ...:"/>
+            <Label Grid.Row="2" Grid.Column="0" Content="FSJ:"/>
             <CheckBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center"
                       IsChecked="{Binding Path=IsHelfer}"></CheckBox>
 

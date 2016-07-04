@@ -36,7 +36,7 @@
                  Text="{Binding Path=WochenStunden}"/>
         
         <StackPanel Grid.Row="3" Orientation="Horizontal">
-            <Label Content="FSJ/ BUFTI/ ...:"/> 
+            <Label Content="FSJ:"/> 
             <CheckBox VerticalAlignment="Center"
                   IsChecked="{Binding Path=IsHelfer}"></CheckBox>
         </StackPanel>
