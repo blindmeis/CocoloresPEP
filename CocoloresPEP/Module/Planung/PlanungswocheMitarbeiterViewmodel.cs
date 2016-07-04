@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CocoloresPEP.Common;
 using CocoloresPEP.Common.Entities;
+using CocoloresPEP.Common.Extensions;
 using CocoloresPEP.Module.Mitarbeiter;
 
 namespace CocoloresPEP.Module.Planung
@@ -35,11 +36,11 @@ namespace CocoloresPEP.Module.Planung
         {
             get
             {
-                var arbeitAmKindMinuten = Montag.Planzeiten.Sum(x => x.Zeitraum.Duration.TotalMinutes)
-                         + Dienstag.Planzeiten.Sum(x => x.Zeitraum.Duration.TotalMinutes)
-                         + Mittwoch.Planzeiten.Sum(x => x.Zeitraum.Duration.TotalMinutes)
-                         + Donnerstag.Planzeiten.Sum(x => x.Zeitraum.Duration.TotalMinutes)
-                         + Freitag.Planzeiten.Sum(x => x.Zeitraum.Duration.TotalMinutes);
+                var arbeitAmKindMinuten = Montag.Planzeiten.Sum(x => x.Zeitraum.Duration.GetArbeitsminutenOhnePause())
+                         + Dienstag.Planzeiten.Sum(x => x.Zeitraum.Duration.GetArbeitsminutenOhnePause())
+                         + Mittwoch.Planzeiten.Sum(x => x.Zeitraum.Duration.GetArbeitsminutenOhnePause())
+                         + Donnerstag.Planzeiten.Sum(x => x.Zeitraum.Duration.GetArbeitsminutenOhnePause())
+                         + Freitag.Planzeiten.Sum(x => x.Zeitraum.Duration.GetArbeitsminutenOhnePause());
 
                 return (decimal)arbeitAmKindMinuten/60;
             }
@@ -50,11 +51,7 @@ namespace CocoloresPEP.Module.Planung
             get
             {
                 //inclusive Frei
-                var arbeitAmKindMinuten = Montag.Planzeiten.Sum(x =>x.Zeitraum.Duration.TotalMinutes)
-                          + Dienstag.Planzeiten.Sum(x => x.Zeitraum.Duration.TotalMinutes)
-                          + Mittwoch.Planzeiten.Sum(x => x.Zeitraum.Duration.TotalMinutes)
-                          + Donnerstag.Planzeiten.Sum(x => x.Zeitraum.Duration.TotalMinutes)
-                          + Freitag.Planzeiten.Sum(x => x.Zeitraum.Duration.TotalMinutes);
+                var arbeitAmKindMinuten = ArbeitAmKindStunden*60;
 
                 var sollWochenstundenMinuten = Mitarbeiter.WochenStunden *60;
                 var kfzInMinuten = Mitarbeiter.KindFreieZeit * 60;

@@ -55,6 +55,8 @@ namespace CocoloresPEP.Common.Extensions
             // Return the week of our adjusted day
             return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
         }
+
+    
     }
 
 }
