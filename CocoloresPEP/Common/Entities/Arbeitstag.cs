@@ -81,5 +81,10 @@ namespace CocoloresPEP.Common.Entities
         {
             get { return new DateTime(Datum.Year, Datum.Month, Datum.Day, 16, 30, 0); }
         }
+
+        public DateTime GrossteamStart
+        {
+            get { return new DateTime(Datum.Year, Datum.Month, Datum.Day, 15, 30, 0); }
+        }
     }
 }

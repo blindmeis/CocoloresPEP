@@ -143,7 +143,7 @@
     
                 </Expander>
 
-                <controls:DataGridEx Grid.Row="1"
+                <DataGrid Grid.Row="1"
                           ItemsSource="{Binding ArbeitswocheVorschau}"
                           AutoGenerateColumns="False" IsReadOnly="True"
                           CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" 
@@ -489,7 +489,7 @@
                             </DataGridTemplateColumn.CellStyle>
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
-                </controls:DataGridEx>
+                </DataGrid>
             </Grid>
 
             <Grid Grid.Column="2" HorizontalAlignment="Left" Margin="25,0,0,0">

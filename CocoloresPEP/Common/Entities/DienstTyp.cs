@@ -29,5 +29,6 @@ namespace CocoloresPEP.Common.Entities
         Frei = 1 << 8,
         FsjFrühdienst = 1 << 9,
         FsjSpätdienst = 1 << 10,
+        Großteam = 1 << 10,
     }
 }

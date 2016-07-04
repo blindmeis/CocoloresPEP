@@ -20,6 +20,7 @@ namespace CocoloresPEP.Common.WpfCore.Controls
         {
             var tgl = Helper.FindChild<ToggleButton>(this);
             tgl.Visibility = Visibility.Collapsed;
+            tgl.Width = 0;
         }
     }
 }

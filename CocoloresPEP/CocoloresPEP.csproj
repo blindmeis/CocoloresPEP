@@ -71,6 +71,10 @@
     <Reference Include="EPPlus">
       <HintPath>..\EPPlus\EPPlus.dll</HintPath>
     </Reference>
+    <Reference Include="Itenso.TimePeriod, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d7f23b760ed5c748, processorArchitecture=MSIL">
+      <HintPath>..\packages\TimePeriodLibrary.NET.2.0.0\lib\net35\Desktop.Release\Itenso.TimePeriod.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
@@ -129,7 +133,6 @@
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common\WpfCore\Controls\ComboBoxWithoutDropdown.cs" />
-    <Compile Include="Common\WpfCore\Controls\DataGridEx.cs" />
     <Compile Include="Common\WpfCore\Controls\DesignModeTool.cs" />
     <Compile Include="Common\WpfCore\Converter\CheckPositivNegativeZeroNumberConverter.cs" />
     <Compile Include="Common\WpfCore\Converter\EnumHasFlagConverter.cs" />
@@ -306,6 +309,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="CocoloresPEP.pfx" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
