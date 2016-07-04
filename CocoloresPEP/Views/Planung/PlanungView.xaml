@@ -312,6 +312,10 @@
                                                   Content="Feiertag"
                                                   HorizontalAlignment="Left" VerticalAlignment="Center"
                                                   ToolTip="nicht planen"/>
+                                        <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.HasMontagGrossteam, Mode=TwoWay}"
+                                                  Content="Großteam"
+                                                  HorizontalAlignment="Left" VerticalAlignment="Center"
+                                                  ToolTip="Großteam"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
@@ -355,6 +359,10 @@
                                                   Content="Feiertag"
                                                   HorizontalAlignment="Left" VerticalAlignment="Center"
                                                   ToolTip="nicht planen"/>
+                                        <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.HasDienstagGrossteam, Mode=TwoWay}"
+                                                  Content="Großteam"
+                                                  HorizontalAlignment="Left" VerticalAlignment="Center"
+                                                  ToolTip="Großteam"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
@@ -392,6 +400,10 @@
                                                   Content="Feiertag"
                                                   HorizontalAlignment="Left" VerticalAlignment="Center"
                                                   ToolTip="nicht planen"/>
+                                        <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.HasMittwochGrossteam, Mode=TwoWay}"
+                                                  Content="Großteam"
+                                                  HorizontalAlignment="Left" VerticalAlignment="Center"
+                                                  ToolTip="Großteam"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
@@ -429,6 +441,10 @@
                                                   Content="Feiertag"
                                                   HorizontalAlignment="Left" VerticalAlignment="Center"
                                                   ToolTip="nicht planen"/>
+                                        <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.HasDonnerstagGrossteam, Mode=TwoWay}"
+                                                  Content="Großteam"
+                                                  HorizontalAlignment="Left" VerticalAlignment="Center"
+                                                  ToolTip="Großteam"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
@@ -466,6 +482,10 @@
                                                   Content="Feiertag"
                                                   HorizontalAlignment="Left" VerticalAlignment="Center"
                                                   ToolTip="nicht planen"/>
+                                        <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.HasFreitagGrossteam, Mode=TwoWay}"
+                                                  Content="Großteam"
+                                                  HorizontalAlignment="Left" VerticalAlignment="Center"
+                                                  ToolTip="Großteam"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>

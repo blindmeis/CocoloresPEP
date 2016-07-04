@@ -15,6 +15,11 @@ namespace CocoloresPEP.Module.Planung
         private bool _isMittwochFeiertag;
         private bool _isDonnerstagFeiertag;
         private bool _isFreitagFeiertag;
+        private bool _hasMontagGrossteam;
+        private bool _hasDienstagGrossteam;
+        private bool _hasMittwochGrossteam;
+        private bool _hasDonnerstagGrossteam;
+        private bool _hasFreitagGrossteam;
 
         public ArbeitswocheViewmodel(int jahr, int woche)
         {
@@ -113,6 +118,96 @@ namespace CocoloresPEP.Module.Planung
                     l.Freitag.IsFeiertag = value;
                 }
                 
+            }
+        }
+
+        public bool HasMontagGrossteam
+        {
+            get { return _hasMontagGrossteam; }
+            set
+            {
+                if (_hasMontagGrossteam == value)
+                    return;
+                _hasMontagGrossteam = value;
+
+                OnPropertyChanged();
+
+                foreach (var l in PlanungProMitarbeiterListe)
+                {
+                    l.Montag.HasGrossteam = value;
+                }
+            }
+        }
+
+        public bool HasDienstagGrossteam
+        {
+            get { return _hasDienstagGrossteam; }
+            set
+            {
+                if (_hasDienstagGrossteam == value)
+                    return;
+                _hasDienstagGrossteam = value;
+
+                OnPropertyChanged();
+
+                foreach (var l in PlanungProMitarbeiterListe)
+                {
+                    l.Dienstag.HasGrossteam = value;
+                }
+            }
+        }
+
+        public bool HasMittwochGrossteam
+        {
+            get { return _hasMittwochGrossteam; }
+            set
+            {
+                if (_hasMittwochGrossteam == value)
+                    return;
+                _hasMittwochGrossteam = value;
+
+                OnPropertyChanged();
+
+                foreach (var l in PlanungProMitarbeiterListe)
+                {
+                    l.Mittwoch.HasGrossteam = value;
+                }
+            }
+        }
+
+        public bool HasDonnerstagGrossteam
+        {
+            get { return _hasDonnerstagGrossteam; }
+            set
+            {
+                if (_hasDonnerstagGrossteam == value)
+                    return;
+                _hasDonnerstagGrossteam = value;
+
+                OnPropertyChanged();
+
+                foreach (var l in PlanungProMitarbeiterListe)
+                {
+                    l.Donnerstag.HasGrossteam = value;
+                }
+            }
+        }
+
+        public bool HasFreitagGrossteam
+        {
+            get { return _hasFreitagGrossteam; }
+            set
+            {
+                if (_hasFreitagGrossteam == value)
+                    return;
+                _hasFreitagGrossteam = value;
+
+                OnPropertyChanged();
+
+                foreach (var l in PlanungProMitarbeiterListe)
+                {
+                    l.Freitag.HasGrossteam = value;
+                }
             }
         }
 

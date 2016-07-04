@@ -24,6 +24,12 @@ namespace CocoloresPEP.Module.Planung
             vm.IsDonnerstagFeiertag = aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Thursday).IsFeiertag;
             vm.IsFreitagFeiertag = aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Friday).IsFeiertag;
 
+            vm.HasMontagGrossteam = aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Monday).HasGrossteam;
+            vm.HasDienstagGrossteam = aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Tuesday).HasGrossteam;
+            vm.HasMittwochGrossteam = aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Wednesday).HasGrossteam;
+            vm.HasDonnerstagGrossteam = aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Thursday).HasGrossteam;
+            vm.HasFreitagGrossteam = aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Friday).HasGrossteam;
+
 
             var pwmvms = new List<PlanungswocheMitarbeiterViewmodel>();
 
@@ -38,7 +44,8 @@ namespace CocoloresPEP.Module.Planung
                     {
                         Datum = arbeitstag.Datum,
                         Planzeiten = new ObservableCollection<PlanItem>(arbeitstag.Planzeiten.Where(x => x.ErledigtDurch.Name == ma.Name).ToList()),
-                        IsFeiertag =  arbeitstag.IsFeiertag
+                        IsFeiertag =  arbeitstag.IsFeiertag,
+                        HasGrossteam =  arbeitstag.HasGrossteam
                     };
 
                     switch (dow)
@@ -86,22 +93,27 @@ namespace CocoloresPEP.Module.Planung
             aw.Arbeitstage.Single(x=>x.Datum.DayOfWeek == DayOfWeek.Monday).Planzeiten = 
                 new ObservableCollection<PlanItem>(vm.PlanungProMitarbeiterListe.SelectMany(x => x.Montag?.Planzeiten ?? new ObservableCollection<PlanItem>()).ToList());
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Monday).IsFeiertag = vm.IsMontagFeiertag;
+            aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Monday).HasGrossteam = vm.HasMontagGrossteam;
 
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Tuesday).Planzeiten =
                new ObservableCollection<PlanItem>(vm.PlanungProMitarbeiterListe.SelectMany(x => x.Dienstag?.Planzeiten ?? new ObservableCollection<PlanItem>()));
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Tuesday).IsFeiertag = vm.IsDienstagFeiertag;
+            aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Tuesday).HasGrossteam = vm.HasDienstagGrossteam;
 
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Wednesday).Planzeiten =
                  new ObservableCollection<PlanItem>(vm.PlanungProMitarbeiterListe.SelectMany(x => x.Mittwoch?.Planzeiten ?? new ObservableCollection<PlanItem>()));
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Wednesday).IsFeiertag = vm.IsMittwochFeiertag;
+            aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Wednesday).HasGrossteam = vm.HasMittwochGrossteam;
 
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Thursday).Planzeiten =
                new ObservableCollection<PlanItem>(vm.PlanungProMitarbeiterListe.SelectMany(x => x.Donnerstag?.Planzeiten ?? new ObservableCollection<PlanItem>()));
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Thursday).IsFeiertag = vm.IsDonnerstagFeiertag;
+            aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Thursday).HasGrossteam = vm.HasDonnerstagGrossteam;
 
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Friday).Planzeiten =
                new ObservableCollection<PlanItem>(vm.PlanungProMitarbeiterListe.SelectMany(x => x.Freitag?.Planzeiten ?? new ObservableCollection<PlanItem>()));
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Friday).IsFeiertag = vm.IsFreitagFeiertag;
+            aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Friday).HasGrossteam = vm.HasFreitagGrossteam;
 
             return aw;
         }

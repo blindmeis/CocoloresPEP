@@ -12,6 +12,7 @@ using CocoloresPEP.Common.Extensions;
 using CocoloresPEP.Common.WpfCore.Commanding;
 using CocoloresPEP.Common.WpfCore.Service.MessageBox;
 using CocoloresPEP.Module.Mitarbeiter;
+using Itenso.TimePeriod;
 
 namespace CocoloresPEP.Module.Planung
 {
@@ -27,6 +28,7 @@ namespace CocoloresPEP.Module.Planung
         private readonly Lazy<DelegateCommand<PlanungszeitVonBisWrapper>> _lazyUpdatePlanzeitCommand;
         private readonly Lazy<DelegateCommand<PlanungszeitVonBisWrapper>> _lazyAddPlanzeitCommand;
         private ObservableCollection<PlanItem> _planzeiten;
+        private bool _hasGrossteam;
 
         public PlanungstagViewmodel(MitarbeiterViewmodel mitarbeiter, IMessageBoxService msgService, Action refreshAction)
         {
@@ -49,10 +51,10 @@ namespace CocoloresPEP.Module.Planung
             {
                 PlanVonBisZeiten.Add(new PlanungszeitVonBisWrapper()
                 {
-                    StundeVon = planItem.Startzeit.Hour,
-                    MinuteVon = planItem.Startzeit.Minute,
-                    StundeBis = planItem.GetEndzeit().Hour,
-                    MinuteBis = planItem.GetEndzeit().Minute,
+                    StundeVon = planItem.Zeitraum.Start.Hour,
+                    MinuteVon = planItem.Zeitraum.Start.Minute,
+                    StundeBis = planItem.Zeitraum.End.Hour,
+                    MinuteBis = planItem.Zeitraum.End.Minute,
                 });
             }
         }
@@ -67,8 +69,8 @@ namespace CocoloresPEP.Module.Planung
 
             return arg != null
                    && start < ende
-                   && !Planzeiten.Any(x => (start >= x.Startzeit && start <= x.GetEndzeit())
-                                          || (ende >= x.Startzeit && ende <= x.GetEndzeit()));
+                   && !Planzeiten.Any(x => (start >= x.Zeitraum.Start && start <= x.Zeitraum.End)
+                                          || (ende >= x.Zeitraum.Start && ende <= x.Zeitraum.End));
         }
 
         private void AddPlanzeitCommandExecute(PlanungszeitVonBisWrapper obj)
@@ -85,8 +87,7 @@ namespace CocoloresPEP.Module.Planung
                 Planzeiten.Add(new PlanItem()
                 {
                     Dienst = DienstTyp.None,
-                    Startzeit = start,
-                    Endzeit = ende,
+                    Zeitraum = new TimeRange(start,ende),
                     ErledigtDurch = _mitarbeiter.MapViewmodelToMitarbeiter(),
                     Gruppe = _mitarbeiter.DefaultGruppe,
                 });
@@ -129,8 +130,9 @@ namespace CocoloresPEP.Module.Planung
             {
                 var index = PlanVonBisZeiten.IndexOf(obj);
                 var planitem = Planzeiten[index];
-                planitem.Startzeit = new DateTime(planitem.Startzeit.Year, planitem.Startzeit.Month, planitem.Startzeit.Day, obj.StundeVon, obj.MinuteVon, 0);
-                planitem.Endzeit = new DateTime(planitem.Startzeit.Year, planitem.Startzeit.Month, planitem.Startzeit.Day, obj.StundeBis, obj.MinuteBis, 0);
+                var start = new DateTime(planitem.Zeitraum.Start.Year, planitem.Zeitraum.Start.Month, planitem.Zeitraum.Start.Day, obj.StundeVon, obj.MinuteVon, 0);
+                var ende = new DateTime(planitem.Zeitraum.Start.Year, planitem.Zeitraum.Start.Month, planitem.Zeitraum.Start.Day, obj.StundeBis, obj.MinuteBis, 0);
+                planitem.Zeitraum = new TimeRange(start,ende);
 
                 OnPropertyChanged(nameof(PlanZeitenInfo));
                 OnPropertyChanged(nameof(EingeteiltSollTyp));
@@ -190,38 +192,38 @@ namespace CocoloresPEP.Module.Planung
                 return;
 
             var plan = Planzeiten.Single();
-            var dauer = plan.DauerInMinuten;
-            var at = new Arbeitstag(plan.Startzeit);
+            var dauer = plan.Zeitraum.Duration.TotalMinutes;
+
 
             switch (obj)
             {
                 case DienstTyp.Frühdienst:
-                    plan.Startzeit = at.Frühdienst;
-                    plan.Endzeit = plan.Startzeit.AddMinutes(dauer);
+                    plan.Zeitraum.Start = plan.Arbeitstag.Frühdienst;
+                    plan.Zeitraum.End = plan.Zeitraum.Start.AddMinutes(dauer);
                     break;
                 case DienstTyp.AchtUhrDienst:
-                    plan.Startzeit = at.AchtUhrDienst;
-                    plan.Endzeit = plan.Startzeit.AddMinutes(dauer);
+                    plan.Zeitraum.Start = plan.Arbeitstag.AchtUhrDienst;
+                    plan.Zeitraum.End = plan.Zeitraum.Start.AddMinutes(dauer);
                     break;
                 case DienstTyp.KernzeitStartDienst:
-                    plan.Startzeit = at.KernzeitGruppeStart;
-                    plan.Endzeit = plan.Startzeit.AddMinutes(dauer);
+                    plan.Zeitraum.Start = plan.Arbeitstag.KernzeitGruppeStart;
+                    plan.Zeitraum.End = plan.Zeitraum.Start.AddMinutes(dauer);
                     break;
                 case DienstTyp.NeunUhrDienst:
-                    plan.Startzeit = at.NeunUhrDienst;
-                    plan.Endzeit = plan.Startzeit.AddMinutes(dauer);
+                    plan.Zeitraum.Start = plan.Arbeitstag.NeunUhrDienst;
+                    plan.Zeitraum.End = plan.Zeitraum.Start.AddMinutes(dauer);
                     break;
                 case DienstTyp.ZehnUhrDienst:
-                    plan.Startzeit = at.ZehnUhrDienst;
-                    plan.Endzeit = plan.Startzeit.AddMinutes(dauer);
+                    plan.Zeitraum.Start = plan.Arbeitstag.ZehnUhrDienst;
+                    plan.Zeitraum.End = plan.Zeitraum.Start.AddMinutes(dauer);
                     break;
                 case DienstTyp.KernzeitEndeDienst:
-                    plan.Endzeit = at.KernzeitGruppeEnde;
-                    plan.Startzeit = plan.Endzeit.Value.AddMinutes(-1*dauer);
+                    plan.Zeitraum.End = plan.Arbeitstag.KernzeitGruppeEnde;
+                    plan.Zeitraum.Start = plan.Zeitraum.End.AddMinutes(-1*dauer);
                     break;
                 case DienstTyp.SpätdienstEnde:
-                    plan.Endzeit = at.SpätdienstEnde;
-                    plan.Startzeit = plan.Endzeit.Value.AddMinutes(-1 * dauer);
+                    plan.Zeitraum.End = plan.Arbeitstag.SpätdienstEnde;
+                    plan.Zeitraum.Start = plan.Zeitraum.End.AddMinutes(-1 * dauer);
                     break;
             }
             OnPropertyChanged(nameof(PlanZeitenInfo));
@@ -276,17 +278,28 @@ namespace CocoloresPEP.Module.Planung
             }
         }
 
+        public bool HasGrossteam
+        {
+            get { return _hasGrossteam; }
+            set
+            {
+                _hasGrossteam = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(PlanZeitenInfo));
+            }
+        }
+
         public string PlanZeitenInfo
         {
             get
             {
                 if (IsFeiertag || Planzeiten.All(x=>(x.Dienst&DienstTyp.Frei)==DienstTyp.Frei))
-                    return " - ";
+                    return "";
 
                 var sb = (from zeiten in Planzeiten
-                          where (zeiten.Dienst & DienstTyp.Frei) != DienstTyp.Frei
-                          let endzeit = zeiten.GetEndzeit()
-                          select $"{zeiten.Startzeit.ToString("HH:mm")}-{endzeit.ToString("HH:mm")}"
+                          where (zeiten.Dienst & DienstTyp.Frei) != DienstTyp.Frei && (zeiten.Dienst & DienstTyp.Großteam) != DienstTyp.Großteam
+                          let endzeit = zeiten.Zeitraum.End
+                          select $"{zeiten.Zeitraum.Start.ToString("HH:mm")}-{endzeit.ToString("HH:mm")}"
                           ).ToList();
 
                 return string.Join(Environment.NewLine, sb);
@@ -321,7 +334,15 @@ namespace CocoloresPEP.Module.Planung
 
         public string PausenInfo
         {
-            get { return Planzeiten.Any(x => x.ArbeitszeitMitPauseInMinuten()!=x.ArbeitszeitOhnePauseInMinuten()) ? "P" : " "; }
+            get
+            {
+                var tr = Planzeiten.Select(x => x.Zeitraum);
+                TimePeriodCollection periods = new TimePeriodCollection(tr);
+                TimePeriodCombiner<TimeRange> periodCombiner = new TimePeriodCombiner<TimeRange>();
+                ITimePeriodCollection combinedPeriods = periodCombiner.CombinePeriods(periods);
+
+                return Planzeiten.Any(x => 1==1) ? "P" : " ";
+            }
         }
 
         private void GetStartAndEndzeit(PlanungszeitVonBisWrapper arg, out DateTime start, out DateTime ende)

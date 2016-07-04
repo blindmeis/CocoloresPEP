@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using Itenso.TimePeriod;
 
 namespace CocoloresPEP.Common.Entities
 {
@@ -36,6 +37,7 @@ namespace CocoloresPEP.Common.Entities
         public ObservableCollection<PlanItem> Planzeiten { get;  set; }
 
         public bool IsFeiertag { get; set; }
+        public bool HasGrossteam { get; set; }
 
         public DateTime Frühdienst
         {
@@ -82,9 +84,9 @@ namespace CocoloresPEP.Common.Entities
             get { return new DateTime(Datum.Year, Datum.Month, Datum.Day, 16, 30, 0); }
         }
 
-        public DateTime GrossteamStart
+        public TimeRange Grossteam
         {
-            get { return new DateTime(Datum.Year, Datum.Month, Datum.Day, 15, 30, 0); }
+            get { return new TimeRange(new DateTime(Datum.Year, Datum.Month, Datum.Day, 15, 30, 0),new TimeSpan(2,0,0)); }
         }
     }
 }
