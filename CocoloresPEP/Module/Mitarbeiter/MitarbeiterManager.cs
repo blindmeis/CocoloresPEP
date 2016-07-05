@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -30,8 +31,8 @@ namespace CocoloresPEP.Module.Mitarbeiter
         {
             _serializationService = new SerializationService();
 
-            var mitarbeiter = _serializationService.ReadMitarbeiterListe() ?? new List<Common.Entities.Mitarbeiter>();
-            MitarbeiterCollection = new ObservableCollection<MitarbeiterViewmodel>(mitarbeiter.Select(x=> x.MapMitarbeiterToViewmodel()));
+            var mitarbeiters = _serializationService.ReadMitarbeiterListe() ?? new List<Common.Entities.Mitarbeiter>();
+            MitarbeiterCollection = new ObservableCollection<MitarbeiterViewmodel>(mitarbeiters.Select(x=> x.MapMitarbeiterToViewmodel()));
 
             MitarbeiterView = CollectionViewSource.GetDefaultView(MitarbeiterCollection);
             MitarbeiterView.SortDescriptions.Add(new SortDescription("DefaultGruppe", ListSortDirection.Ascending));
@@ -41,6 +42,7 @@ namespace CocoloresPEP.Module.Mitarbeiter
             _lazyCreateMitarbeiterCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(CreateMitarbeiterCommandExecute, CanCreateMitarbeiterCommandExecute));
             _lazySaveMitarbeiterCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(SaveMitarbeiterCommandExecute, CanSaveMitarbeiterCommandExecute));
             _lazyDeleteMitarbeiterCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(DeleteMitarbeiterCommandExecute, CanDeleteMitarbeiterCommandExecute));
+
         }
 
      
@@ -101,6 +103,7 @@ namespace CocoloresPEP.Module.Mitarbeiter
             try
             {
                 await Task.Run(() =>_serializationService.WriteMitarbeiterListe(MitarbeiterCollection.Select(x => x.MapViewmodelToMitarbeiter()).ToList()));
+
             }
             catch (Exception ex)
             {
@@ -136,5 +139,37 @@ namespace CocoloresPEP.Module.Mitarbeiter
                 MitarbeiterCollection.Remove(SelectedMitarbeiter);
         }
         #endregion
+
+        public bool HasChanges()
+        {
+            var mitarbeiters = _serializationService.ReadMitarbeiterListe() ?? new List<Common.Entities.Mitarbeiter>();
+            var savedCollection = new ObservableCollection<MitarbeiterViewmodel>(mitarbeiters.Select(x => x.MapMitarbeiterToViewmodel()));
+
+            if (savedCollection.Count != MitarbeiterCollection.Count)
+                return true;
+
+            var savedOrdered = savedCollection.OrderBy(x => x.Name).ToList();
+            var checkOrdered = MitarbeiterCollection.OrderBy(x => x.Name).ToList();
+
+            for (int i = 0; i < savedOrdered.Count; i++)
+            {
+                var saved = savedOrdered[i];
+                var check = checkOrdered[i];
+
+                if (saved.Name != check.Name
+                    || saved.DefaultGruppe != check.DefaultGruppe
+                    || saved.WochenStunden != check.WochenStunden
+                    || saved.Wunschdienste != check.Wunschdienste
+                    || saved.KindFreieZeit != check.KindFreieZeit)
+                    return true;
+
+                if (saved.NichtDaZeiten.Count != check.NichtDaZeiten.Count
+                    || saved.NichtDaZeiten.Intersect(check.NichtDaZeiten).Count()!= saved.NichtDaZeiten.Count)
+                    return true;
+            }
+
+            return false;
+        }
+        
     }
 }

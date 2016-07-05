@@ -84,7 +84,7 @@
             </Button>
             <Separator/>
             <Button ToolTip="Nach Excel exportieren" 
-                    Command="{Binding Path=ExportExcelCommand}"
+                    Command="{Binding Path=ExportPlanungCommand}"
                     Style="{DynamicResource ToolbarButtonStyle}"
                     >
                 <Viewbox Width="24" Height="24">
@@ -103,7 +103,7 @@
             <Expander Grid.Column="0" ExpandDirection="Right" IsExpanded="True"
                       Background="{StaticResource ColorExpanderBackground}" Padding="5,0,15,0">
                 <Expander.Header>
-                    <TextBlock Text="Arbeitswochen">
+                    <TextBlock Text="Arbeitswochen" FontWeight="Bold">
                         <TextBlock.LayoutTransform>
                             <RotateTransform Angle="-90"/>
                         </TextBlock.LayoutTransform>
@@ -138,9 +138,14 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                
-                <Expander Grid.Row="0" Header="{Binding SelectedArbeitswocheInfo}" Margin="0,0,0,15">
-    
+
+                <Expander Grid.Row="0" Margin="0,0,0,15">
+                    <Expander.Header>
+                        <TextBlock Text="{Binding SelectedArbeitswocheInfo}" FontWeight="Bold">
+
+                        </TextBlock>
+                    </Expander.Header>
+
                 </Expander>
 
                 <DataGrid Grid.Row="1"
@@ -524,10 +529,10 @@
                     </Style>
                 </Grid.Style>
 
-                <Expander ExpandDirection="Left" IsExpanded="True"
+                <Expander ExpandDirection="Left" IsExpanded="True" 
                           Background="{StaticResource ColorExpanderBackground}" Padding="15,0,5,0">
                     <Expander.Header>
-                        <TextBlock Text="Mitarbeiterdetails">
+                        <TextBlock Text="Mitarbeiterdetails" FontWeight="Bold">
                             <TextBlock.LayoutTransform>
                                 <RotateTransform Angle="90"/>
                             </TextBlock.LayoutTransform>

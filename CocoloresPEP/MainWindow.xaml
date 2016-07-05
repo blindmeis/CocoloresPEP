@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:CocoloresPEP"
         xmlns:mitarbeiter="clr-namespace:CocoloresPEP.Views.Mitarbeiter"
         xmlns:planung="clr-namespace:CocoloresPEP.Views.Planung"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
         Title="Cocolores PEP" 
         Icon="Cocolores.ico"

@@ -29,6 +29,7 @@ namespace CocoloresPEP.Module.Planung
             Mitarbeiter = new List<MitarbeiterViewmodel>();
         }
         public int Jahr { get; set; }
+
         public int KalenderWoche { get; set; }
 
         public bool IsMontagFeiertag
@@ -48,6 +49,7 @@ namespace CocoloresPEP.Module.Planung
                 }
             }
         }
+
         public bool IsDienstagFeiertag
         {
             get { return _isDienstagFeiertag; }

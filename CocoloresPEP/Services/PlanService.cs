@@ -31,7 +31,7 @@ namespace CocoloresPEP.Services
                     //Wenn Feiertag, dann seinen Tagessatz minutengenau
                     foreach (var mitarbeiter in maList)
                     {
-                        var tr = new TimeRange(arbeitstag.KernzeitGruppeStart, arbeitstag.KernzeitGruppeStart.AddMinutes(mitarbeiter.TagesSollMinutenMitPause));
+                        var tr = new TimeRange(arbeitstag.KernzeitGruppeStart, arbeitstag.KernzeitGruppeStart.AddMinutes(mitarbeiter.TagesSollMinuten));
                         arbeitstag.Planzeiten.Add(CreatePlanItem(arbeitstag, mitarbeiter, tr,GruppenTyp.None, DienstTyp.Frei));
                     }
                     continue;
@@ -41,7 +41,7 @@ namespace CocoloresPEP.Services
                 var mitarbeiterNichtDa = maList.Where(x => x.NichtDaZeiten.Any(dt => dt == arbeitstag.Datum)).ToList();
                 foreach (var mitarbeiter in mitarbeiterNichtDa)
                 {
-                    var tr = new TimeRange(arbeitstag.KernzeitGruppeStart, arbeitstag.KernzeitGruppeStart.AddMinutes(mitarbeiter.TagesSollMinutenMitPause));
+                    var tr = new TimeRange(arbeitstag.KernzeitGruppeStart, arbeitstag.KernzeitGruppeStart.AddMinutes(mitarbeiter.TagesSollMinuten));
                     arbeitstag.Planzeiten.Add(CreatePlanItem(arbeitstag, mitarbeiter, tr, GruppenTyp.None, DienstTyp.Frei));
                 }
 
@@ -547,7 +547,7 @@ namespace CocoloresPEP.Services
                         }
 
                         var rest = mapl.Value.Except(spätdienste).ToList();
-                        rest = rest.Except(frühdienste).Where(x=> (x.Dienst & DienstTyp.Großteam) != DienstTyp.Großteam).ToList();
+                        rest = rest.Except(frühdienste).ToList();
 
                         if (PlanzeitReduzierenOhneKernzeitVerletzung(rest, kfzMinute))
                             kfzMinutenTag = 0;
@@ -565,6 +565,7 @@ namespace CocoloresPEP.Services
         {
             if (dienste.Count > 0)
             {
+                var kfz = kfzMinutenTag;
                 foreach (var planItem in dienste)
                 {
                     var arbeitstag = planItem.Arbeitstag;
@@ -572,13 +573,20 @@ namespace CocoloresPEP.Services
                     var oldStartzeit = planItem.Zeitraum.Start;
                     var oldEndzeit = planItem.Zeitraum.End;
 
+                    if (planItem.Zeitraum.Duration.NeedPause())
+                    {
+                        var duration = planItem.Zeitraum.Duration;
+                        if (!duration.Add(new TimeSpan(0, -1*kfz, 0)).NeedPause())
+                            kfz += 30;
+                    }
+
                     if (planItem.Zeitraum.Start <= arbeitstag.KernzeitGruppeStart)
                     {
-                        planItem.Zeitraum.End = planItem.Zeitraum.End.AddMinutes(-1 * kfzMinutenTag);
+                        planItem.Zeitraum.End = planItem.Zeitraum.End.AddMinutes(-1 * kfz);
                     }
                     else
                     {
-                        planItem.Zeitraum.Start = planItem.Zeitraum.Start.AddMinutes(kfzMinutenTag);
+                        planItem.Zeitraum.Start = planItem.Zeitraum.Start.AddMinutes(kfz);
                     }
 
                     if (CheckKernzeitAbgedeckt(arbeitstag.KernzeitGruppeStart, arbeitstag.KernzeitGruppeEnde, planItem.Gruppe, arbeitstag.Planzeiten))

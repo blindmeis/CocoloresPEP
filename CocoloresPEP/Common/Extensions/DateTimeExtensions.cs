@@ -56,6 +56,11 @@ namespace CocoloresPEP.Common.Extensions
             return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
         }
 
+        public static string GetWochentagName(this DateTime datum)
+        {
+            var culture = new System.Globalization.CultureInfo("de-DE");
+            return culture.DateTimeFormat.GetDayName(datum.DayOfWeek);
+        }
     
     }
 

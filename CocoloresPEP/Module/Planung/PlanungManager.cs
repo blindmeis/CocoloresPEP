@@ -35,6 +35,7 @@ namespace CocoloresPEP.Module.Planung
         private readonly Lazy<DelegateCommand> _lazyDeletePlanungswocheCommand;
         private readonly Lazy<DelegateCommand> _lazyRunPlanungCommand;
         private readonly Lazy<DelegateCommand> _lazyRunPlanungCheckCommand;
+        private readonly Lazy<DelegateCommand> _lazyExportPlanungCommand;
         private PlanungswocheMitarbeiterViewmodel _selectedPlanungswocheMitarbeiterItem;
         private WpfMessageBoxService _msg;
 
@@ -58,9 +59,13 @@ namespace CocoloresPEP.Module.Planung
             _lazyDeletePlanungswocheCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(DeletePlanungswocheCommandExecute, CanDeletePlanungswocheCommandExecute));
             _lazyRunPlanungCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(RunPlanungCommandExecute, CanRunPlanungCommandExecute));
             _lazyRunPlanungCheckCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(RunPlanungCheckCommandExecute, CanRunPlanungCheckCommandExecute));
+            _lazyExportPlanungCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(ExportPlanungCommandExecute, CanExportPlanungCommandExecute));
+
 
             Jahr = DateTime.Now.Year;
         }
+
+      
 
         public ICollectionView PlanungView { get; set; }
 
@@ -173,6 +178,7 @@ namespace CocoloresPEP.Module.Planung
             finally
             {
                 IsBusy = false;
+                CommandManager.InvalidateRequerySuggested();
             }
            
         }
@@ -242,17 +248,17 @@ namespace CocoloresPEP.Module.Planung
             if(!CanRunPlanungCommandExecute())
                 return;
 
+            if (SelectedArbeitswoche.PlanungProMitarbeiterListe.Any(x => x.HasPlanzeitenEntries))
+            {
+                var dlg = _msg.ShowYesNo("Wollen Sie eine neue Planung durchführen?", CustomDialogIcons.Question);
+                if (dlg == CustomDialogResults.No)
+                    return;
+            }
+
             IsBusy = true;
 
             try
             {
-                if (SelectedArbeitswoche.PlanungProMitarbeiterListe.Any(x=>x.HasPlanzeitenEntries))
-                {
-                    var dlg = _msg.ShowYesNo("Wollen Sie eine neue Planung durchführen?",CustomDialogIcons.Question);
-                    if (dlg == CustomDialogResults.No)
-                        return;
-                }
-
                 var woche = SelectedArbeitswoche.MapViewmodelToArbeitswoche();
 
                 await Task.Run(() => PlanService.ErstelleWochenplan(woche, woche.Mitarbeiter));
@@ -276,6 +282,7 @@ namespace CocoloresPEP.Module.Planung
             finally
             {
                 IsBusy = false;
+                CommandManager.InvalidateRequerySuggested();
             }
 
            
@@ -324,6 +331,42 @@ namespace CocoloresPEP.Module.Planung
         }
         #endregion
 
+        #region ExportPlanungCommand
+        
+        public ICommand ExportPlanungCommand { get { return _lazyExportPlanungCommand.Value; } }
+        private bool CanExportPlanungCommandExecute()
+        {
+            return !IsBusy && SelectedArbeitswoche!=null && SelectedArbeitswoche.PlanungProMitarbeiterListe.Any(x => x.HasPlanzeitenEntries);
+        }
+
+        private async void ExportPlanungCommandExecute()
+        {
+            if (!CanExportPlanungCommandExecute())
+                return;
+            IsBusy = true;
+            try
+            {
+                var woche = SelectedArbeitswoche.MapViewmodelToArbeitswoche();
+                var ms = await Task.Run(() =>
+                {
+                    var service = new ExcelExportService();
+                    return service.SchreibeIstZeiten(woche, woche.Mitarbeiter);
+                });
+
+                ms.CreateXlsxFileOnTempPath(true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler beim Export der Planung.{Environment.NewLine}{ex.GetAllErrorMessages()}");
+            }
+            finally
+            {
+                IsBusy = false;
+                CommandManager.InvalidateRequerySuggested();
+            }
+        } 
+        #endregion
+
         private ICollectionView TransformArbeitswocheToPreview(ArbeitswocheViewmodel woche)
         {
             if (woche == null)
@@ -339,6 +382,97 @@ namespace CocoloresPEP.Module.Planung
             return view;
         }
 
+        public bool HasChanges()
+        {
+            var planungen = _serializationService.ReadPlanungListe() ?? new List<Arbeitswoche>();
+            var savedCollection = new ObservableCollection<ArbeitswocheViewmodel>(planungen.Select(x => x.MapArbeitswocheToViewmodel()));
+
+            if (savedCollection.Count != ArbeitswochenCollection.Count)
+                return true;
+
+            var savedOrdered = savedCollection.OrderBy(x => x.Jahr).ThenBy(x=>x.KalenderWoche).ToList();
+            var checkOrdered = ArbeitswochenCollection.OrderBy(x => x.Jahr).ThenBy(x => x.KalenderWoche).ToList();
+
+            for (int i = 0; i < savedOrdered.Count; i++)
+            {
+                var saved = savedOrdered[i];
+                var check = checkOrdered[i];
+
+                if(saved.Jahr != check.Jahr || saved.KalenderWoche != check.KalenderWoche)
+                    return true;
+
+                if (saved.Mitarbeiter.Count != check.Mitarbeiter.Count)
+                    return true;
+
+                for (int j = 0; j < saved.Mitarbeiter.Count; j++)
+                {
+                    var savedMitarbeiter = saved.Mitarbeiter[j];
+                    var checkMitarbeiter = check.Mitarbeiter[j];
+
+                    if (savedMitarbeiter.Name != checkMitarbeiter.Name
+                        || savedMitarbeiter.DefaultGruppe != checkMitarbeiter.DefaultGruppe
+                        || savedMitarbeiter.WochenStunden != checkMitarbeiter.WochenStunden
+                        || savedMitarbeiter.Wunschdienste != checkMitarbeiter.Wunschdienste
+                        || savedMitarbeiter.KindFreieZeit != checkMitarbeiter.KindFreieZeit)
+                        return true;
+
+                    if (savedMitarbeiter.NichtDaZeiten.Count != checkMitarbeiter.NichtDaZeiten.Count
+                        || savedMitarbeiter.NichtDaZeiten.Intersect(checkMitarbeiter.NichtDaZeiten).Count() != savedMitarbeiter.NichtDaZeiten.Count)
+                        return true;
+
+                    var savedPlanzeiten = saved.PlanungProMitarbeiterListe.SingleOrDefault(x => x.Mitarbeiter == savedMitarbeiter);
+                    var checkPlanzeiten = check.PlanungProMitarbeiterListe.SingleOrDefault(x => x.Mitarbeiter == checkMitarbeiter);
+
+                    if (savedPlanzeiten == null && checkPlanzeiten != null
+                        || savedPlanzeiten != null && checkPlanzeiten == null)
+                        return true;
+
+                    if(savedPlanzeiten == null && checkPlanzeiten == null)
+                        continue;
+
+                    var savedPlanitems = savedPlanzeiten.Montag.Planzeiten
+                        .Union(savedPlanzeiten.Dienstag.Planzeiten)
+                        .Union(savedPlanzeiten.Mittwoch.Planzeiten)
+                        .Union(savedPlanzeiten.Donnerstag.Planzeiten)
+                        .Union(savedPlanzeiten.Freitag.Planzeiten).ToList();
+
+                    var checkPlanitems = checkPlanzeiten.Montag.Planzeiten
+                        .Union(checkPlanzeiten.Dienstag.Planzeiten)
+                        .Union(checkPlanzeiten.Mittwoch.Planzeiten)
+                        .Union(checkPlanzeiten.Donnerstag.Planzeiten)
+                        .Union(checkPlanzeiten.Freitag.Planzeiten).ToList();
+
+                    if (savedPlanitems.Count != checkPlanitems.Count)
+                        return true;
+
+                    for (int k = 0; k < savedPlanitems.Count; k++)
+                    {
+                        var savedPl = savedPlanitems[i];
+                        var checkPl = checkPlanitems[i];
+
+                        if (!savedPl.Zeitraum.Equals(checkPl.Zeitraum)
+                            || savedPl.Dienst != checkPl.Dienst
+                            || savedPl.Gruppe != checkPl.Gruppe)
+                            return true;
+                    }
+                }
+
+                if (saved.IsMontagFeiertag != check.IsMontagFeiertag
+                    || saved.IsDienstagFeiertag != check.IsDienstagFeiertag
+                    || saved.IsMittwochFeiertag != check.IsMittwochFeiertag
+                    || saved.IsDonnerstagFeiertag != check.IsDonnerstagFeiertag
+                    || saved.IsFreitagFeiertag != check.IsFreitagFeiertag
+                    || saved.HasMontagGrossteam != check.HasMontagGrossteam
+                    || saved.HasDienstagGrossteam != check.HasDienstagGrossteam
+                    || saved.HasMittwochGrossteam != check.HasMittwochGrossteam
+                    || saved.HasDonnerstagGrossteam != check.HasDonnerstagGrossteam
+                    || saved.HasFreitagGrossteam != check.HasFreitagGrossteam)
+                    return true;
+
+            }
+
+            return false;
+        }
 
     }
 }

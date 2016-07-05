@@ -12,6 +12,8 @@ namespace CocoloresPEP.Common.Entities
 {
     public class Arbeitstag 
     {
+        private TimeRange _grossteam;
+
         public Arbeitstag()
         {
             
@@ -20,6 +22,8 @@ namespace CocoloresPEP.Common.Entities
         {
             Datum = dt;
             Planzeiten = new ObservableCollection<PlanItem>();
+
+            Grossteam = new TimeRange(new DateTime(Datum.Year, Datum.Month, Datum.Day, 15, 30, 0), new TimeSpan(2, 0, 0));
         }
 
         [OnDeserialized()]
@@ -86,7 +90,8 @@ namespace CocoloresPEP.Common.Entities
 
         public TimeRange Grossteam
         {
-            get { return new TimeRange(new DateTime(Datum.Year, Datum.Month, Datum.Day, 15, 30, 0),new TimeSpan(2,0,0)); }
+            get { return _grossteam; }
+            set { _grossteam = value; }
         }
     }
 }

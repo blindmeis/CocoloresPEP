@@ -30,17 +30,12 @@ namespace CocoloresPEP.Common.Entities
             }
         }
 
-        public int TagesSollMinutenMitPause
+        public int TagesSollMinuten
         {
             get
             {
                 var result = WochenStunden * 60 /5;
 
-                if (result > 540)
-                    return (int)result + 45;
-                if (result > 360)
-                    return (int)result + 30;
-                
                 return (int)result;
             }
         }

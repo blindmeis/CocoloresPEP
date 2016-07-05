@@ -31,7 +31,9 @@ namespace CocoloresPEP.Common.Entities
                        || (Dienst & DienstTyp.NeunUhrDienst) == DienstTyp.NeunUhrDienst
                        || (Dienst & DienstTyp.ZehnUhrDienst) == DienstTyp.ZehnUhrDienst
                        || (Dienst & DienstTyp.KernzeitEndeDienst) == DienstTyp.KernzeitEndeDienst
-                       || (Dienst & DienstTyp.SpätdienstEnde) == DienstTyp.SpätdienstEnde;
+                       || (Dienst & DienstTyp.SpätdienstEnde) == DienstTyp.SpätdienstEnde
+                       || (Dienst & DienstTyp.FsjFrühdienst) == DienstTyp.FsjFrühdienst
+                       || (Dienst & DienstTyp.FsjSpätdienst) == DienstTyp.FsjSpätdienst;
 
 
             }

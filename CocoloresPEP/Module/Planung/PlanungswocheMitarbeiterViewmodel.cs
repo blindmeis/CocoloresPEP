@@ -6,13 +6,26 @@ using System.Threading.Tasks;
 using CocoloresPEP.Common;
 using CocoloresPEP.Common.Entities;
 using CocoloresPEP.Common.Extensions;
+using CocoloresPEP.Common.WpfCore;
 using CocoloresPEP.Module.Mitarbeiter;
 
 namespace CocoloresPEP.Module.Planung
 {
     public class PlanungswocheMitarbeiterViewmodel : ViewmodelBase
     {
-        public MitarbeiterViewmodel Mitarbeiter { get; set; }
+        private PropertyObserver<MitarbeiterViewmodel> _observer;
+        private MitarbeiterViewmodel _mitarbeiter;
+
+        public MitarbeiterViewmodel Mitarbeiter
+        {
+            get { return _mitarbeiter; }
+            set
+            {
+                _mitarbeiter = value; 
+                _observer = new PropertyObserver<MitarbeiterViewmodel>(_mitarbeiter)
+                    .RegisterHandler(n => n.KindFreieZeit, n => OnPropertyChanged(nameof(PlusMinusStunden)));
+            }
+        }
 
         public PlanungstagViewmodel Montag { get; set; }
         public PlanungstagViewmodel Dienstag { get; set; }

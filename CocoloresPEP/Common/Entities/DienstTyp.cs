@@ -26,9 +26,9 @@ namespace CocoloresPEP.Common.Entities
         ZehnUhrDienst = 1 << 6,
         [Display(Name = @"Kernzeitende Dienst")]
         KernzeitEndeDienst = 1 << 7,
+        [Display(Name = @" - Frei - ")]
         Frei = 1 << 8,
         FsjFrühdienst = 1 << 9,
-        FsjSpätdienst = 1 << 10,
-        Großteam = 1 << 11,
+        FsjSpätdienst = 1 << 10
     }
 }

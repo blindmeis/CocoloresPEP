@@ -198,35 +198,53 @@ namespace CocoloresPEP.Module.Planung
             switch (obj)
             {
                 case DienstTyp.Frühdienst:
+                    plan.Dienst = DienstTyp.Frühdienst;
                     plan.Zeitraum.Start = plan.Arbeitstag.Frühdienst;
                     plan.Zeitraum.End = plan.Zeitraum.Start.AddMinutes(dauer);
                     break;
                 case DienstTyp.AchtUhrDienst:
+                    plan.Dienst = DienstTyp.AchtUhrDienst;
                     plan.Zeitraum.Start = plan.Arbeitstag.AchtUhrDienst;
                     plan.Zeitraum.End = plan.Zeitraum.Start.AddMinutes(dauer);
                     break;
                 case DienstTyp.KernzeitStartDienst:
+                    plan.Dienst = DienstTyp.KernzeitStartDienst;
                     plan.Zeitraum.Start = plan.Arbeitstag.KernzeitGruppeStart;
                     plan.Zeitraum.End = plan.Zeitraum.Start.AddMinutes(dauer);
                     break;
                 case DienstTyp.NeunUhrDienst:
+                    plan.Dienst = DienstTyp.NeunUhrDienst;
                     plan.Zeitraum.Start = plan.Arbeitstag.NeunUhrDienst;
                     plan.Zeitraum.End = plan.Zeitraum.Start.AddMinutes(dauer);
                     break;
                 case DienstTyp.ZehnUhrDienst:
+                    plan.Dienst = DienstTyp.ZehnUhrDienst;
                     plan.Zeitraum.Start = plan.Arbeitstag.ZehnUhrDienst;
                     plan.Zeitraum.End = plan.Zeitraum.Start.AddMinutes(dauer);
                     break;
                 case DienstTyp.KernzeitEndeDienst:
+                    plan.Dienst = DienstTyp.KernzeitEndeDienst;
                     plan.Zeitraum.End = plan.Arbeitstag.KernzeitGruppeEnde;
                     plan.Zeitraum.Start = plan.Zeitraum.End.AddMinutes(-1*dauer);
                     break;
                 case DienstTyp.SpätdienstEnde:
+                    plan.Dienst = DienstTyp.SpätdienstEnde;
                     plan.Zeitraum.End = plan.Arbeitstag.SpätdienstEnde;
                     plan.Zeitraum.Start = plan.Zeitraum.End.AddMinutes(-1 * dauer);
                     break;
+                case DienstTyp.Frei:
+                    plan.Dienst = DienstTyp.Frei;
+                    plan.Gruppe = GruppenTyp.None;
+                    plan.Zeitraum.Start = plan.Arbeitstag.KernzeitGruppeStart;
+                    plan.Zeitraum.End = plan.Arbeitstag.KernzeitGruppeStart.AddMinutes((int)(_mitarbeiter.WochenStunden*60/5));
+                    OnPropertyChanged(nameof(EingeteiltSollTyp));
+                    OnPropertyChanged(nameof(PausenInfo));
+                    _refreshAction();
+                    break;
             }
+            RefreshPlanVonBisZeiten();
             OnPropertyChanged(nameof(PlanZeitenInfo));
+           
         }
         #endregion
 
@@ -297,7 +315,7 @@ namespace CocoloresPEP.Module.Planung
                     return "";
 
                 var sb = (from zeiten in Planzeiten
-                          where (zeiten.Dienst & DienstTyp.Frei) != DienstTyp.Frei && (zeiten.Dienst & DienstTyp.Großteam) != DienstTyp.Großteam
+                          where (zeiten.Dienst & DienstTyp.Frei) != DienstTyp.Frei
                           let endzeit = zeiten.Zeitraum.End
                           select $"{zeiten.Zeitraum.Start.ToString("HH:mm")}-{endzeit.ToString("HH:mm")}"
                           ).ToList();
@@ -327,8 +345,7 @@ namespace CocoloresPEP.Module.Planung
         {
             get
             {
-                var culture = new System.Globalization.CultureInfo("de-DE");
-                return $"{culture.DateTimeFormat.GetDayName(Datum.DayOfWeek)}: {Datum.ToString("dd.MM.")}";
+                return $"{Datum.GetWochentagName()}: {Datum.ToString("dd.MM.")}";
             }
         }
 
@@ -336,11 +353,6 @@ namespace CocoloresPEP.Module.Planung
         {
             get
             {
-                var tr = Planzeiten.Select(x => x.Zeitraum);
-                TimePeriodCollection periods = new TimePeriodCollection(tr);
-                TimePeriodCombiner<TimeRange> periodCombiner = new TimePeriodCombiner<TimeRange>();
-                ITimePeriodCollection combinedPeriods = periodCombiner.CombinePeriods(periods);
-
                 return Planzeiten.Any(x => x.Zeitraum.Duration.GetArbeitsminutenOhnePause()!=(int)x.Zeitraum.Duration.TotalMinutes) ? "P" : " ";
             }
         }
