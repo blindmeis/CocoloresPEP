@@ -145,7 +145,7 @@ namespace CocoloresPEP.Services
                     schonEingeteilt.Add(h2);
                     var spätdienstStartFsj = arbeitstag.SpätdienstEndeFsj.AddMinutes(-1 * 15 * h2.TagesQuarterTicks);
                     var tr2Spät = new TimeRange(spätdienstStartFsj, arbeitstag.SpätdienstEndeFsj);
-                    var h2Spät = CreatePlanItem(arbeitstag, h2, tr2Spät, h2.DefaultGruppe, DienstTyp.FsjSpätdienst);
+                    var h2Spät = CreatePlanItem(arbeitstag, h2, tr2Spät, h2.DefaultGruppe, DienstTyp.FsjSpätdienst, arbeitstag.SpätdienstEndeFsj);
                     arbeitstag.Planzeiten.Add(h2Spät);
                 }
 
@@ -153,7 +153,7 @@ namespace CocoloresPEP.Services
                 {
                     schonEingeteilt.Add(helferlein);
                     var trhelfer = new TimeRange(arbeitstag.KernzeitGruppeStart, arbeitstag.KernzeitGruppeStart.AddMinutes(15 * helferlein.TagesQuarterTicks));
-                    var plan = CreatePlanItem(arbeitstag, helferlein, trhelfer, helferlein.DefaultGruppe, DienstTyp.KernzeitStartDienst);
+                    var plan = CreatePlanItem(arbeitstag, helferlein, trhelfer, helferlein.DefaultGruppe, DienstTyp.KernzeitStartDienst, arbeitstag.SpätdienstEndeFsj);
                     arbeitstag.Planzeiten.Add(plan);
                 }
                 #endregion
@@ -306,7 +306,7 @@ namespace CocoloresPEP.Services
             return result;
         }
 
-        private static PlanItem CreatePlanItem(Arbeitstag arbeitstag, Mitarbeiter ma, TimeRange zeitraum, GruppenTyp gruppe, DienstTyp dienst)
+        private static PlanItem CreatePlanItem(Arbeitstag arbeitstag, Mitarbeiter ma, TimeRange zeitraum, GruppenTyp gruppe, DienstTyp dienst, DateTime? spätdienstende = null)
         {
             var result = new PlanItem();
             
@@ -319,17 +319,22 @@ namespace CocoloresPEP.Services
             //Pausen mit Planen
             if (result.Zeitraum.Duration.TotalMinutes > 360)
                 result.Zeitraum.End = result.Zeitraum.End.AddMinutes(30);
-
-            AdjustEndzeitSpaetdienstEnde(result);
+            
+            
+            AdjustEndzeitSpaetdienstEnde(result, spätdienstende);
 
             return result;
         }
 
-        private static void AdjustEndzeitSpaetdienstEnde(PlanItem planItem)
+        private static void AdjustEndzeitSpaetdienstEnde(PlanItem planItem, DateTime? spätdienstEnde = null)
         {
-            if (planItem.Zeitraum.End > planItem.Arbeitstag.SpätdienstEnde)
+            var ende = planItem.Arbeitstag.SpätdienstEnde;
+            if (spätdienstEnde.HasValue)
+                ende = spätdienstEnde.Value;
+
+            if (planItem.Zeitraum.End > ende)
             {
-                var minuten = planItem.Arbeitstag.SpätdienstEnde - planItem.Zeitraum.End;
+                var minuten = ende - planItem.Zeitraum.End;
                 planItem.Zeitraum.Move(minuten);
             }
         }

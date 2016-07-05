@@ -62,8 +62,10 @@ namespace CocoloresPEP.Services
                             if(zeiten.Dienst ==DienstTyp.Frei)
                                 continue;
 
+                            var pause = zeiten.Zeitraum.Duration.GetArbeitsminutenOhnePause() != (int) zeiten.Zeitraum.Duration.TotalMinutes  ? " | P": " ";
                             var endzeit = zeiten.Zeitraum.End;
-                            ws.Cells[row, j + 2].Value =$"{zeiten.Zeitraum.Start.ToString("HH:mm")}-{endzeit.ToString("HH:mm")}";
+
+                            ws.Cells[row, j + 2].Value =$"{zeiten.Zeitraum.Start.ToString("HH:mm")}-{endzeit.ToString("HH:mm")}  {pause}";
 
                             var c = zeiten.Gruppe.GetFarbeFromResources();
                             ws.Cells[row, j + 2].Style.Fill.PatternType = ExcelFillStyle.Solid;
