@@ -24,20 +24,22 @@
                                 <TextBlock Text="{Binding Path=PlacementTarget.MitarbeiterViewmodel.Name, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"/>
                                 <TextBlock Text="{Binding Path=PlacementTarget.PlanungstagViewmodel.Wochentag, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"/>
                                 <TextBlock Text="{Binding Path=PlacementTarget.PlanungstagViewmodel.PlanZeitenInfo, StringFormat='Planzeit: {0}', RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"/>
+                                <TextBlock Text="{Binding Path=PlacementTarget.PlanungstagViewmodel.Planzeit.Dienst, StringFormat='Dienst: {0}', Converter={StaticResource MyEnumDecriptionConverter}, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"/>
+                                <TextBlock Text="{Binding Path=PlacementTarget.PlanungstagViewmodel.Planzeit.Gruppe, StringFormat='Gruppe: {0}', Converter={StaticResource MyEnumDecriptionConverter}, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"/>
                             </StackPanel>
                             <Rectangle Grid.Row="1" Fill="DarkCyan" Height="2" Margin="2,3"/>
-                            
+
                             <StackPanel Grid.Row="2" Orientation="Horizontal">
                                 <controls:DefaultGruppenControl x:Name="AuswahlGruppe" MinWidth="75"
                                                                 DisplayMemberPath="Key"
                                                                 SelectedValuePath="Value"
                                                                 IsSynchronizedWithCurrentItem="True"/>
-                                
+
                                 <Button Content="Ändern"
                                         Command="{Binding Path=PlacementTarget.PlanungstagViewmodel.ChangePlanGruppeCommand, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
                                         CommandParameter="{Binding ElementName=AuswahlGruppe, Path=SelectedValue}"></Button>
-                            </StackPanel> 
-                            
+                            </StackPanel>
+
                             <StackPanel Grid.Row="3" Orientation="Horizontal">
                                 <controls:DefaultDienstAuswahlControl x:Name="AuswahlDienst" MinWidth="100"
                                                                        DisplayMemberPath="Key"
@@ -49,12 +51,9 @@
                             </StackPanel>
 
                             <Rectangle Grid.Row="4" Fill="DarkCyan" Height="2" Margin="2,3"/>
-                            
-                            <ItemsControl Grid.Row="5"
-                                          ItemsSource="{Binding Path=PlacementTarget.PlanungstagViewmodel.PlanVonBisZeiten, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid>
+
+
+                            <Grid Grid.Row="5">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="Auto"/>
@@ -63,43 +62,33 @@
                                             </Grid.ColumnDefinitions>
                                             
                                             <controls:VonBisUhrzeitControl Grid.Column="0" 
-                                                                           SelectedHourVon="{Binding StundeVon, Mode=TwoWay}"
-                                                                           SelectedMinuteVon="{Binding MinuteVon, Mode=TwoWay}"
-                                                                           SelectedHourBis="{Binding StundeBis, Mode=TwoWay}"
-                                                                           SelectedMinuteBis="{Binding MinuteBis, Mode=TwoWay}"
+                                                                           SelectedHourVon="{Binding Path=PlacementTarget.PlanungstagViewmodel.PlanVonBisZeit.StundeVon, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
+                                                                           SelectedMinuteVon="{Binding Path=PlacementTarget.PlanungstagViewmodel.PlanVonBisZeit.MinuteVon, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
+                                                                           SelectedHourBis="{Binding Path=PlacementTarget.PlanungstagViewmodel.PlanVonBisZeit.StundeBis, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
+                                                                           SelectedMinuteBis="{Binding Path=PlacementTarget.PlanungstagViewmodel.PlanVonBisZeit.MinuteBis, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
                                                                            />
 
 
-                                            <Button Grid.Column="1" IsDefault="True"
+                                <Button Grid.Column="1" IsDefault="True"
                                                     Command="{Binding Path=PlacementTarget.PlanungstagViewmodel.UpdatePlanzeitCommand, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
-                                                    CommandParameter="{Binding .}"
+                                                    CommandParameter="{Binding Path=PlacementTarget.PlanungstagViewmodel.PlanVonBisZeit, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
                                                     ToolTip="Planzeit ändern">
-                                                <Viewbox Width="16" Height="16">
-                                                    <images:Ok/>
-                                                </Viewbox>
-                                            </Button> 
-                                            <Button Grid.Column="2" 
-                                                    Command="{Binding Path=PlacementTarget.PlanungstagViewmodel.AddPlanzeitCommand, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
-                                                    CommandParameter="{Binding .}"
-                                                    ToolTip="Neue Planzeit hinzufügen">
-                                                <Viewbox Width="16" Height="16">
-                                                    <images:Plus/>
-                                                </Viewbox>
-                                            </Button>
-                                            <Button Grid.Column="3" Margin="5,0,0,0"
+                                    <Viewbox Width="16" Height="16">
+                                        <images:Ok/>
+                                    </Viewbox>
+                                </Button>
+                                <Button Grid.Column="3" Margin="5,0,0,0"
                                                     Command="{Binding Path=PlacementTarget.PlanungstagViewmodel.DeletePlanzeitCommand, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
-                                                    CommandParameter="{Binding .}"
+                                                    CommandParameter="{Binding Path=PlacementTarget.PlanungstagViewmodel.PlanVonBisZeit, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
                                                     ToolTip="Planzeit löschen">
-                                                <Viewbox Width="16" Height="16">
-                                                    <images:Delete/>
-                                                </Viewbox>
-                                            </Button>
+                                    <Viewbox Width="16" Height="16">
+                                        <images:Delete/>
+                                    </Viewbox>
+                                </Button>
 
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                           
+                            </Grid>
+
+
                         </Grid>
                     </Border>
                 </ControlTemplate>
@@ -111,7 +100,6 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Column="0" Text="{Binding ElementName=Uc, Path=PlanungstagViewmodel.PlanZeitenInfo}"/>
-        <TextBlock Grid.Column="1" Text="{Binding ElementName=Uc, Path=PlanungstagViewmodel.PausenInfo, StringFormat='|{0}'}" Margin="0,0,3,0"/>
+        <TextBlock Grid.Column="0" Text="{Binding ElementName=Uc, Path=PlanungstagViewmodel.PlanZeitenInfo}" Margin="0,0,5,0"/>
     </Grid>
 </UserControl>

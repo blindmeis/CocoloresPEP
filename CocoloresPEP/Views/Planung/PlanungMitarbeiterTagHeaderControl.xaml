@@ -1,0 +1,75 @@
+﻿<UserControl x:Class="CocoloresPEP.Views.Planung.PlanungMitarbeiterTagHeaderControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:CocoloresPEP.Common.Controls"
+             xmlns:images="clr-namespace:CocoloresPEP.Images"
+             x:Name="Uc">
+    <StackPanel Orientation="Vertical">
+        <TextBlock Text="{Binding ElementName=Uc, Path=Wochentag, Mode=OneWay}" 
+                   HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+        <CheckBox IsChecked="{Binding ElementName=Uc, Path=IsFeiertag, Mode=TwoWay}"
+                  Content="Feiertag"
+                  HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+        <CheckBox IsChecked="{Binding ElementName=Uc, Path=HasGrossteam, Mode=TwoWay}"
+                  Tag="{Binding ElementName=Uc, Path=., Mode=OneWay}"
+                  Content="Großteam"
+                  HorizontalAlignment="Left" VerticalAlignment="Center"
+                  ToolTip="Großteam">
+            <CheckBox.ContextMenu>
+                <ContextMenu>
+                    <ContextMenu.Template>
+                        <ControlTemplate>
+                            <Border BorderThickness="2" BorderBrush="DarkCyan" Padding="5" Background="DarkGray" >
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    
+                                    <TextBlock Grid.Row="0" Text="Großteam"/>
+
+                                    <Rectangle Grid.Row="1" Fill="DarkCyan" Height="2" Margin="2,3"/>
+
+                                    <Grid Grid.Row="3">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <controls:VonBisUhrzeitControl Grid.Column="0" 
+                                                                           SelectedHourVon="{Binding Path=PlacementTarget.Tag.ArbeitstagWrapper.GrossteamZeitWrapper.StundeVon, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
+                                                                           SelectedMinuteVon="{Binding Path=PlacementTarget.Tag.ArbeitstagWrapper.GrossteamZeitWrapper.MinuteVon, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
+                                                                           SelectedHourBis="{Binding Path=PlacementTarget.Tag.ArbeitstagWrapper.GrossteamZeitWrapper.StundeBis, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
+                                                                           SelectedMinuteBis="{Binding Path=PlacementTarget.Tag.ArbeitstagWrapper.GrossteamZeitWrapper.MinuteBis, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
+                                                                           />
+
+
+                                        <Button Grid.Column="1" IsDefault="True"
+                                                    Command="{Binding Path=PlacementTarget.Tag.ArbeitstagWrapper.UpdateGrossteamZeitCommand, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
+                                                    CommandParameter="{Binding Path=PlacementTarget.Tag.ArbeitstagWrapper.GrossteamZeitWrapper, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
+                                                    ToolTip="Großteamzeit ändern">
+                                            <Viewbox Width="16" Height="16">
+                                                <images:Ok/>
+                                            </Viewbox>
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </ContextMenu.Template>
+                </ContextMenu>
+            </CheckBox.ContextMenu>
+
+        </CheckBox>
+    </StackPanel>
+</UserControl>

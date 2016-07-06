@@ -20,11 +20,16 @@ namespace CocoloresPEP.Services
             {
                 var ws = xls.Workbook.Worksheets.Add($"Woche {woche.KalenderWoche}");
                 ws.Workbook.CalcMode = ExcelCalcMode.Automatic;
+                ws.Cells["A:XFD"].Style.Font.Name = "Consolas";
 
-                ws.Cells[1, 1, 1, 13].Merge = true;
-                ws.Cells[1, 1].Value = $"Arbeitswoche:  {woche.KalenderWoche}  vom {woche.Arbeitstage.First().Datum.ToString("dd.MM.yyyy")} bis {woche.Arbeitstage.Last().Datum.ToString("dd.MM.yyyy")}";
-                ws.Cells[1, 1, 1, 13].Style.Font.Bold = true;
 
+                var row = 1;
+                ws.Cells[row, 1, 1, 9].Merge = true;
+                ws.Cells[row, 1].Value = $"Arbeitswoche:  {woche.KalenderWoche}  vom {woche.Arbeitstage.First().Datum.ToString("dd.MM.yyyy")} bis {woche.Arbeitstage.Last().Datum.ToString("dd.MM.yyyy")}";
+                ws.Cells[row, 1, 1, 13].Style.Font.Bold = true;
+
+                row++;
+                row++;
                 for (int i = 0; i < woche.Arbeitstage.Count; i++)
                 {
                     var datum = woche.Arbeitstage[i].Datum;
@@ -32,20 +37,21 @@ namespace CocoloresPEP.Services
                         continue;
 
                     int col = i + 2;
-                    ws.Cells[3,col].Value = datum.GetWochentagName();
+                    ws.Cells[row, col].Value = datum.GetWochentagName();
                 }
+
                 var colAngeordneteStunden = 7;
-                ws.Cells[3, colAngeordneteStunden].Value = "ang. Std.";
-                ws.Cells[3, colAngeordneteStunden].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                ws.Cells[row, colAngeordneteStunden].Value = "ang. Std.";
+                ws.Cells[row, colAngeordneteStunden].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
 
                 var colKfz = 8;
-                ws.Cells[3, colKfz].Value = "KFZ";
-                ws.Cells[3, colKfz].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                ws.Cells[row, colKfz].Value = "KFZ";
+                ws.Cells[row, colKfz].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
 
                 var sortedMa = mitarbeiters.OrderBy(x => x.DefaultGruppe).ThenBy(x => x.IsHelfer).ThenBy(x => x.Name).ToList();
                 for (int i = 0; i < mitarbeiters.Count; i++)
                 {
-                    var row = 4 + i;
+                    row ++;
                     var ma = sortedMa[i];
                     ws.Cells[row,1].Value = ma.Name;
 
@@ -61,11 +67,8 @@ namespace CocoloresPEP.Services
                         {
                             if(zeiten.Dienst ==DienstTyp.Frei)
                                 continue;
-
-                            var pause = zeiten.Zeitraum.Duration.GetArbeitsminutenOhnePause() != (int) zeiten.Zeitraum.Duration.TotalMinutes  ? " | P": " ";
-                            var endzeit = zeiten.Zeitraum.End;
-
-                            ws.Cells[row, j + 2].Value =$"{zeiten.Zeitraum.Start.ToString("HH:mm")}-{endzeit.ToString("HH:mm")}  {pause}";
+                            
+                            ws.Cells[row, j + 2].Value = zeiten.GetInfoPlanzeitInfo();
 
                             var c = zeiten.Gruppe.GetFarbeFromResources();
                             ws.Cells[row, j + 2].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -83,7 +86,32 @@ namespace CocoloresPEP.Services
                     ws.Cells[row, colKfz].Value = ma.KindFreieZeit;
                     ws.Cells[row, colKfz].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                 }
+
                 
+                if (woche.Arbeitstage.Any(x => x.HasGrossteam))
+                {
+                    row++;
+                    row++;
+                    var gts = woche.Arbeitstage.Where(x => x.HasGrossteam).ToList();
+
+                    foreach (var at in gts)
+                    {
+                        var index = woche.Arbeitstage.IndexOf(at);
+                        ws.Cells[row, index + 2].Value = $"Großteam {Environment.NewLine}{at.Grossteam.Start.ToString("HH:mm")}-{at.Grossteam.End.ToString("HH:mm")}";
+                        ws.Cells[row, index + 2].Style.Font.Bold = true;
+                        ws.Cells[row, index + 2].Style.WrapText = true;
+
+                        var border = ws.Cells[row, index + 2];
+                        border.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        border.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        border.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        border.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    }
+                    
+                }
+
+                
+
                 ws.Cells.AutoFitColumns();
                 ws.View.ShowGridLines = false;
                 //ws.View.FreezePanes(4, 1);

@@ -22,7 +22,7 @@ namespace CocoloresPEP.Common.Entities
         KernzeitStartDienst = 1 << 4,
         [Display(Name = @"09:00Uhr Dienst")]
         NeunUhrDienst = 1 << 5,
-        [Display(Name = @"10.00Uhr Dienst")]
+        [Display(Name = @"10:00Uhr Dienst")]
         ZehnUhrDienst = 1 << 6,
         [Display(Name = @"Kernzeitende Dienst")]
         KernzeitEndeDienst = 1 << 7,

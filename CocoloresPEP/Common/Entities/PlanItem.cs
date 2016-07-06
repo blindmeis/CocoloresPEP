@@ -14,12 +14,11 @@ namespace CocoloresPEP.Common.Entities
     {
         [IgnoreDataMember]
         public Arbeitstag Arbeitstag { get; set; }
-
         public TimeRange Zeitraum { get; set; }
-
         public Mitarbeiter ErledigtDurch { get; set; }
         public GruppenTyp Gruppe { get; set; }
         public DienstTyp Dienst { get; set; }
+        public bool HatGrossteam { get; set; }
 
         public bool ObGruppenDienst
         {

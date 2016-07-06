@@ -14,6 +14,7 @@
             </ResourceDictionary.MergedDictionaries>-->
             
             <converter:EnumHasFlagConverter x:Key="MyEnumHasFlagConverter"/>
+            <converter:EnumDescriptionConverter x:Key="MyEnumDecriptionConverter"/>
             <converter:CheckPositivNegativeZeroNumberConverter x:Key="MyCheckPositivNegativeZeroNumberConverter"/>
             <converter:NumberToAbsolutOneWayConverter x:Key="MyNumberToAbsolutOneWayConverter"/>
             <converter:StundenToMinutenConverter x:Key="MyStundenToMinutenConverter"/>

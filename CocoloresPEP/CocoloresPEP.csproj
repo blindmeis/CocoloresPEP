@@ -137,6 +137,7 @@
     <Compile Include="Common\WpfCore\Controls\ComboBoxWithoutDropdown.cs" />
     <Compile Include="Common\WpfCore\Controls\DesignModeTool.cs" />
     <Compile Include="Common\WpfCore\Converter\CheckPositivNegativeZeroNumberConverter.cs" />
+    <Compile Include="Common\WpfCore\Converter\EnumDescriptionConverter.cs" />
     <Compile Include="Common\WpfCore\Converter\EnumHasFlagConverter.cs" />
     <Compile Include="Common\WpfCore\Converter\NumberToAbsolutOneWayConverter.cs" />
     <Compile Include="Common\WpfCore\Converter\StundenToMinutenConverter.cs" />
@@ -178,6 +179,7 @@
     <Compile Include="Module\Mitarbeiter\MitarbeiterManager.cs" />
     <Compile Include="Module\Mitarbeiter\MitarbeiterMappingService.cs" />
     <Compile Include="Module\Mitarbeiter\MitarbeiterViewmodel.cs" />
+    <Compile Include="Module\Planung\ArbeitstagWrapper.cs" />
     <Compile Include="Module\Planung\ArbeitswocheViewmodel.cs" />
     <Compile Include="Module\Planung\PlanungManager.cs" />
     <Compile Include="Module\Planung\PlanungMappingService.cs" />
@@ -200,6 +202,9 @@
     </Compile>
     <Compile Include="Views\Planung\PlanungMitarbeiterTagControl.xaml.cs">
       <DependentUpon>PlanungMitarbeiterTagControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Planung\PlanungMitarbeiterTagHeaderControl.xaml.cs">
+      <DependentUpon>PlanungMitarbeiterTagHeaderControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Planung\PlanungView.xaml.cs">
       <DependentUpon>PlanungView.xaml</DependentUpon>
@@ -285,6 +290,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Planung\PlanungMitarbeiterTagControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Planung\PlanungMitarbeiterTagHeaderControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

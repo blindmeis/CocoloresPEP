@@ -22,7 +22,7 @@ using CocoloresPEP.Views.Mitarbeiter;
 
 namespace CocoloresPEP.Module.Planung
 {
-    public class PlanungManager: ViewmodelBase
+    public class PlanungManager : ViewmodelBase
     {
         private readonly SerializationService _serializationService;
         private int _kalenderWoche;
@@ -46,7 +46,7 @@ namespace CocoloresPEP.Module.Planung
             _msg = new WpfMessageBoxService();
 
             var planungen = _serializationService.ReadPlanungListe() ?? new List<Arbeitswoche>();
-            ArbeitswochenCollection = new ObservableCollection<ArbeitswocheViewmodel>(planungen.Select(x=>x.MapArbeitswocheToViewmodel()));
+            ArbeitswochenCollection = new ObservableCollection<ArbeitswocheViewmodel>(planungen.Select(x => x.MapArbeitswocheToViewmodel()));
 
             PlanungView = CollectionViewSource.GetDefaultView(ArbeitswochenCollection);
             PlanungView.SortDescriptions.Add(new SortDescription("Jahr", ListSortDirection.Ascending));
@@ -54,18 +54,18 @@ namespace CocoloresPEP.Module.Planung
 
             PlanungView.GroupDescriptions.Add(new PropertyGroupDescription("Jahr"));
 
-            _lazyCreatePlanungswocheCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(CreatePlanungswocheCommandExecute, CanCreatePlanungswocheCommandExecute));
-            _lazySavePlanungswocheCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(SavePlanungswocheCommandExecute, CanSavePlanungswocheCommandExecute));
-            _lazyDeletePlanungswocheCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(DeletePlanungswocheCommandExecute, CanDeletePlanungswocheCommandExecute));
-            _lazyRunPlanungCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(RunPlanungCommandExecute, CanRunPlanungCommandExecute));
-            _lazyRunPlanungCheckCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(RunPlanungCheckCommandExecute, CanRunPlanungCheckCommandExecute));
-            _lazyExportPlanungCommand = new Lazy<DelegateCommand>(()=> new DelegateCommand(ExportPlanungCommandExecute, CanExportPlanungCommandExecute));
+            _lazyCreatePlanungswocheCommand = new Lazy<DelegateCommand>(() => new DelegateCommand(CreatePlanungswocheCommandExecute, CanCreatePlanungswocheCommandExecute));
+            _lazySavePlanungswocheCommand = new Lazy<DelegateCommand>(() => new DelegateCommand(SavePlanungswocheCommandExecute, CanSavePlanungswocheCommandExecute));
+            _lazyDeletePlanungswocheCommand = new Lazy<DelegateCommand>(() => new DelegateCommand(DeletePlanungswocheCommandExecute, CanDeletePlanungswocheCommandExecute));
+            _lazyRunPlanungCommand = new Lazy<DelegateCommand>(() => new DelegateCommand(RunPlanungCommandExecute, CanRunPlanungCommandExecute));
+            _lazyRunPlanungCheckCommand = new Lazy<DelegateCommand>(() => new DelegateCommand(RunPlanungCheckCommandExecute, CanRunPlanungCheckCommandExecute));
+            _lazyExportPlanungCommand = new Lazy<DelegateCommand>(() => new DelegateCommand(ExportPlanungCommandExecute, CanExportPlanungCommandExecute));
 
 
             Jahr = DateTime.Now.Year;
         }
 
-      
+
 
         public ICollectionView PlanungView { get; set; }
 
@@ -90,7 +90,7 @@ namespace CocoloresPEP.Module.Planung
                 if (SelectedArbeitswoche == null)
                     return "Neue Arbeitswoche anlegen oder bestehende auswählen.";
 
-                var von = DateTimeExtensions.FirstDateOfWeekIso8601(SelectedArbeitswoche.Jahr,SelectedArbeitswoche.KalenderWoche);
+                var von = DateTimeExtensions.FirstDateOfWeekIso8601(SelectedArbeitswoche.Jahr, SelectedArbeitswoche.KalenderWoche);
                 var bis = von.AddDays(5);
                 return
                     $"Jahr: {SelectedArbeitswoche.Jahr}  Kalendarwoche: {SelectedArbeitswoche.KalenderWoche}  vom {von.ToString("dd.MM.")}-{bis.ToString("dd.MM.")}";
@@ -121,9 +121,9 @@ namespace CocoloresPEP.Module.Planung
         {
             get
             {
-               return  TransformArbeitswocheToPreview(SelectedArbeitswoche);
+                return TransformArbeitswocheToPreview(SelectedArbeitswoche);
             }
-          
+
         }
 
         public int Jahr
@@ -141,12 +141,12 @@ namespace CocoloresPEP.Module.Planung
             get { return _kalenderWoche; }
             set
             {
-                _kalenderWoche = value; 
+                _kalenderWoche = value;
                 OnPropertyChanged();
             }
         }
 
-       
+
         #region SavePlanungswocheCommand
 
         public ICommand SavePlanungswocheCommand { get { return _lazySavePlanungswocheCommand.Value; } }
@@ -168,7 +168,7 @@ namespace CocoloresPEP.Module.Planung
                 await Task.Run(() =>
                 {
                     var sr = new SerializationService();
-                    sr.WritePlanungListe(ArbeitswochenCollection.Select(x=>x.MapViewmodelToArbeitswoche()).ToList());
+                    sr.WritePlanungListe(ArbeitswochenCollection.Select(x => x.MapViewmodelToArbeitswoche()).ToList());
                 });
             }
             catch (Exception ex)
@@ -180,13 +180,13 @@ namespace CocoloresPEP.Module.Planung
                 IsBusy = false;
                 CommandManager.InvalidateRequerySuggested();
             }
-           
+
         }
         #endregion
 
         #region DeletePlanungswocheCommand
         public ICommand DeletePlanungswocheCommand { get { return _lazyDeletePlanungswocheCommand.Value; } }
-        
+
         private bool CanDeletePlanungswocheCommandExecute()
         {
             return !IsBusy && SelectedArbeitswoche != null;
@@ -197,8 +197,14 @@ namespace CocoloresPEP.Module.Planung
             if (!CanDeletePlanungswocheCommandExecute())
                 return;
 
-            ArbeitswochenCollection.Remove(SelectedArbeitswoche);
-            if(ArbeitswochenCollection.Count==0)
+            var dlg = MessageBox.Show($"Wollen Sie die Arbeitswoche: {SelectedArbeitswoche.KalenderWoche}/{SelectedArbeitswoche.Jahr} wirklich löschen?",
+               "Planungswoche löschen", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (dlg != MessageBoxResult.Yes)
+                return;
+
+                ArbeitswochenCollection.Remove(SelectedArbeitswoche);
+            if (ArbeitswochenCollection.Count == 0)
                 return;
 
             SelectedArbeitswoche = ArbeitswochenCollection.First();
@@ -221,9 +227,9 @@ namespace CocoloresPEP.Module.Planung
 
         private void CreatePlanungswocheCommandExecute()
         {
-            if(!CanCreatePlanungswocheCommandExecute())
+            if (!CanCreatePlanungswocheCommandExecute())
                 return;
-            
+
             var am = new ArbeitswochenService();
             var aw = am.CreateArbeitswoche(Jahr, KalenderWoche);
             var ms = new SerializationService();
@@ -245,7 +251,7 @@ namespace CocoloresPEP.Module.Planung
 
         private async void RunPlanungCommandExecute()
         {
-            if(!CanRunPlanungCommandExecute())
+            if (!CanRunPlanungCommandExecute())
                 return;
 
             if (SelectedArbeitswoche.PlanungProMitarbeiterListe.Any(x => x.HasPlanzeitenEntries))
@@ -285,7 +291,7 @@ namespace CocoloresPEP.Module.Planung
                 CommandManager.InvalidateRequerySuggested();
             }
 
-           
+
         }
 
         #endregion
@@ -332,11 +338,11 @@ namespace CocoloresPEP.Module.Planung
         #endregion
 
         #region ExportPlanungCommand
-        
+
         public ICommand ExportPlanungCommand { get { return _lazyExportPlanungCommand.Value; } }
         private bool CanExportPlanungCommandExecute()
         {
-            return !IsBusy && SelectedArbeitswoche!=null && SelectedArbeitswoche.PlanungProMitarbeiterListe.Any(x => x.HasPlanzeitenEntries);
+            return !IsBusy && SelectedArbeitswoche != null && SelectedArbeitswoche.PlanungProMitarbeiterListe.Any(x => x.HasPlanzeitenEntries);
         }
 
         private async void ExportPlanungCommandExecute()
@@ -364,14 +370,14 @@ namespace CocoloresPEP.Module.Planung
                 IsBusy = false;
                 CommandManager.InvalidateRequerySuggested();
             }
-        } 
+        }
         #endregion
 
         private ICollectionView TransformArbeitswocheToPreview(ArbeitswocheViewmodel woche)
         {
             if (woche == null)
                 return null;
-          
+
             var ordered = woche.PlanungProMitarbeiterListe
                                .OrderBy(x => x.Mitarbeiter.DefaultGruppe)
                                .ThenBy(x => x.Mitarbeiter.IsHelfer)
@@ -390,7 +396,7 @@ namespace CocoloresPEP.Module.Planung
             if (savedCollection.Count != ArbeitswochenCollection.Count)
                 return true;
 
-            var savedOrdered = savedCollection.OrderBy(x => x.Jahr).ThenBy(x=>x.KalenderWoche).ToList();
+            var savedOrdered = savedCollection.OrderBy(x => x.Jahr).ThenBy(x => x.KalenderWoche).ToList();
             var checkOrdered = ArbeitswochenCollection.OrderBy(x => x.Jahr).ThenBy(x => x.KalenderWoche).ToList();
 
             for (int i = 0; i < savedOrdered.Count; i++)
@@ -398,7 +404,7 @@ namespace CocoloresPEP.Module.Planung
                 var saved = savedOrdered[i];
                 var check = checkOrdered[i];
 
-                if(saved.Jahr != check.Jahr || saved.KalenderWoche != check.KalenderWoche)
+                if (saved.Jahr != check.Jahr || saved.KalenderWoche != check.KalenderWoche)
                     return true;
 
                 if (saved.Mitarbeiter.Count != check.Mitarbeiter.Count)
@@ -427,23 +433,27 @@ namespace CocoloresPEP.Module.Planung
                         || savedPlanzeiten != null && checkPlanzeiten == null)
                         return true;
 
-                    if(savedPlanzeiten == null && checkPlanzeiten == null)
+                    if (savedPlanzeiten == null && checkPlanzeiten == null)
                         continue;
 
-                    var savedPlanitems = savedPlanzeiten.Montag.Planzeiten
-                        .Union(savedPlanzeiten.Dienstag.Planzeiten)
-                        .Union(savedPlanzeiten.Mittwoch.Planzeiten)
-                        .Union(savedPlanzeiten.Donnerstag.Planzeiten)
-                        .Union(savedPlanzeiten.Freitag.Planzeiten).ToList();
+                    var savedPlanitems = new List<PlanItem>()
+                    {
+                         savedPlanzeiten.Montag.Planzeit,
+                        savedPlanzeiten.Dienstag.Planzeit,
+                        savedPlanzeiten.Mittwoch.Planzeit,
+                        savedPlanzeiten.Donnerstag.Planzeit,
+                        savedPlanzeiten.Freitag.Planzeit
+                    };
 
-                    var checkPlanitems = checkPlanzeiten.Montag.Planzeiten
-                        .Union(checkPlanzeiten.Dienstag.Planzeiten)
-                        .Union(checkPlanzeiten.Mittwoch.Planzeiten)
-                        .Union(checkPlanzeiten.Donnerstag.Planzeiten)
-                        .Union(checkPlanzeiten.Freitag.Planzeiten).ToList();
+                    var checkPlanitems = new List<PlanItem>()
+                    {
+                        checkPlanzeiten.Montag.Planzeit,
+                        checkPlanzeiten.Dienstag.Planzeit,
+                        checkPlanzeiten.Mittwoch.Planzeit,
+                        checkPlanzeiten.Donnerstag.Planzeit,
+                        checkPlanzeiten.Freitag.Planzeit
+                    };
 
-                    if (savedPlanitems.Count != checkPlanitems.Count)
-                        return true;
 
                     for (int k = 0; k < savedPlanitems.Count; k++)
                     {

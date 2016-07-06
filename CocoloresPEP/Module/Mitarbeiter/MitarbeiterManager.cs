@@ -104,6 +104,7 @@ namespace CocoloresPEP.Module.Mitarbeiter
             {
                 await Task.Run(() =>_serializationService.WriteMitarbeiterListe(MitarbeiterCollection.Select(x => x.MapViewmodelToMitarbeiter()).ToList()));
 
+                MitarbeiterView.Refresh();
             }
             catch (Exception ex)
             {

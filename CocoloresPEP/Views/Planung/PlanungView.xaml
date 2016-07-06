@@ -263,7 +263,6 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-
                         <DataGridTemplateColumn Width="50">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
@@ -310,19 +309,15 @@
                         <DataGridTemplateColumn MinWidth="130" >
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Vertical">
-                                        <TextBlock Text="Montag" 
-                                                   HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsMontagFeiertag, Mode=TwoWay}"
-                                                  Content="Feiertag"
-                                                  HorizontalAlignment="Left" VerticalAlignment="Center"
-                                                  ToolTip="nicht planen"/>
-                                        <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.HasMontagGrossteam, Mode=TwoWay}"
-                                                  Content="Großteam"
-                                                  HorizontalAlignment="Left" VerticalAlignment="Center"
-                                                  ToolTip="Großteam"/>
-                                    </StackPanel>
-                                </DataTemplate>
+                                    <Grid>
+                                        <planung:PlanungMitarbeiterTagHeaderControl 
+                                            Wochentag="Montag"
+                                            IsFeiertag="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsMontagFeiertag, Mode=TwoWay}"
+                                            HasGrossteam="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.HasMontagGrossteam, Mode=TwoWay}"
+                                            ArbeitstagWrapper="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.Montag, Mode=OneWay}"/>
+                             
+                                       </Grid>
+                                      </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -357,19 +352,15 @@
                             </DataGridTemplateColumn.CellTemplate>
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Vertical">
-                                        <TextBlock Text="Dienstag" 
-                                                   HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsDienstagFeiertag, Mode=TwoWay}"
-                                                  Content="Feiertag"
-                                                  HorizontalAlignment="Left" VerticalAlignment="Center"
-                                                  ToolTip="nicht planen"/>
-                                        <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.HasDienstagGrossteam, Mode=TwoWay}"
-                                                  Content="Großteam"
-                                                  HorizontalAlignment="Left" VerticalAlignment="Center"
-                                                  ToolTip="Großteam"/>
-                                    </StackPanel>
-                                </DataTemplate>
+                                    <Grid>
+                                          <planung:PlanungMitarbeiterTagHeaderControl 
+                                              Wochentag="Dienstag"
+                                              IsFeiertag="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsDienstagFeiertag, Mode=TwoWay}"
+                                              HasGrossteam="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.HasDienstagGrossteam, Mode=TwoWay}"
+                                              ArbeitstagWrapper="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.Dienstag, Mode=OneWay}"/>
+                                    
+                                    </Grid>
+                                      </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellStyle>
                                 <Style TargetType="DataGridCell">
@@ -398,18 +389,14 @@
                             </DataGridTemplateColumn.CellTemplate>
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Vertical">
-                                        <TextBlock Text="Mittwoch" 
-                                                   HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsMittwochFeiertag, Mode=TwoWay}"
-                                                  Content="Feiertag"
-                                                  HorizontalAlignment="Left" VerticalAlignment="Center"
-                                                  ToolTip="nicht planen"/>
-                                        <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.HasMittwochGrossteam, Mode=TwoWay}"
-                                                  Content="Großteam"
-                                                  HorizontalAlignment="Left" VerticalAlignment="Center"
-                                                  ToolTip="Großteam"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <planung:PlanungMitarbeiterTagHeaderControl 
+                                            Wochentag="Mittwoch"
+                                            IsFeiertag="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsMittwochFeiertag, Mode=TwoWay}"
+                                            HasGrossteam="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.HasMittwochGrossteam, Mode=TwoWay}"
+                                            ArbeitstagWrapper="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.Mittwoch, Mode=OneWay}"/>
+
+                                    </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellStyle>
@@ -439,18 +426,15 @@
                             </DataGridTemplateColumn.CellTemplate>
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Vertical">
-                                        <TextBlock Text="Donnerstag" 
-                                                   HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsDonnerstagFeiertag, Mode=TwoWay}"
-                                                  Content="Feiertag"
-                                                  HorizontalAlignment="Left" VerticalAlignment="Center"
-                                                  ToolTip="nicht planen"/>
-                                        <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.HasDonnerstagGrossteam, Mode=TwoWay}"
-                                                  Content="Großteam"
-                                                  HorizontalAlignment="Left" VerticalAlignment="Center"
-                                                  ToolTip="Großteam"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <planung:PlanungMitarbeiterTagHeaderControl 
+                                            Wochentag="Mittwoch"
+                                            IsFeiertag="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsDonnerstagFeiertag, Mode=TwoWay}"
+                                             HasGrossteam="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.HasDonnerstagGrossteam, Mode=TwoWay}"
+                                            ArbeitstagWrapper="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.Donnerstag, Mode=OneWay}"/>
+
+                                    </Grid>
+                                   
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellStyle>
@@ -480,18 +464,15 @@
                             </DataGridTemplateColumn.CellTemplate>
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Vertical">
-                                        <TextBlock Text="Freitag" 
-                                                   HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsFreitagFeiertag, Mode=TwoWay}"
-                                                  Content="Feiertag"
-                                                  HorizontalAlignment="Left" VerticalAlignment="Center"
-                                                  ToolTip="nicht planen"/>
-                                        <CheckBox IsChecked="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.HasFreitagGrossteam, Mode=TwoWay}"
-                                                  Content="Großteam"
-                                                  HorizontalAlignment="Left" VerticalAlignment="Center"
-                                                  ToolTip="Großteam"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <planung:PlanungMitarbeiterTagHeaderControl 
+                                            Wochentag="Mittwoch"
+                                            IsFeiertag="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsFreitagFeiertag, Mode=TwoWay}"
+                                             HasGrossteam="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.HasFreitagGrossteam, Mode=TwoWay}"
+                                            ArbeitstagWrapper="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.Freitag, Mode=OneWay}"/>
+
+                                    </Grid>
+                                   
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellStyle>

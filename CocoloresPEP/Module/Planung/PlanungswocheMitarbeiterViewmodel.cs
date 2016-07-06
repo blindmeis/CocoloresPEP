@@ -37,11 +37,11 @@ namespace CocoloresPEP.Module.Planung
         {
             get
             {
-                return (Montag.Planzeiten.Any()
-                        || Dienstag.Planzeiten.Any()
-                        || Mittwoch.Planzeiten.Any()
-                        || Donnerstag.Planzeiten.Any()
-                        || Freitag.Planzeiten.Any());
+                return Montag.Planzeit.ErledigtDurch != null
+                        || Dienstag.Planzeit.ErledigtDurch != null
+                        || Mittwoch.Planzeit.ErledigtDurch != null
+                        || Donnerstag.Planzeit.ErledigtDurch != null
+                        || Freitag.Planzeit.ErledigtDurch != null;
             }
         }
 
@@ -49,11 +49,11 @@ namespace CocoloresPEP.Module.Planung
         {
             get
             {
-                var arbeitAmKindMinuten = Montag.Planzeiten.Sum(x => x.Zeitraum.Duration.GetArbeitsminutenOhnePause())
-                         + Dienstag.Planzeiten.Sum(x => x.Zeitraum.Duration.GetArbeitsminutenOhnePause())
-                         + Mittwoch.Planzeiten.Sum(x => x.Zeitraum.Duration.GetArbeitsminutenOhnePause())
-                         + Donnerstag.Planzeiten.Sum(x => x.Zeitraum.Duration.GetArbeitsminutenOhnePause())
-                         + Freitag.Planzeiten.Sum(x => x.Zeitraum.Duration.GetArbeitsminutenOhnePause());
+                var arbeitAmKindMinuten = Montag.Planzeit.GetAbzurechnendeZeitInMinmuten()
+                         + Dienstag.Planzeit.GetAbzurechnendeZeitInMinmuten()
+                         + Mittwoch.Planzeit.GetAbzurechnendeZeitInMinmuten()
+                         + Donnerstag.Planzeit.GetAbzurechnendeZeitInMinmuten()
+                         + Freitag.Planzeit.GetAbzurechnendeZeitInMinmuten();
 
                 return (decimal)arbeitAmKindMinuten/60;
             }

@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CocoloresPEP.Common;
+using CocoloresPEP.Common.Entities;
 using CocoloresPEP.Module.Mitarbeiter;
+using Itenso.TimePeriod;
 
 namespace CocoloresPEP.Module.Planung
 {
@@ -31,6 +33,12 @@ namespace CocoloresPEP.Module.Planung
         public int Jahr { get; set; }
 
         public int KalenderWoche { get; set; }
+
+        public ArbeitstagWrapper Montag { get; set; }
+        public ArbeitstagWrapper Dienstag { get; set; }
+        public ArbeitstagWrapper Mittwoch { get; set; }
+        public ArbeitstagWrapper Donnerstag { get; set; }
+        public ArbeitstagWrapper Freitag { get; set; }
 
         public bool IsMontagFeiertag
         {

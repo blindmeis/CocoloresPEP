@@ -162,17 +162,26 @@ namespace CocoloresPEP.Services
 
                 //if (arbeitstag.HasGrossteam)
                 //{
-                //    foreach (var mitarbeiter in alledieDaSind)
+                //    var gt = arbeitstag.Grossteam;
+
+                //    foreach (var planItem in arbeitstag.Planzeiten)
                 //    {
-                //        var gt = new PlanItem();
+                //        if((planItem.Dienst&DienstTyp.Frei)==DienstTyp.Frei)
+                //            continue;
 
-                //        gt.Arbeitstag = arbeitstag;
-                //        gt.ErledigtDurch = mitarbeiter;
-                //        gt.Zeitraum = arbeitstag.Grossteam;
-                //        gt.Gruppe = mitarbeiter.DefaultGruppe;
-                //        gt.Dienst = DienstTyp.Großteam;
+                //        planItem.HatGrossteam = arbeitstag.HasGrossteam;
 
-                //        arbeitstag.Planzeiten.Add(gt);
+                //        if (planItem.Zeitraum.End.AddMinutes(-1*(int) gt.Duration.TotalMinutes) > gt.Start)
+                //        {
+                //            var overlap = planItem.Zeitraum.End.AddMinutes(-1*(int) gt.Duration.TotalMinutes) - gt.Start;
+
+                //            planItem.Zeitraum.Start = planItem.Zeitraum.Start.AddMinutes(-1*(int) overlap.TotalMinutes);
+                //            planItem.Zeitraum.End = planItem.Zeitraum.End.AddMinutes(-1*((int) gt.Duration.TotalMinutes + overlap.TotalMinutes));
+                //        }
+                //        else
+                //        {
+                //            planItem.Zeitraum.End = planItem.Zeitraum.End.AddMinutes(-1*(int) gt.Duration.TotalMinutes);
+                //        }
                 //    }
                 //}
 
@@ -315,6 +324,7 @@ namespace CocoloresPEP.Services
             result.Zeitraum = zeitraum;
             result.Gruppe = gruppe;
             result.Dienst = dienst;
+
 
             //Pausen mit Planen
             if (result.Zeitraum.Duration.TotalMinutes > 360)
@@ -573,6 +583,9 @@ namespace CocoloresPEP.Services
                 var kfz = kfzMinutenTag;
                 foreach (var planItem in dienste)
                 {
+                    if(!planItem.Zeitraum.Duration.IsMindestzeitAbgedeckt())
+                        continue;
+
                     var arbeitstag = planItem.Arbeitstag;
 
                     var oldStartzeit = planItem.Zeitraum.Start;

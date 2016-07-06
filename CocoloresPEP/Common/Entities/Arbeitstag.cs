@@ -93,5 +93,23 @@ namespace CocoloresPEP.Common.Entities
             get { return _grossteam; }
             set { _grossteam = value; }
         }
+
+        public int GrossteamStundeVon {get { return Grossteam.Start.Hour; } }
+        public int GrossteamStundeBis {get { return Grossteam.End.Hour; } }
+        public int GrossteamMinuteVon {get { return Grossteam.Start.Minute; } }
+        public int GrossteamMinuteBis {get { return Grossteam.End.Minute; } }
+
+        public PlanItem EmptyPlanzeitOhneMitarbeiter
+        {
+            get
+            {
+                return new PlanItem()
+                {
+                    Arbeitstag = this,
+                    Dienst = DienstTyp.None,
+                    Zeitraum = new TimeRange(new DateTime(this.Datum.Year, this.Datum.Month, this.Datum.Day, 0, 0, 0), new TimeSpan(0, 0, 0)),
+
+                };
+            } }
     }
 }
