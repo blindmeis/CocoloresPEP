@@ -21,6 +21,7 @@ namespace CocoloresPEP.Common.Controls
                 {DienstTyp.NeunUhrDienst.GetDisplayname(), DienstTyp.NeunUhrDienst},
                 {DienstTyp.ZehnUhrDienst.GetDisplayname(), DienstTyp.ZehnUhrDienst},
                 {DienstTyp.KernzeitEndeDienst.GetDisplayname(), DienstTyp.KernzeitEndeDienst},
+                {DienstTyp.SechszehnUhrDienst.GetDisplayname(), DienstTyp.SechszehnUhrDienst},
                 {DienstTyp.SpätdienstEnde.GetDisplayname(), DienstTyp.SpätdienstEnde},
                 {DienstTyp.Frei.GetDisplayname(), DienstTyp.Frei},
             };

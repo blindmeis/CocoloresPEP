@@ -189,6 +189,7 @@
     <Compile Include="Services\ArbeitswochenService.cs" />
     <Compile Include="Services\ExcelExportService.cs" />
     <Compile Include="Services\PlanService.cs" />
+    <Compile Include="Services\PlanzeitenValidationService.cs" />
     <Compile Include="Services\SerializationService.cs" />
     <Compile Include="Views\Mitarbeiter\IDataContextMarkerMitarbeiter.cs" />
     <Compile Include="Views\Mitarbeiter\MitarbeiterDetailView.xaml.cs">

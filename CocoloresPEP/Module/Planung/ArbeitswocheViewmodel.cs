@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CocoloresPEP.Common;
 using CocoloresPEP.Common.Entities;
+using CocoloresPEP.Common.WpfCore;
 using CocoloresPEP.Module.Mitarbeiter;
 using Itenso.TimePeriod;
 
@@ -22,11 +23,14 @@ namespace CocoloresPEP.Module.Planung
         private bool _hasMittwochGrossteam;
         private bool _hasDonnerstagGrossteam;
         private bool _hasFreitagGrossteam;
+        private List<MitarbeiterViewmodel> _mitarbeiter;
+        private List<PropertyObserver<MitarbeiterViewmodel>> _propertyObserversMitarbeiter;
 
         public ArbeitswocheViewmodel(int jahr, int woche)
         {
             Jahr = jahr;
             KalenderWoche = woche;
+            _propertyObserversMitarbeiter = new List<PropertyObserver<MitarbeiterViewmodel>>();
             PlanungProMitarbeiterListe = new List<PlanungswocheMitarbeiterViewmodel>();
             Mitarbeiter = new List<MitarbeiterViewmodel>();
         }
@@ -223,6 +227,26 @@ namespace CocoloresPEP.Module.Planung
 
         public List<PlanungswocheMitarbeiterViewmodel> PlanungProMitarbeiterListe { get; set; }
 
-        public List<MitarbeiterViewmodel> Mitarbeiter { get; set; }
+        public List<MitarbeiterViewmodel> Mitarbeiter
+        {
+            get { return _mitarbeiter; }
+            set
+            {
+                _mitarbeiter = value;
+                OnPropertyChanged();
+
+                _propertyObserversMitarbeiter.Clear();
+                foreach (var ma in _mitarbeiter)
+                {
+                    var os = new PropertyObserver<MitarbeiterViewmodel>(ma).RegisterHandler(p=>p.WochenStunden,x=>OnPropertyChanged(nameof(SummeAngeordneteStunden)));
+                    _propertyObserversMitarbeiter.Add(os);
+                }
+            }
+        }
+
+        public decimal SummeAngeordneteStunden
+        {
+            get { return Mitarbeiter.Where(x=>!x.IsHelfer).Sum(x => x.WochenStunden); }
+        }
     }
 }

@@ -72,20 +72,35 @@ namespace CocoloresPEP.Common.Entities
         {
             get { return new DateTime(Datum.Year, Datum.Month, Datum.Day, 15, 30, 0); }
         }
-
+        public DateTime SechzehnUhrDienst
+        {
+            get { return HasGrossteam
+                    ? new DateTime(Datum.Year, Datum.Month, Datum.Day, 15, 30, 0)
+                    : new DateTime(Datum.Year, Datum.Month, Datum.Day, 16, 00, 0); }
+        }
+        /// <summary>
+        /// Ende Spätdienst in abhängigkeit vom Großteam
+        /// </summary>
         public DateTime SpätdienstEnde
         {
-            get { return new DateTime(Datum.Year, Datum.Month, Datum.Day, 17, 15, 0); }
+            get { return HasGrossteam
+                    ? new DateTime(Datum.Year, Datum.Month, Datum.Day, 16, 00, 0)
+                    : new DateTime(Datum.Year, Datum.Month, Datum.Day, 17, 15, 0); }
         }
 
         public DateTime FrühdienstFsj
         {
             get { return new DateTime(Datum.Year, Datum.Month, Datum.Day, 7, 30, 0); }
         }
-
+        
+        /// <summary>
+        /// Ende Spätdienst in abhängigkeit vom Großteam
+        /// </summary>
         public DateTime SpätdienstEndeFsj
         {
-            get { return new DateTime(Datum.Year, Datum.Month, Datum.Day, 16, 30, 0); }
+            get { return HasGrossteam 
+                    ? new DateTime(Datum.Year, Datum.Month, Datum.Day, 17, 00, 0)
+                    : new DateTime(Datum.Year, Datum.Month, Datum.Day, 16, 30, 0); }
         }
 
         public TimeRange Grossteam

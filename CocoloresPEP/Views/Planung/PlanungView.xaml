@@ -137,6 +137,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <Expander Grid.Row="0" Margin="0,0,0,15">
@@ -496,6 +497,10 @@
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
+                
+                <TextBlock Grid.Row="2" Margin="10,10,0,0"
+                           Text="{Binding Path=SelectedArbeitswoche.SummeAngeordneteStunden, Mode=OneWay, StringFormat='Pädagogische Mitarbeiter Stunden: &#x2211; {0}h'}"></TextBlock>
+                
             </Grid>
 
             <Grid Grid.Column="2" HorizontalAlignment="Left" Margin="25,0,0,0">

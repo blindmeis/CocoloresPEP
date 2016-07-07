@@ -14,7 +14,21 @@ namespace CocoloresPEP.Common.Extensions
     {
         public static int GetAbzurechnendeZeitInMinmuten(this PlanItem planzeit)
         {
-            return planzeit.Zeitraum.Duration.GetArbeitsminutenOhnePause();
+            if (planzeit.HatGrossteam)
+            {
+                var gtMinuten = planzeit.Arbeitstag.Grossteam.Duration.GetArbeitsminutenOhnePause();
+                var arbeit = planzeit.Zeitraum.Duration.GetArbeitsminutenOhnePause();
+                var overlap = 0;
+
+                if(planzeit.Zeitraum.IntersectsWith(planzeit.Arbeitstag.Grossteam))
+                    overlap = (int)planzeit.Zeitraum.GetIntersection(planzeit.Arbeitstag.Grossteam).Duration.TotalMinutes;
+
+                return arbeit + gtMinuten - overlap;
+            }
+            else
+            {
+                return planzeit.Zeitraum.Duration.GetArbeitsminutenOhnePause();
+            }
         }
 
         public static int GetArbeitsminutenOhnePause(this TimeSpan dauerMitPause)
@@ -55,7 +69,7 @@ namespace CocoloresPEP.Common.Extensions
         }
 
         /// <summary>
-        /// Es sollte jeder Mitarbeiter mindestens 3h da sein
+        /// Es sollte jeder Mitarbeiter mindestens 4h da sein
         /// </summary>
         /// <param name="planzeit"></param>
         /// <returns></returns>
@@ -63,12 +77,20 @@ namespace CocoloresPEP.Common.Extensions
         {
             var minuten = (int)planzeit.TotalMinutes;
 
-            if (minuten > 180)
+            if (minuten >= 240)
                 return true;
 
             return false;
         }
 
+        public static bool IstRandDienst(this DienstTyp dienst)
+        {
+            return (dienst & DienstTyp.Frühdienst) == DienstTyp.Frühdienst
+                   || (dienst & DienstTyp.AchtUhrDienst) == DienstTyp.AchtUhrDienst
+                   || (dienst & DienstTyp.SechszehnUhrDienst) == DienstTyp.SechszehnUhrDienst
+                   || (dienst & DienstTyp.SpätdienstEnde) == DienstTyp.SpätdienstEnde;
+
+        }
 
         /// <summary>
         ///    <SolidColorBrush x:Key="ColorGruppeGelb" Color="DarkGoldenrod"/>
