@@ -13,6 +13,7 @@ namespace CocoloresPEP.Common.Entities
     public class Arbeitstag 
     {
         private TimeRange _grossteam;
+        private TimeRange _kernzeitDoppelBesetzungRange;
 
         public Arbeitstag()
         {
@@ -24,6 +25,7 @@ namespace CocoloresPEP.Common.Entities
             Planzeiten = new ObservableCollection<PlanItem>();
 
             Grossteam = new TimeRange(new DateTime(Datum.Year, Datum.Month, Datum.Day, 15, 30, 0), new TimeSpan(2, 0, 0));
+            KernzeitDoppelBesetzungRange = new TimeRange(new DateTime(Datum.Year, Datum.Month, Datum.Day, 9, 0, 0),new TimeSpan(4, 0, 0));
         }
 
         [OnDeserialized()]
@@ -102,6 +104,25 @@ namespace CocoloresPEP.Common.Entities
                     ? new DateTime(Datum.Year, Datum.Month, Datum.Day, 17, 00, 0)
                     : new DateTime(Datum.Year, Datum.Month, Datum.Day, 16, 30, 0); }
         }
+
+        public TimeRange KernzeitBasisRange
+        {
+            get
+            {
+                return new TimeRange(KernzeitGruppeStart,KernzeitGruppeEnde);
+            }
+        }
+
+        public TimeRange KernzeitDoppelBesetzungRange
+        {
+            get { return _kernzeitDoppelBesetzungRange; }
+            set { _kernzeitDoppelBesetzungRange = value; }
+        }
+
+        public int KernzeitDoppelBesetzungStundeVon { get { return KernzeitDoppelBesetzungRange.Start.Hour; } }
+        public int KernzeitDoppelBesetzungStundeBis { get { return KernzeitDoppelBesetzungRange.End.Hour; } }
+        public int KernzeitDoppelBesetzungMinuteVon { get { return KernzeitDoppelBesetzungRange.Start.Minute; } }
+        public int KernzeitDoppelBesetzungMinuteBis { get { return KernzeitDoppelBesetzungRange.End.Minute; } }
 
         public TimeRange Grossteam
         {

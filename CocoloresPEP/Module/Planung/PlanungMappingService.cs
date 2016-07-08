@@ -101,26 +101,31 @@ namespace CocoloresPEP.Module.Planung
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Monday).IsFeiertag = vm.IsMontagFeiertag;
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Monday).HasGrossteam = vm.HasMontagGrossteam;
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Monday).Grossteam = vm.Montag.Arbeitstag.Grossteam;
+            aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Monday).KernzeitDoppelBesetzungRange = vm.Montag.Arbeitstag.KernzeitDoppelBesetzungRange;
 
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Tuesday).Planzeiten = new ObservableCollection<PlanItem>(vm.PlanungProMitarbeiterListe.Select(x => x.Dienstag?.Planzeit ?? new PlanItem()));
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Tuesday).IsFeiertag = vm.IsDienstagFeiertag;
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Tuesday).HasGrossteam = vm.HasDienstagGrossteam;
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Tuesday).Grossteam = vm.Dienstag.Arbeitstag.Grossteam;
+            aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Tuesday).KernzeitDoppelBesetzungRange = vm.Dienstag.Arbeitstag.KernzeitDoppelBesetzungRange;
 
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Wednesday).Planzeiten = new ObservableCollection<PlanItem>(vm.PlanungProMitarbeiterListe.Select(x => x.Mittwoch?.Planzeit ?? new PlanItem()));
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Wednesday).IsFeiertag = vm.IsMittwochFeiertag;
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Wednesday).HasGrossteam = vm.HasMittwochGrossteam;
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Wednesday).Grossteam = vm.Mittwoch.Arbeitstag.Grossteam;
+            aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Wednesday).KernzeitDoppelBesetzungRange = vm.Mittwoch.Arbeitstag.KernzeitDoppelBesetzungRange;
 
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Thursday).Planzeiten = new ObservableCollection<PlanItem>(vm.PlanungProMitarbeiterListe.Select(x => x.Donnerstag?.Planzeit ?? new PlanItem()));
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Thursday).IsFeiertag = vm.IsDonnerstagFeiertag;
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Thursday).HasGrossteam = vm.HasDonnerstagGrossteam;
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Thursday).Grossteam = vm.Donnerstag.Arbeitstag.Grossteam;
+            aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Thursday).KernzeitDoppelBesetzungRange = vm.Donnerstag.Arbeitstag.KernzeitDoppelBesetzungRange;
 
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Friday).Planzeiten = new ObservableCollection<PlanItem>(vm.PlanungProMitarbeiterListe.Select(x => x.Freitag?.Planzeit ?? new PlanItem()));
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Friday).IsFeiertag = vm.IsFreitagFeiertag;
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Friday).HasGrossteam = vm.HasFreitagGrossteam;
             aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Friday).Grossteam = vm.Freitag.Arbeitstag.Grossteam;
+            aw.Arbeitstage.Single(x => x.Datum.DayOfWeek == DayOfWeek.Friday).KernzeitDoppelBesetzungRange = vm.Freitag.Arbeitstag.KernzeitDoppelBesetzungRange;
 
             return aw;
         }

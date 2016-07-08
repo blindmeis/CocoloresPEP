@@ -247,8 +247,18 @@ namespace CocoloresPEP.Module.Planung
             get { return _hasGrossteam; }
             set
             {
-                _hasGrossteam = value;
-                Planzeit.HatGrossteam = value;
+                if (value && Planzeit.CanSetHatGrossteam())
+                {
+                    _hasGrossteam = true;
+                    Planzeit.SetHatGrossteam();
+                }
+
+                if (!value)
+                {
+                    _hasGrossteam = false;
+                    Planzeit.HatGrossteam = false;
+                }
+
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(PlanZeitenInfo));
             }
@@ -276,6 +286,11 @@ namespace CocoloresPEP.Module.Planung
             {
                 return $"{Datum.GetWochentagName()}: {Datum.ToString("dd.MM.")}";
             }
+        }
+
+        public decimal Zak
+        {
+            get { return (decimal)Planzeit.GetArbeitsminutenAmKindOhnePause()/60; }
         }
 
         private void GetStartAndEndzeit(PlanungszeitVonBisWrapper arg, out DateTime start, out DateTime ende)

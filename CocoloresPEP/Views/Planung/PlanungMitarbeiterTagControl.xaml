@@ -6,7 +6,19 @@
              x:Name="Uc">
     <UserControl.ToolTip>
         <ToolTip  DataContext="{Binding Path=PlacementTarget, RelativeSource={x:Static RelativeSource.Self}}" >
-            <TextBlock Text="{Binding Path=PlanungstagViewmodel.Planzeit.Dienst, StringFormat='Geplant als: {0}', Converter={StaticResource MyEnumDecriptionConverter}}"/>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="{Binding Path=PlanungstagViewmodel.Planzeit.Dienst, StringFormat='Geplant als: {0}', Converter={StaticResource MyEnumDecriptionConverter}}"/>
+                <TextBlock Grid.Row="1">
+                    <Run Text="ZaK:"/>
+                    <Run Text="{Binding Path=PlanungstagViewmodel.Zak, Mode=OneWay}"/>
+                    <Run Text="h"/>
+                </TextBlock>
+            </Grid>
         </ToolTip>
     </UserControl.ToolTip>
     <UserControl.ContextMenu>
@@ -31,6 +43,10 @@
                                 <TextBlock Text="{Binding Path=PlacementTarget.PlanungstagViewmodel.PlanZeitenInfo, StringFormat='Planzeit: {0}', RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"/>
                                 <TextBlock Text="{Binding Path=PlacementTarget.PlanungstagViewmodel.Planzeit.Dienst, StringFormat='Dienst: {0}', Converter={StaticResource MyEnumDecriptionConverter}, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"/>
                                 <TextBlock Text="{Binding Path=PlacementTarget.PlanungstagViewmodel.Planzeit.Gruppe, StringFormat='Gruppe: {0}', Converter={StaticResource MyEnumDecriptionConverter}, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"/>
+                                <CheckBox Content="Großteamteilnahme" 
+                                          IsEnabled="{Binding Path=PlacementTarget.PlanungstagViewmodel.Planzeit.Arbeitstag.HasGrossteam, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
+                                          IsChecked="{Binding Path=PlacementTarget.PlanungstagViewmodel.HasGrossteam, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"/>
+
                             </StackPanel>
                             <Rectangle Grid.Row="1" Fill="DarkCyan" Height="2" Margin="2,3"/>
 
@@ -59,14 +75,14 @@
 
 
                             <Grid Grid.Row="5">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            
-                                            <controls:VonBisUhrzeitControl Grid.Column="0" 
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <controls:VonBisUhrzeitControl Grid.Column="0" 
                                                                            SelectedHourVon="{Binding Path=PlacementTarget.PlanungstagViewmodel.PlanVonBisZeit.StundeVon, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
                                                                            SelectedMinuteVon="{Binding Path=PlacementTarget.PlanungstagViewmodel.PlanVonBisZeit.MinuteVon, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
                                                                            SelectedHourBis="{Binding Path=PlacementTarget.PlanungstagViewmodel.PlanVonBisZeit.StundeBis, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"

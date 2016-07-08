@@ -222,8 +222,8 @@
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                                        <TextBlock Text="AAK" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                   ToolTip="Arbeit am Kind bzw. Frei"/>
+                                        <TextBlock Text="ZaK" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                   ToolTip="Zeit am Kind/ Frei"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
@@ -246,7 +246,7 @@
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                                         <TextBlock Text="KFZ" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                   ToolTip="Kind freie Zeit (Planstunden)"/>
+                                                   ToolTip="Kind freie Zeit"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
@@ -257,13 +257,13 @@
                             </DataGridTemplateColumn.HeaderStyle>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Mitarbeiter.KindFreieZeit}" HorizontalAlignment="Center"
+                                    <TextBlock Text="{Binding KfzStunden}" HorizontalAlignment="Center"
                                                FontWeight="Bold">
                                     </TextBlock>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-
+                        </DataGridTemplateColumn> 
+                        
                         <DataGridTemplateColumn Width="50">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
@@ -382,6 +382,7 @@
                                 </Style>
                             </DataGridTemplateColumn.CellStyle>
                         </DataGridTemplateColumn>
+                      
                         <DataGridTemplateColumn MinWidth="130">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -419,6 +420,7 @@
                                 </Style>
                             </DataGridTemplateColumn.CellStyle>
                         </DataGridTemplateColumn>
+                      
                         <DataGridTemplateColumn MinWidth="130" >
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -429,7 +431,7 @@
                                 <DataTemplate>
                                     <Grid>
                                         <planung:PlanungMitarbeiterTagHeaderControl 
-                                            Wochentag="Mittwoch"
+                                            Wochentag="Donnerstag"
                                             IsFeiertag="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsDonnerstagFeiertag, Mode=TwoWay}"
                                              HasGrossteam="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.HasDonnerstagGrossteam, Mode=TwoWay}"
                                             ArbeitstagWrapper="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.Donnerstag, Mode=OneWay}"/>
@@ -457,6 +459,7 @@
                                 </Style>
                             </DataGridTemplateColumn.CellStyle>
                         </DataGridTemplateColumn>
+                       
                         <DataGridTemplateColumn MinWidth="130">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -467,7 +470,7 @@
                                 <DataTemplate>
                                     <Grid>
                                         <planung:PlanungMitarbeiterTagHeaderControl 
-                                            Wochentag="Mittwoch"
+                                            Wochentag="Freitag"
                                             IsFeiertag="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsFreitagFeiertag, Mode=TwoWay}"
                                              HasGrossteam="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.HasFreitagGrossteam, Mode=TwoWay}"
                                             ArbeitstagWrapper="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.Freitag, Mode=OneWay}"/>

@@ -7,43 +7,100 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using CocoloresPEP.Common.Entities;
+using Itenso.TimePeriod;
 
 namespace CocoloresPEP.Common.Extensions
 {
     public static class BusinessExtensions
     {
-        public static int GetAbzurechnendeZeitInMinmuten(this PlanItem planzeit)
+
+        public static int GetGrossteamZeitInMinmuten(this PlanItem planzeit)
         {
             if (planzeit.HatGrossteam)
             {
-                var gtMinuten = planzeit.Arbeitstag.Grossteam.Duration.GetArbeitsminutenOhnePause();
-                var arbeit = planzeit.Zeitraum.Duration.GetArbeitsminutenOhnePause();
+                var gtMinuten = (int)planzeit.Arbeitstag.Grossteam.Duration.TotalMinutes;
                 var overlap = 0;
 
-                if(planzeit.Zeitraum.IntersectsWith(planzeit.Arbeitstag.Grossteam))
+                if (planzeit.Zeitraum.IntersectsWith(planzeit.Arbeitstag.Grossteam))
                     overlap = (int)planzeit.Zeitraum.GetIntersection(planzeit.Arbeitstag.Grossteam).Duration.TotalMinutes;
 
-                return arbeit + gtMinuten - overlap;
+                return gtMinuten - overlap;
             }
             else
             {
-                return planzeit.Zeitraum.Duration.GetArbeitsminutenOhnePause();
+                return 0;
             }
         }
 
-        public static int GetArbeitsminutenOhnePause(this TimeSpan dauerMitPause)
+        /// <summary>
+        /// Gibt für die Arbeitszeit bzw. Dienst Frei die Minuten ohne Pause zurück
+        /// </summary>
+        /// <param name="dienst"></param>
+        /// <returns></returns>
+        public static int GetArbeitsminutenAmKindOhnePause(this PlanItem dienst)
         {
-            var minuten = (int)dauerMitPause.TotalMinutes;
+            var minuten = (int)dienst.Zeitraum.Duration.TotalMinutes;
+            int pause;
 
-            if (minuten > 360)
-                return minuten - 30;
+            if(dienst.NeedPause(out pause))
+                return minuten - pause;
 
             return minuten;
         }
 
-        public static bool NeedPause(this TimeSpan dauerMitPause)
+        public static bool NeedPause(this PlanItem dienst, out int pause)
         {
-            var minuten = (int)dauerMitPause.TotalMinutes;
+            pause = 0;
+
+            if (dienst.Zeitraum.Duration.NeedPause())
+            {
+                pause = 30;
+                return true;
+            }
+
+            //wenn keine Pause aber Großteam noch ist
+            if (dienst.HatGrossteam)
+            {
+                var tp = new TimePeriodCollection(new List<ITimePeriod>() { dienst.Zeitraum, dienst.Arbeitstag.Grossteam });
+
+                if (tp.HasGaps())
+                {
+                    var gapCalculator = new TimeGapCalculator<TimeRange>(new TimeCalendar());
+                    var gaps = gapCalculator.GetGaps(tp);
+
+                    var gap = (int) gaps.First().Duration.TotalMinutes; //sollte nur eine geben, sind ja nur 2 Zeiten
+
+                    if (gap < 30)
+                    {
+                        pause = 30 - gap;
+                        return true;
+                    }
+                }
+                else
+                {
+                    var periodCombiner = new TimePeriodCombiner<TimeRange>();
+                    var combinedPeriods = periodCombiner.CombinePeriods(tp);
+
+                    if (combinedPeriods.First().Duration.NeedPause())
+                    {
+                        pause = 30;
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public static bool NeedPause(this PlanItem dienst)
+        {
+            int pause;
+            return dienst.NeedPause(out pause);
+        }
+
+        private static bool NeedPause(this TimeSpan duration)
+        {
+            var minuten = (int)duration.TotalMinutes;
 
             if (minuten > 360)
                 return true;
@@ -59,7 +116,7 @@ namespace CocoloresPEP.Common.Extensions
                 || (int)planzeit.Zeitraum.Duration.TotalMinutes == 0)
                 return info;
 
-            var pause = planzeit.Zeitraum.Duration.NeedPause() ? "P" : " ";
+            var pause = planzeit.NeedPause() ? "P" : " ";
             var grossteam = planzeit.HatGrossteam ? "G" : " ";
 
             var zusatz = !string.IsNullOrWhiteSpace(pause) || !string.IsNullOrWhiteSpace(grossteam) ? " |" : "";
@@ -83,11 +140,115 @@ namespace CocoloresPEP.Common.Extensions
             return false;
         }
 
+        public static int GibtFreiMinutenBzglDerGeplantenDienste(this PlanItem planzeit)
+        {
+            var freiminuten = 0;
+            switch (planzeit.Dienst)
+            {
+                case DienstTyp.Frühdienst:
+                    if (planzeit.Zeitraum.Start < planzeit.Arbeitstag.Frühdienst)
+                        freiminuten = (int)(planzeit.Arbeitstag.Frühdienst - planzeit.Zeitraum.Start).TotalMinutes;
+                    break;
+                case DienstTyp.AchtUhrDienst:
+                    if (planzeit.Zeitraum.Start < planzeit.Arbeitstag.AchtUhrDienst)
+                        freiminuten = (int)(planzeit.Arbeitstag.AchtUhrDienst - planzeit.Zeitraum.Start).TotalMinutes;
+                    break;
+                case DienstTyp.KernzeitStartDienst:
+                    if (planzeit.Zeitraum.Start < planzeit.Arbeitstag.KernzeitGruppeStart)
+                        freiminuten = (int)(planzeit.Arbeitstag.KernzeitGruppeStart - planzeit.Zeitraum.Start).TotalMinutes;
+                    break;
+                case DienstTyp.NeunUhrDienst:
+                    if (planzeit.Zeitraum.Start < planzeit.Arbeitstag.NeunUhrDienst)
+                        freiminuten = (int)(planzeit.Arbeitstag.NeunUhrDienst - planzeit.Zeitraum.Start).TotalMinutes;
+                    break;
+                case DienstTyp.ZehnUhrDienst:
+                    if (planzeit.Zeitraum.Start < planzeit.Arbeitstag.ZehnUhrDienst)
+                        freiminuten = (int)(planzeit.Arbeitstag.ZehnUhrDienst - planzeit.Zeitraum.Start).TotalMinutes;
+                    break;
+                case DienstTyp.KernzeitEndeDienst:
+                    if (planzeit.Zeitraum.End > planzeit.Arbeitstag.KernzeitGruppeEnde)
+                        freiminuten = (int)(planzeit.Zeitraum.End - planzeit.Arbeitstag.KernzeitGruppeEnde).TotalMinutes;
+                    break;
+                case DienstTyp.SechszehnUhrDienst:
+                    if (planzeit.Zeitraum.End > planzeit.Arbeitstag.SechzehnUhrDienst)
+                        freiminuten = (int)(planzeit.Zeitraum.End - planzeit.Arbeitstag.SechzehnUhrDienst).TotalMinutes;
+                    break;
+                case DienstTyp.SpätdienstEnde:
+                    if (planzeit.Zeitraum.End > planzeit.Arbeitstag.SpätdienstEnde)
+                        freiminuten = (int)(planzeit.Zeitraum.End - planzeit.Arbeitstag.SpätdienstEnde).TotalMinutes;
+                    break;
+            }
+
+          
+
+            return freiminuten;
+        }
+
+        public static void SetHatGrossteam(this PlanItem plan)
+        {
+            plan.HatGrossteam = plan.Arbeitstag.HasGrossteam
+                                && !plan.ErledigtDurch.IsHelfer 
+                                && (plan.Dienst & DienstTyp.Frei) != DienstTyp.Frei;
+        }
+
+        public static bool CanSetHatGrossteam(this PlanItem plan)
+        {
+            return plan.Arbeitstag.HasGrossteam
+                   && !plan.ErledigtDurch.IsHelfer
+                   && (plan.Dienst & DienstTyp.Frei) != DienstTyp.Frei;
+        }
+
+        /// <summary>
+        /// Gibt die Mitarbeiter Planitems für eine Arbeitstag und eine Gruppe zurück
+        /// </summary>
+        /// <param name="arbeitstag"></param>
+        /// <param name="gruppe"></param>
+        /// <returns></returns>
+        public static IList<PlanItem> GetMitarbeiterArbeitsplanzeiten(this Arbeitstag arbeitstag, GruppenTyp gruppe)
+        {
+            return
+                arbeitstag.Planzeiten.Where(x => (x.Gruppe & gruppe) == gruppe && !x.ErledigtDurch.IsHelfer)
+                    .Select(x => x)
+                    .ToList();
+        }
+
+        /// <summary>
+        /// Gibt die Mitarbeiter Arbeitszeiten für eine Arbeitstag und eine Gruppe zurück
+        /// </summary>
+        /// <param name="arbeitstag"></param>
+        /// <param name="gruppe"></param>
+        /// <returns></returns>
+        public static IList<TimeRange> GetMitarbeiterArbeitszeiten(this Arbeitstag arbeitstag, GruppenTyp gruppe)
+        {
+            return
+                arbeitstag.Planzeiten
+                .Where(x => (x.Gruppe & gruppe) == gruppe 
+                            && (x.Dienst & DienstTyp.Frei) != DienstTyp.Frei
+                            && !x.ErledigtDurch.IsHelfer)
+                    .Select(x => x.Zeitraum)
+                    .ToList();
+        } 
+        /// <summary>
+        /// Früh-, 8uhr-, 16Uhr-, Spätdienst
+        /// </summary>
+        /// <param name="dienst"></param>
+        /// <returns></returns>
         public static bool IstRandDienst(this DienstTyp dienst)
         {
             return (dienst & DienstTyp.Frühdienst) == DienstTyp.Frühdienst
                    || (dienst & DienstTyp.AchtUhrDienst) == DienstTyp.AchtUhrDienst
                    || (dienst & DienstTyp.SechszehnUhrDienst) == DienstTyp.SechszehnUhrDienst
+                   || (dienst & DienstTyp.SpätdienstEnde) == DienstTyp.SpätdienstEnde;
+
+        }
+        /// <summary>
+        /// Früh-, Spätdienst
+        /// </summary>
+        /// <param name="dienst"></param>
+        /// <returns></returns>
+        public static bool IstRandRandDienst(this DienstTyp dienst)
+        {
+            return (dienst & DienstTyp.Frühdienst) == DienstTyp.Frühdienst
                    || (dienst & DienstTyp.SpätdienstEnde) == DienstTyp.SpätdienstEnde;
 
         }

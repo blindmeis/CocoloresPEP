@@ -8,7 +8,59 @@
              x:Name="Uc">
     <StackPanel Orientation="Vertical">
         <TextBlock Text="{Binding ElementName=Uc, Path=Wochentag, Mode=OneWay}" 
-                   HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                   Tag="{Binding ElementName=Uc, Path=., Mode=OneWay}"
+                   HorizontalAlignment="Left" VerticalAlignment="Center">
+            <TextBlock.ContextMenu>
+                <ContextMenu>
+                    <ContextMenu.Template>
+                        <ControlTemplate>
+                            <Border BorderThickness="2" BorderBrush="DarkCyan" Padding="5" Background="DarkGray" >
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0" Text="Kernzeit Doppelbesetzung"/>
+
+                                    <Rectangle Grid.Row="1" Fill="DarkCyan" Height="2" Margin="2,3"/>
+
+                                    <Grid Grid.Row="3">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <controls:VonBisUhrzeitControl Grid.Column="0" 
+                                                                           SelectedHourVon="{Binding Path=PlacementTarget.Tag.ArbeitstagWrapper.KernzeitDoppelBesetzungZeitWrapper.StundeVon, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
+                                                                           SelectedMinuteVon="{Binding Path=PlacementTarget.Tag.ArbeitstagWrapper.KernzeitDoppelBesetzungZeitWrapper.MinuteVon, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
+                                                                           SelectedHourBis="{Binding Path=PlacementTarget.Tag.ArbeitstagWrapper.KernzeitDoppelBesetzungZeitWrapper.StundeBis, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
+                                                                           SelectedMinuteBis="{Binding Path=PlacementTarget.Tag.ArbeitstagWrapper.KernzeitDoppelBesetzungZeitWrapper.MinuteBis, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
+                                                                           />
+
+
+                                        <Button Grid.Column="1" IsDefault="True"
+                                                    Command="{Binding Path=PlacementTarget.Tag.ArbeitstagWrapper.UpdateKernzeitDoppelBesetzungZeitCommand, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
+                                                    CommandParameter="{Binding Path=PlacementTarget.Tag.ArbeitstagWrapper.KernzeitDoppelBesetzungZeitWrapper, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
+                                                    ToolTip="Kernzeit Doppelbesetzung ändern">
+                                            <Viewbox Width="16" Height="16">
+                                                <images:Ok/>
+                                            </Viewbox>
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </ContextMenu.Template>
+                </ContextMenu>
+            </TextBlock.ContextMenu>
+        </TextBlock>
 
         <CheckBox IsChecked="{Binding ElementName=Uc, Path=IsFeiertag, Mode=TwoWay}"
                   Content="Feiertag"

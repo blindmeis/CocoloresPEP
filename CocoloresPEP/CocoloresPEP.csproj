@@ -111,6 +111,7 @@
     <Compile Include="Common\Controls\WunschdienstControl.cs" />
     <Compile Include="Common\Entities\DienstTyp.cs" />
     <Compile Include="Common\Entities\GruppenTyp.cs" />
+    <Compile Include="Common\Entities\Themen.cs" />
     <Compile Include="Common\Extensions\BusinessExtensions.cs" />
     <Compile Include="Common\Extensions\DateTimeExtensions.cs" />
     <Compile Include="Common\Extensions\EnumExtensions.cs" />
