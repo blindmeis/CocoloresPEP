@@ -142,8 +142,8 @@ namespace CocoloresPEP.Module.Planung
             {
                 if (_hasMontagGrossteam == value)
                     return;
-                _hasMontagGrossteam = value;
-
+                Montag.Arbeitstag.HasGrossteam = _hasMontagGrossteam = value;
+                
                 OnPropertyChanged();
 
                 foreach (var l in PlanungProMitarbeiterListe)
@@ -160,7 +160,7 @@ namespace CocoloresPEP.Module.Planung
             {
                 if (_hasDienstagGrossteam == value)
                     return;
-                _hasDienstagGrossteam = value;
+                Dienstag.Arbeitstag.HasGrossteam = _hasDienstagGrossteam = value;
 
                 OnPropertyChanged();
 
@@ -178,7 +178,7 @@ namespace CocoloresPEP.Module.Planung
             {
                 if (_hasMittwochGrossteam == value)
                     return;
-                _hasMittwochGrossteam = value;
+                Mittwoch.Arbeitstag.HasGrossteam = _hasMittwochGrossteam = value;
 
                 OnPropertyChanged();
 
@@ -196,7 +196,7 @@ namespace CocoloresPEP.Module.Planung
             {
                 if (_hasDonnerstagGrossteam == value)
                     return;
-                _hasDonnerstagGrossteam = value;
+                Donnerstag.Arbeitstag.HasGrossteam = _hasDonnerstagGrossteam = value;
 
                 OnPropertyChanged();
 
@@ -214,7 +214,7 @@ namespace CocoloresPEP.Module.Planung
             {
                 if (_hasFreitagGrossteam == value)
                     return;
-                _hasFreitagGrossteam = value;
+                Freitag.Arbeitstag.HasGrossteam = _hasFreitagGrossteam = value;
 
                 OnPropertyChanged();
 

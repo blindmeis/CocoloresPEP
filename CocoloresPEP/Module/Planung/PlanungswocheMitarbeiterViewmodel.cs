@@ -33,7 +33,10 @@ namespace CocoloresPEP.Module.Planung
             {
                 _mitarbeiter = value;
                 _observerMitarbeiter = new PropertyObserver<MitarbeiterViewmodel>(_mitarbeiter)
-                    .RegisterHandler(n => n.KindFreieZeit, n => OnPropertyChanged(nameof(PlusMinusStunden)));
+                    .RegisterHandler(n => n.KindFreieZeit, n =>
+                    {
+                        Refresh();
+                    });
             }
         }
 

@@ -68,7 +68,7 @@ namespace CocoloresPEP.Common.Extensions
                     var gapCalculator = new TimeGapCalculator<TimeRange>(new TimeCalendar());
                     var gaps = gapCalculator.GetGaps(tp);
 
-                    var gap = (int) gaps.First().Duration.TotalMinutes; //sollte nur eine geben, sind ja nur 2 Zeiten
+                    var gap = (int)Math.Round(gaps.First().Duration.TotalMinutes, MidpointRounding.ToEven); //sollte nur eine geben, sind ja nur 2 Zeiten
 
                     if (gap < 30)
                     {

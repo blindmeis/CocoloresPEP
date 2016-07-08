@@ -115,14 +115,14 @@ namespace CocoloresPEP.Common.Entities
 
         public TimeRange KernzeitDoppelBesetzungRange
         {
-            get { return _kernzeitDoppelBesetzungRange; }
+            get { return _kernzeitDoppelBesetzungRange ?? KernzeitBasisRange; }
             set { _kernzeitDoppelBesetzungRange = value; }
         }
 
-        public int KernzeitDoppelBesetzungStundeVon { get { return KernzeitDoppelBesetzungRange.Start.Hour; } }
-        public int KernzeitDoppelBesetzungStundeBis { get { return KernzeitDoppelBesetzungRange.End.Hour; } }
-        public int KernzeitDoppelBesetzungMinuteVon { get { return KernzeitDoppelBesetzungRange.Start.Minute; } }
-        public int KernzeitDoppelBesetzungMinuteBis { get { return KernzeitDoppelBesetzungRange.End.Minute; } }
+        public int KernzeitDoppelBesetzungStundeVon { get { return KernzeitDoppelBesetzungRange?.Start.Hour??0; } }
+        public int KernzeitDoppelBesetzungStundeBis { get { return KernzeitDoppelBesetzungRange?.End.Hour ?? 0; } }
+        public int KernzeitDoppelBesetzungMinuteVon { get { return KernzeitDoppelBesetzungRange?.Start.Minute ?? 0; } }
+        public int KernzeitDoppelBesetzungMinuteBis { get { return KernzeitDoppelBesetzungRange?.End.Minute ?? 0; } }
 
         public TimeRange Grossteam
         {
@@ -130,10 +130,10 @@ namespace CocoloresPEP.Common.Entities
             set { _grossteam = value; }
         }
 
-        public int GrossteamStundeVon {get { return Grossteam.Start.Hour; } }
-        public int GrossteamStundeBis {get { return Grossteam.End.Hour; } }
-        public int GrossteamMinuteVon {get { return Grossteam.Start.Minute; } }
-        public int GrossteamMinuteBis {get { return Grossteam.End.Minute; } }
+        public int GrossteamStundeVon {get { return Grossteam?.Start.Hour ?? 0; } }
+        public int GrossteamStundeBis {get { return Grossteam?.End.Hour ?? 0; } }
+        public int GrossteamMinuteVon {get { return Grossteam?.Start.Minute ?? 0; } }
+        public int GrossteamMinuteBis {get { return Grossteam?.End.Minute ?? 0; } }
 
         public PlanItem EmptyPlanzeitOhneMitarbeiter
         {

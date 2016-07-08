@@ -127,7 +127,10 @@ namespace CocoloresPEP.Services
                 FillGruppenDiensteMitKernzeitPrio(rotMas, arbeitstag, GruppenTyp.Rot, schonEingeteilt);
 
                 var rest = alledieDaSind.Where(x => !schonEingeteilt.Contains(x)).ToList();
-                FillGruppenDiensteMitKernzeitPrio(rest, arbeitstag, GruppenTyp.None, schonEingeteilt);
+                foreach (var mitarbeiter in rest)
+                {
+                    arbeitstag.Planzeiten.Add(CreatePlanItem(arbeitstag, mitarbeiter, GruppenTyp.None, DienstTyp.KernzeitStartDienst));
+                }
 
                 #endregion
 
@@ -158,68 +161,6 @@ namespace CocoloresPEP.Services
 
             }
 
-            #region nach "Minusstunden" gucken, passiert weil TagesTicks  und Tagesminuten nicht immer passen
-            //foreach (var mitarbeiter in maList)
-            //{
-            //    var planzeiten = woche.Arbeitstage.SelectMany(x => x.Planzeiten.Where(p => p.ErledigtDurch == mitarbeiter)).ToList();
-
-            //    var minuten = planzeiten.Sum(x => (int)x.Zeitraum.Duration.GetArbeitsminutenOhnePause());
-
-            //    var saldoInMinuten = minuten - (mitarbeiter.WochenStunden * 60);
-
-            //    //vorkommazahl bleibt übrig
-            //    var tickstoAdd = Math.Abs((int)saldoInMinuten / 15);
-
-            //    if (tickstoAdd < 1)
-            //        continue;
-
-            //    var planzeitenProTag = planzeiten.Where(x => x.ObGruppenDienst).GroupBy(x => x.Zeitraum.Start.Day).ToList();
-            //    var ticksAdded = 0;
-            //    for (int i = 0; i < tickstoAdd; i++)
-            //    {
-            //        if (planzeitenProTag.Count <= i)
-            //            break;
-
-            //        var planitem = planzeitenProTag[i].First();
-
-            //        if ((planitem.Dienst & DienstTyp.Frühdienst) == DienstTyp.Frühdienst
-            //            || (planitem.Dienst & DienstTyp.FsjFrühdienst) == DienstTyp.FsjFrühdienst
-            //            || (planitem.Dienst & DienstTyp.AchtUhrDienst) == DienstTyp.AchtUhrDienst
-            //            || (planitem.Dienst & DienstTyp.KernzeitStartDienst) == DienstTyp.KernzeitStartDienst)
-            //        {
-            //            planitem.Zeitraum.ExpandEndTo(planitem.Zeitraum.End.AddMinutes(15));
-            //            AdjustEndzeitEnde(planitem);
-            //        }
-            //        else
-            //        {
-            //            planitem.Zeitraum.ExpandStartTo(planitem.Zeitraum.Start.AddMinutes(-15));
-            //        }
-
-            //        ticksAdded++;
-            //    }
-            //    //Fallback wenn Tage "fehlen"
-            //    if (tickstoAdd != ticksAdded)
-            //    {
-            //        var ticks = tickstoAdd - ticksAdded;
-            //        var planitem = planzeitenProTag.Select(x => x.First()).First();
-
-
-            //        if ((planitem.Dienst & DienstTyp.Frühdienst) == DienstTyp.Frühdienst
-            //            || (planitem.Dienst & DienstTyp.AchtUhrDienst) == DienstTyp.AchtUhrDienst
-            //            || (planitem.Dienst & DienstTyp.KernzeitStartDienst) == DienstTyp.KernzeitStartDienst)
-            //        {
-
-            //            planitem.Zeitraum.ExpandEndTo(planitem.Zeitraum.End.AddMinutes(15 * ticks));
-            //            AdjustEndzeitEnde(planitem);
-            //        }
-            //        else
-            //        {
-            //            planitem.Zeitraum.ExpandStartTo(planitem.Zeitraum.Start.AddMinutes(-15 * ticks));
-            //        }
-            //    }
-            //}
-            #endregion
-
             CheckKernzeitAbgedecktMitMitarbeiternVomTag(woche);
 
             NichtVerplanteZeitenPlanen(woche);
@@ -245,7 +186,7 @@ namespace CocoloresPEP.Services
 
         private static Mitarbeiter NextMitarbeiter(IList<Mitarbeiter> alleDieDaSind, IList<Mitarbeiter> schonEingeteilt, IList<PlanItem> planzeiten, DienstTyp ma4Diensttyp = DienstTyp.None, GruppenTyp etage = GruppenTyp.Gelb | GruppenTyp.Gruen | GruppenTyp.Nest | GruppenTyp.Rot)
         {
-            var topf = alleDieDaSind.Except(schonEingeteilt).ToList();
+            var topf = alleDieDaSind.Except(schonEingeteilt).Where(x=>x.DefaultGruppe!=GruppenTyp.None).ToList();
 
             if (topf.Count == 0)
                 return null;
@@ -669,6 +610,7 @@ namespace CocoloresPEP.Services
 
             switch (dienst.Dienst)
             {
+                case DienstTyp.None:
                 case DienstTyp.Frühdienst:
                 case DienstTyp.AchtUhrDienst:
                 case DienstTyp.KernzeitStartDienst:
@@ -683,6 +625,8 @@ namespace CocoloresPEP.Services
                     break;
                 case DienstTyp.Frei:
                     return false;
+                default:
+                    break;
             }
 
             if (!dienst.Zeitraum.Duration.IsMindestzeitAbgedeckt())
@@ -744,6 +688,9 @@ namespace CocoloresPEP.Services
 
         private static bool CheckKernzeitAbgedeckt(GruppenTyp gruppe, Arbeitstag arbeitstag)
         {
+            if ((gruppe & GruppenTyp.None) == GruppenTyp.None)
+                return true;
+
             var gruppenzeiten = arbeitstag.GetMitarbeiterArbeitszeiten(gruppe);
 
             if (gruppenzeiten.Count == 0)
@@ -757,6 +704,9 @@ namespace CocoloresPEP.Services
 
         private static bool CheckKernzeitDoppelBesetzungAbgedeckt(GruppenTyp gruppe, Arbeitstag arbeitstag)
         {
+            if ((gruppe & GruppenTyp.None) == GruppenTyp.None)
+                return true;
+
             var gruppenzeiten = arbeitstag.GetMitarbeiterArbeitszeiten(gruppe);
 
             if (gruppenzeiten.Count == 0)
