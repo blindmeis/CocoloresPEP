@@ -140,48 +140,58 @@ namespace CocoloresPEP.Common.Extensions
             return false;
         }
 
-        public static int GibtFreiMinutenBzglDerGeplantenDienste(this PlanItem planzeit)
+        public static bool CheckKernzeitAbgedeckt(this Arbeitstag arbeitstag, GruppenTyp gruppe)
         {
-            var freiminuten = 0;
-            switch (planzeit.Dienst)
+            if ((gruppe & GruppenTyp.None) == GruppenTyp.None)
+                return true;
+
+            var gruppenzeiten = arbeitstag.GetMitarbeiterArbeitszeiten(gruppe);
+
+            if (gruppenzeiten.Count == 0)
+                return false;
+
+            var tp = new TimePeriodCollection(gruppenzeiten);
+            var obKernzeit = tp.HasInside(arbeitstag.KernzeitBasisRange);
+
+            return obKernzeit;
+        }
+
+        public static bool CheckKernzeitDoppelBesetzungAbgedeckt(this Arbeitstag arbeitstag, GruppenTyp gruppe)
+        {
+            if ((gruppe & GruppenTyp.None) == GruppenTyp.None)
+                return true;
+
+            var gruppenzeiten = arbeitstag.GetMitarbeiterArbeitszeiten(gruppe);
+
+            if (gruppenzeiten.Count < 2)
+                return false;
+
+            if (gruppenzeiten.Count == 2)
             {
-                case DienstTyp.Frühdienst:
-                    if (planzeit.Zeitraum.Start < planzeit.Arbeitstag.Frühdienst)
-                        freiminuten = (int)(planzeit.Arbeitstag.Frühdienst - planzeit.Zeitraum.Start).TotalMinutes;
-                    break;
-                case DienstTyp.AchtUhrDienst:
-                    if (planzeit.Zeitraum.Start < planzeit.Arbeitstag.AchtUhrDienst)
-                        freiminuten = (int)(planzeit.Arbeitstag.AchtUhrDienst - planzeit.Zeitraum.Start).TotalMinutes;
-                    break;
-                case DienstTyp.KernzeitStartDienst:
-                    if (planzeit.Zeitraum.Start < planzeit.Arbeitstag.KernzeitGruppeStart)
-                        freiminuten = (int)(planzeit.Arbeitstag.KernzeitGruppeStart - planzeit.Zeitraum.Start).TotalMinutes;
-                    break;
-                case DienstTyp.NeunUhrDienst:
-                    if (planzeit.Zeitraum.Start < planzeit.Arbeitstag.NeunUhrDienst)
-                        freiminuten = (int)(planzeit.Arbeitstag.NeunUhrDienst - planzeit.Zeitraum.Start).TotalMinutes;
-                    break;
-                case DienstTyp.ZehnUhrDienst:
-                    if (planzeit.Zeitraum.Start < planzeit.Arbeitstag.ZehnUhrDienst)
-                        freiminuten = (int)(planzeit.Arbeitstag.ZehnUhrDienst - planzeit.Zeitraum.Start).TotalMinutes;
-                    break;
-                case DienstTyp.KernzeitEndeDienst:
-                    if (planzeit.Zeitraum.End > planzeit.Arbeitstag.KernzeitGruppeEnde)
-                        freiminuten = (int)(planzeit.Zeitraum.End - planzeit.Arbeitstag.KernzeitGruppeEnde).TotalMinutes;
-                    break;
-                case DienstTyp.SechszehnUhrDienst:
-                    if (planzeit.Zeitraum.End > planzeit.Arbeitstag.SechzehnUhrDienst)
-                        freiminuten = (int)(planzeit.Zeitraum.End - planzeit.Arbeitstag.SechzehnUhrDienst).TotalMinutes;
-                    break;
-                case DienstTyp.SpätdienstEnde:
-                    if (planzeit.Zeitraum.End > planzeit.Arbeitstag.SpätdienstEnde)
-                        freiminuten = (int)(planzeit.Zeitraum.End - planzeit.Arbeitstag.SpätdienstEnde).TotalMinutes;
-                    break;
+                var anzDoppelBesetzung = 0;
+                foreach (var range in gruppenzeiten)
+                {
+                    var tp = new TimePeriodCollection(new List<ITimePeriod>() {range});
+                    if (tp.HasInside(arbeitstag.KernzeitDoppelBesetzungRange))
+                        anzDoppelBesetzung++;
+                }
+                return anzDoppelBesetzung >= 2;
+            }
+            
+            //07:00-11:00
+            //09:00-13:00
+            //11:00-16:00
+            var zeitzeiger = arbeitstag.KernzeitDoppelBesetzungRange.Start;
+            while (zeitzeiger <= arbeitstag.KernzeitDoppelBesetzungRange.End)
+            {
+                var count = gruppenzeiten.Count(x => x.HasInside(zeitzeiger));
+                if (count < 2)
+                    return false;
+
+                zeitzeiger = zeitzeiger.AddMinutes(1);
             }
 
-          
-
-            return freiminuten;
+            return true;
         }
 
         public static void SetHatGrossteam(this PlanItem plan)
@@ -224,7 +234,7 @@ namespace CocoloresPEP.Common.Extensions
                 arbeitstag.Planzeiten
                 .Where(x => (x.Gruppe & gruppe) == gruppe 
                             && (x.Dienst & DienstTyp.Frei) != DienstTyp.Frei
-                            && !x.ErledigtDurch.IsHelfer)
+                            && (!x.ErledigtDurch?.IsHelfer??false))
                     .Select(x => x.Zeitraum)
                     .ToList();
         } 

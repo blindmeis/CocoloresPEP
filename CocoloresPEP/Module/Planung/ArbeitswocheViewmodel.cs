@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using CocoloresPEP.Common;
 using CocoloresPEP.Common.Entities;
 using CocoloresPEP.Common.WpfCore;
 using CocoloresPEP.Module.Mitarbeiter;
-using Itenso.TimePeriod;
 
 namespace CocoloresPEP.Module.Planung
 {
@@ -25,6 +27,7 @@ namespace CocoloresPEP.Module.Planung
         private bool _hasFreitagGrossteam;
         private List<MitarbeiterViewmodel> _mitarbeiter;
         private List<PropertyObserver<MitarbeiterViewmodel>> _propertyObserversMitarbeiter;
+        private AuswertungViewmodel _auswertung;
 
         public ArbeitswocheViewmodel(int jahr, int woche)
         {
@@ -33,6 +36,7 @@ namespace CocoloresPEP.Module.Planung
             _propertyObserversMitarbeiter = new List<PropertyObserver<MitarbeiterViewmodel>>();
             PlanungProMitarbeiterListe = new List<PlanungswocheMitarbeiterViewmodel>();
             Mitarbeiter = new List<MitarbeiterViewmodel>();
+            
         }
         public int Jahr { get; set; }
 
@@ -43,6 +47,19 @@ namespace CocoloresPEP.Module.Planung
         public ArbeitstagWrapper Mittwoch { get; set; }
         public ArbeitstagWrapper Donnerstag { get; set; }
         public ArbeitstagWrapper Freitag { get; set; }
+
+        public ICollectionView GroupedAuswertungView { get; set; }
+
+        public AuswertungViewmodel Auswertung
+
+        {
+            get { return _auswertung; }
+            set
+            {
+                _auswertung = value; 
+                OnPropertyChanged();
+            }
+        }
 
         public bool IsMontagFeiertag
         {

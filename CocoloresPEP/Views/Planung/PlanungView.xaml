@@ -10,6 +10,7 @@
              xmlns:entities="clr-namespace:CocoloresPEP.Common.Entities"
              xmlns:controls="clr-namespace:CocoloresPEP.Common.WpfCore.Controls"
              xmlns:focus="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors.Focus"
+             xmlns:planung1="clr-namespace:CocoloresPEP.Module.Planung"
              x:Name="Uc">
     <i:Interaction.Behaviors>
         <focus:SetFocusToBindingBehavior BindingName="KalenderWoche" SetFocusToBindingPath="{Binding Path=FocusToBindingPath, Mode=TwoWay}"/>
@@ -141,6 +142,9 @@
                 </Grid.RowDefinitions>
 
                 <Expander Grid.Row="0" Margin="0,10,0,15">
+                    <i:Interaction.Behaviors>
+                        <behaviors:ExpanderCommandOnExpandedBehavior CommandOnExpanded="{Binding RunPlanungCheckCommand}"/>
+                    </i:Interaction.Behaviors>
                     <Expander.Header>
                         <TextBlock Text="{Binding SelectedArbeitswocheInfo}" FontWeight="Bold">
                             <TextBlock.LayoutTransform>
@@ -148,9 +152,49 @@
                             </TextBlock.LayoutTransform>
                         </TextBlock>
                     </Expander.Header>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,10,0,0">
+                        <TreeView ItemsSource="{Binding SelectedArbeitswoche.Auswertung.Auswertungen}" BorderThickness="1"
+                              MinHeight="50" MaxHeight="250">
+                            <TreeView.Resources>
+                                <HierarchicalDataTemplate DataType="{x:Type planung1:ArbeitstagAuswertung}" 
+                                                          ItemsSource="{Binding ValidierungsItems}"
+      >
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Wochentag}" />
+                                    </StackPanel>
+                                </HierarchicalDataTemplate>
 
+                                <HierarchicalDataTemplate DataType="{x:Type planung1:ValidierungsItem}" 
+                                                          ItemsSource="{Binding Messages}"
+      >
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Displayname, Converter={StaticResource MyStringEmptyToDisplayValueConverter}, ConverterParameter='Auswertung'}" />
+                                    </StackPanel>
+                                </HierarchicalDataTemplate>
+
+                                <DataTemplate DataType="{x:Type planung1:ValidationMessage}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Message}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </TreeView.Resources>
+                            <TreeView.ItemContainerStyle>
+                                <Style TargetType="{x:Type TreeViewItem}">
+                                    <Setter Property="IsExpanded" Value="True"/>
+                                </Style>
+                            </TreeView.ItemContainerStyle>
+                           
+                        </TreeView>
+
+                    </ScrollViewer>
                 </Expander>
 
+                <!--IsBusy Anzeige-->
+                <controls:BusyControl Grid.Row="0" Margin="0,10,0,15"
+                              ProgressbarSize="60"
+                              IsBusy="{Binding IsBusyCheck}" >
+                </controls:BusyControl>
+                
                 <DataGrid Grid.Row="1"
                           ItemsSource="{Binding ArbeitswocheVorschau}"
                           AutoGenerateColumns="False" IsReadOnly="True"
@@ -285,7 +329,7 @@
                                                FontWeight="Bold">
                                         <TextBlock.ToolTip>
                                             <TextBlock>
-                                                <Run Text="{Binding PlusMinusStunden, Mode=OneWay, Converter={StaticResource MyStundenToMinutenConverter}, StringFormat={}{0:#,#.}, FallbackValue=0, TargetNullValue=0}"/>
+                                                <Run Text="{Binding PlusMinusStunden, Mode=OneWay, Converter={StaticResource MyStundenToMinutenConverter}, StringFormat={}{0:#,##}, FallbackValue=0, TargetNullValue=0}"/>
                                                 <Run Text="Minuten"/>
                                             </TextBlock>
                                         </TextBlock.ToolTip>

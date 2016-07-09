@@ -167,7 +167,7 @@ namespace CocoloresPEP.Module.Planung
                     plan.Zeitraum = new TimeRange(plan.Arbeitstag.KernzeitGruppeEnde.AddMinutes(-1 * dauer), plan.Arbeitstag.KernzeitGruppeEnde);
                     break;
                 case DienstTyp.SechszehnUhrDienst:
-                    plan.Dienst = DienstTyp.SpätdienstEnde;
+                    plan.Dienst = DienstTyp.SechszehnUhrDienst;
                     plan.Zeitraum = new TimeRange(plan.Arbeitstag.SechzehnUhrDienst.AddMinutes(-1 * dauer), plan.Arbeitstag.SechzehnUhrDienst);
                     break;
                 case DienstTyp.SpätdienstEnde:

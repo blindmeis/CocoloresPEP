@@ -123,6 +123,7 @@
     <Compile Include="Common\WpfCore\Behaviors\AttachableForStyleBehavior.cs" />
     <Compile Include="Common\WpfCore\Behaviors\CalendarBehavior.cs" />
     <Compile Include="Common\WpfCore\Behaviors\ComboboxIsEditableItemsFromListBehavior.cs" />
+    <Compile Include="Common\WpfCore\Behaviors\ExpanderCommandOnExpandedBehavior.cs" />
     <Compile Include="Common\WpfCore\Behaviors\Focus\FocusBorderAdornerBehavior.cs" />
     <Compile Include="Common\WpfCore\Behaviors\Focus\SetFocusToBindingBehavior.cs" />
     <Compile Include="Common\WpfCore\Behaviors\TextBoxInputBehavior.cs" />
@@ -141,7 +142,9 @@
     <Compile Include="Common\WpfCore\Converter\EnumDescriptionConverter.cs" />
     <Compile Include="Common\WpfCore\Converter\EnumHasFlagConverter.cs" />
     <Compile Include="Common\WpfCore\Converter\NumberToAbsolutOneWayConverter.cs" />
+    <Compile Include="Common\WpfCore\Converter\StringEmptyToDisplayValueConverter.cs" />
     <Compile Include="Common\WpfCore\Converter\StundenToMinutenConverter.cs" />
+    <Compile Include="Common\WpfCore\Converter\VisibilityIfNullConverter.cs" />
     <Compile Include="Common\WpfCore\Helper.cs" />
     <Compile Include="Common\WpfCore\PropertyObserver.cs" />
     <Compile Include="Common\WpfCore\Service\MessageBox\IMessageBoxService.cs" />
@@ -187,6 +190,7 @@
     <Compile Include="Module\Planung\PlanungstagViewmodel.cs" />
     <Compile Include="Module\Planung\PlanungswocheMitarbeiterViewmodel.cs" />
     <Compile Include="Module\Planung\PlanungszeitVonBisWrapper.cs" />
+    <Compile Include="Module\Planung\AuswertungViewmodel.cs" />
     <Compile Include="Services\ArbeitswochenService.cs" />
     <Compile Include="Services\ExcelExportService.cs" />
     <Compile Include="Services\PlanService.cs" />

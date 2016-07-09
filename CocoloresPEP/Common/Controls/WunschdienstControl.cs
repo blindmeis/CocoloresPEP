@@ -20,6 +20,8 @@ namespace CocoloresPEP.Common.Controls
             var d830 = new WunschdienstWrapper() {Dienst = DienstTyp.KernzeitStartDienst, Displayname = DienstTyp.KernzeitStartDienst.GetDisplayname() };
             var d9 = new WunschdienstWrapper() {Dienst = DienstTyp.NeunUhrDienst, Displayname = DienstTyp.NeunUhrDienst.GetDisplayname() };
             var d10 = new WunschdienstWrapper() {Dienst = DienstTyp.ZehnUhrDienst, Displayname = DienstTyp.ZehnUhrDienst.GetDisplayname() };
+            var d1530 = new WunschdienstWrapper() {Dienst = DienstTyp.KernzeitEndeDienst, Displayname = DienstTyp.KernzeitEndeDienst.GetDisplayname() };
+            var d16 = new WunschdienstWrapper() {Dienst = DienstTyp.SechszehnUhrDienst, Displayname = DienstTyp.SechszehnUhrDienst.GetDisplayname() };
             var sd = new WunschdienstWrapper() {Dienst = DienstTyp.SpätdienstEnde, Displayname = DienstTyp.SpätdienstEnde.GetDisplayname() };
 
             fd.PropertyChanged -= SelectionChanged;
@@ -31,8 +33,12 @@ namespace CocoloresPEP.Common.Controls
             d9.PropertyChanged -= SelectionChanged;
             d9.PropertyChanged += SelectionChanged;
             d10.PropertyChanged -= SelectionChanged;
-            d10.PropertyChanged += SelectionChanged;;
-            sd.PropertyChanged -= SelectionChanged;;
+            d10.PropertyChanged += SelectionChanged;
+            d1530.PropertyChanged -= SelectionChanged;
+            d1530.PropertyChanged += SelectionChanged;
+            d16.PropertyChanged -= SelectionChanged;
+            d16.PropertyChanged += SelectionChanged;
+            sd.PropertyChanged -= SelectionChanged;
             sd.PropertyChanged += SelectionChanged;
 
             this.Items.Add(fd);
@@ -40,6 +46,8 @@ namespace CocoloresPEP.Common.Controls
             this.Items.Add(d830);
             this.Items.Add(d9);
             this.Items.Add(d10);
+            this.Items.Add(d1530);
+            this.Items.Add(d16);
             this.Items.Add(sd);
 
           

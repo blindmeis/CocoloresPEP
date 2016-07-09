@@ -38,6 +38,7 @@ namespace CocoloresPEP.Module.Planung
         private readonly Lazy<DelegateCommand> _lazyExportPlanungCommand;
         private PlanungswocheMitarbeiterViewmodel _selectedPlanungswocheMitarbeiterItem;
         private WpfMessageBoxService _msg;
+        private bool _isBusyCheck;
 
 
         public PlanungManager()
@@ -65,9 +66,19 @@ namespace CocoloresPEP.Module.Planung
             Jahr = DateTime.Now.Year;
         }
 
-
+        public bool IsBusyCheck
+        {
+            get { return _isBusyCheck; }
+            set
+            {
+                _isBusyCheck = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ICollectionView PlanungView { get; set; }
+
+       
 
         public ObservableCollection<ArbeitswocheViewmodel> ArbeitswochenCollection { get; set; }
 
@@ -302,7 +313,7 @@ namespace CocoloresPEP.Module.Planung
 
         private bool CanRunPlanungCheckCommandExecute()
         {
-            return !IsBusy && SelectedArbeitswoche != null;
+            return !IsBusy && !IsBusyCheck && SelectedArbeitswoche != null && SelectedArbeitswoche.PlanungProMitarbeiterListe.Count != 0;
         }
 
         private async void RunPlanungCheckCommandExecute()
@@ -310,20 +321,17 @@ namespace CocoloresPEP.Module.Planung
             if (!CanRunPlanungCheckCommandExecute())
                 return;
 
-            IsBusy = true;
+            IsBusyCheck = true;
 
             try
             {
-                var woche = SelectedArbeitswoche.MapViewmodelToArbeitswoche();
-                //await Task.Run(() => PlanService.CheckPlanung(woche));
+                var result = await Task.Run(() =>
+                {
+                    var woche = SelectedArbeitswoche.MapViewmodelToArbeitswoche();
+                    return woche.ValidateArbeitswoche();
+                });
 
-                //var neu = woche.MapArbeitswocheToViewmodel();
-
-                //ArbeitswochenCollection.Remove(SelectedArbeitswoche);
-                //ArbeitswochenCollection.Add(neu);
-                //SelectedArbeitswoche = neu;
-
-                //ArbeitswocheVorschau.Refresh();
+               SelectedArbeitswoche.Auswertung =result;
             }
             catch (Exception ex)
             {
@@ -331,7 +339,8 @@ namespace CocoloresPEP.Module.Planung
             }
             finally
             {
-                IsBusy = false;
+                IsBusyCheck = false;
+                CommandManager.InvalidateRequerySuggested();
             }
 
         }

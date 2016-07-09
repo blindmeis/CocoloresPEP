@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using CocoloresPEP.Common.Extensions;
 using Itenso.TimePeriod;
 
 namespace CocoloresPEP.Common.Entities
@@ -24,7 +25,7 @@ namespace CocoloresPEP.Common.Entities
             Datum = dt;
             Planzeiten = new ObservableCollection<PlanItem>();
 
-            Grossteam = new TimeRange(new DateTime(Datum.Year, Datum.Month, Datum.Day, 15, 30, 0), new TimeSpan(2, 0, 0));
+            Grossteam = GrossteamDefault;
             KernzeitDoppelBesetzungRange = new TimeRange(new DateTime(Datum.Year, Datum.Month, Datum.Day, 9, 0, 0),new TimeSpan(4, 0, 0));
         }
 
@@ -124,9 +125,14 @@ namespace CocoloresPEP.Common.Entities
         public int KernzeitDoppelBesetzungMinuteVon { get { return KernzeitDoppelBesetzungRange?.Start.Minute ?? 0; } }
         public int KernzeitDoppelBesetzungMinuteBis { get { return KernzeitDoppelBesetzungRange?.End.Minute ?? 0; } }
 
+        public TimeRange GrossteamDefault
+        { get
+        {
+            return new TimeRange(new DateTime(Datum.Year, Datum.Month, Datum.Day, 15, 30, 0), new TimeSpan(2, 0, 0));
+        } }   
         public TimeRange Grossteam
         {
-            get { return _grossteam; }
+            get { return _grossteam ?? GrossteamDefault; }
             set { _grossteam = value; }
         }
 
@@ -147,5 +153,13 @@ namespace CocoloresPEP.Common.Entities
 
                 };
             } }
+
+        public string Wochentag
+        {
+            get
+            {
+                return $"{Datum.GetWochentagName()}";
+            }
+        }
     }
 }

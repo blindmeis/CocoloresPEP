@@ -186,7 +186,7 @@ namespace CocoloresPEP.Services
 
         private static Mitarbeiter NextMitarbeiter(IList<Mitarbeiter> alleDieDaSind, IList<Mitarbeiter> schonEingeteilt, IList<PlanItem> planzeiten, DienstTyp ma4Diensttyp = DienstTyp.None, GruppenTyp etage = GruppenTyp.Gelb | GruppenTyp.Gruen | GruppenTyp.Nest | GruppenTyp.Rot)
         {
-            var topf = alleDieDaSind.Except(schonEingeteilt).Where(x=>x.DefaultGruppe!=GruppenTyp.None).ToList();
+            var topf = alleDieDaSind.Except(schonEingeteilt).Where(x => x.DefaultGruppe != GruppenTyp.None).ToList();
 
             if (topf.Count == 0)
                 return null;
@@ -195,14 +195,21 @@ namespace CocoloresPEP.Services
             var sonderTopf = topf.ToList();
 
             //erstma gucken für die ganz RandRand Dienste
+            //alle verfügbaren wo mehr als einer noch in der Gruppe ist
+            //und wenn
             if (ma4Diensttyp.IstRandRandDienst())
                 sonderTopf = topf.GroupBy(x => x.DefaultGruppe).Where(x => x.Count() > 1)
-                                 .SelectMany(x => x.Where(p => planzeiten.Any(y => y.Dienst.IstRandRandDienst() && y.Gruppe != p.DefaultGruppe))).ToList();
+                                 .SelectMany(x => x.Where(ma => !planzeiten.Any(y => y.Gruppe == ma.DefaultGruppe && y.Dienst.IstRandRandDienst()))).ToList();
 
             //dann gucken für die ganz Rand Dienste
             if (ma4Diensttyp.IstRandDienst() && sonderTopf.Count == 0)
                 sonderTopf = topf.GroupBy(x => x.DefaultGruppe).Where(x => x.Count() > 1)
-                                .SelectMany(x => x.Where(p => planzeiten.Any(y => y.Dienst.IstRandDienst() && y.Gruppe != p.DefaultGruppe))).ToList();
+                                .SelectMany(x => x.Where(ma => !planzeiten.Any(y => y.Gruppe == ma.DefaultGruppe && y.Dienst.IstRandDienst()))).ToList();
+
+            //Probieren einen zu Finden aus einer Gruppen die noch keinen Randdienst hat
+            if (ma4Diensttyp.IstRandDienst() && sonderTopf.Count == 0)
+                sonderTopf = topf.GroupBy(x => x.DefaultGruppe)
+                                .SelectMany(x => x.Where(ma => !planzeiten.Any(y => y.Gruppe == ma.DefaultGruppe && y.Dienst.IstRandDienst()))).ToList();
 
             //die mit Wunschdienst aus Etage
             var mitarbeiter = sonderTopf.Where(x => (x.Wunschdienste & ma4Diensttyp) == ma4Diensttyp && (etage & x.DefaultGruppe) == x.DefaultGruppe).ToList();
@@ -452,13 +459,16 @@ namespace CocoloresPEP.Services
                     if (!CheckKernzeitAbgedeckt(arbeitstag, gruppe, out startzeit, out ticks))
                     {
                         //beim Tag schauen in andern Gruppen
-                        var wirHabenvlltZeit = arbeitstag.Planzeiten.Where(x => (x.Gruppe & gruppe) != gruppe && !x.ErledigtDurch.IsHelfer && !x.Dienst.HasFlag(DienstTyp.Frei))
+                        var wirHabenvlltZeit = arbeitstag.Planzeiten.Where(x => (x.ErledigtDurch.DefaultGruppe & gruppe) != gruppe && !x.ErledigtDurch.IsHelfer && !x.Dienst.HasFlag(DienstTyp.Frei))
                                                                     .GroupBy(g => g.Gruppe)
                                                                     .OrderByDescending(o => o.Count())
                                                                     .ToList();
 
                         foreach (var vllt in wirHabenvlltZeit)
                         {
+                            if (vllt.Count() < 2)
+                                continue;
+
                             var mitarbeiterDieInDerEigentlichenGruppeGebrauchtWerden = new List<Mitarbeiter>();
                             var nachDienstbegin = vllt.OrderBy(x => x.Zeitraum.Start);
 
@@ -494,9 +504,18 @@ namespace CocoloresPEP.Services
                                 continue;
 
                             var mindauer = (int)(startzeit.AddMinutes(ticks) - startzeit).TotalMinutes;
-                            var erstbesten = kanditaten.Where(x => x.Zeitraum.Duration.TotalMinutes >= mindauer).OrderBy(x => x.Zeitraum.Start).FirstOrDefault();
+                            var erstbesten = kanditaten.Where(x => x.Zeitraum.Duration.TotalMinutes >= mindauer && !x.Dienst.IstRandDienst()).OrderBy(x => x.Zeitraum.Start).FirstOrDefault() 
+                                             ?? kanditaten.Where(x => x.Zeitraum.Duration.TotalMinutes >= mindauer).OrderBy(x => x.Zeitraum.Start).FirstOrDefault();
+
                             if (erstbesten == null)
                                 continue;
+
+                            //Wenn nur randdienstler gefunden, dann darf der nicht "verschoben" werden in der Zeit
+                            if (erstbesten.Dienst.IstRandDienst())
+                            {
+                                if (erstbesten.Zeitraum.Start > startzeit || erstbesten.Zeitraum.End < arbeitstag.KernzeitGruppeEnde)
+                                    continue;
+                            }
 
                             //einen Gefunden
                             var dauer = (int)(erstbesten.Zeitraum.Duration).TotalMinutes;
@@ -534,13 +553,13 @@ namespace CocoloresPEP.Services
 
             foreach (var mapl in mitarbeiterPlanzeiten)
             {
-                var kfz = (int)(mapl.Key.KindFreieZeit *60);
+                var kfz = (int)(mapl.Key.KindFreieZeit * 60);
                 var grossteam = mapl.Value.Where(x => x.HatGrossteam).Select(x => x.Arbeitstag.Grossteam).Sum(s => (int)s.Duration.TotalMinutes);
-                var wochenstundenAngeordnet = (int) (mapl.Key.WochenStunden*60);
+                var wochenstundenAngeordnet = (int)(mapl.Key.WochenStunden * 60);
                 var geplant = mapl.Value.Sum(x => (int)x.GetArbeitsminutenAmKindOhnePause());
                 var saldo = geplant + kfz + grossteam - wochenstundenAngeordnet;
 
-                if(saldo < 15 && saldo > -15)
+                if (saldo < 15 && saldo > -15)
                     continue;
 
                 if (saldo >= 15)
@@ -558,13 +577,13 @@ namespace CocoloresPEP.Services
                     //1. Kleine Zeiten auf alle Teile
                     foreach (var planItem in mapl.Value)
                     {
-                        if((planItem.Dienst & DienstTyp.Frei)== DienstTyp.Frei)
+                        if ((planItem.Dienst & DienstTyp.Frei) == DienstTyp.Frei)
                             continue;
 
                         var aufteilen = 15;
-                        while (aufteilen < tagAufteilung)
+                        while (aufteilen <= tagAufteilung)
                         {
-                            if (PlanzeitReduzierenOhneKernzeitVerletzung(planItem, aufteilen))
+                            if (PlanzeitReduzierenOhneKernzeitVerletzung(planItem, 15))
                             {
                                 aufzuteilenMin -= 15;
                             }
@@ -585,9 +604,9 @@ namespace CocoloresPEP.Services
                         var aufteilen = aufzuteilenMin;
                         while (aufteilen > 0)
                         {
-                            if (PlanzeitReduzierenOhneKernzeitVerletzung(planItem, aufteilen))
+                            if (PlanzeitReduzierenOhneKernzeitVerletzung(planItem, 15))
                             {
-                                aufzuteilenMin -= aufteilen;
+                                aufzuteilenMin -= 15;
                                 break;
                             }
 
@@ -597,9 +616,9 @@ namespace CocoloresPEP.Services
                 }
                 else
                 {
-                    
+
                 }
-               
+
             }
         }
 
@@ -636,7 +655,7 @@ namespace CocoloresPEP.Services
                 return false;
             }
 
-            if (!CheckKernzeitAbgedeckt(dienst.Gruppe, dienst.Arbeitstag))
+            if (!dienst.Arbeitstag.CheckKernzeitAbgedeckt(dienst.Gruppe))
             {
                 dienst.Zeitraum.Start = oldStartzeit;
                 dienst.Zeitraum.End = oldEndzeit;
@@ -645,7 +664,7 @@ namespace CocoloresPEP.Services
             if (dienst.HatGrossteam)
                 return true;
 
-            if (!CheckKernzeitDoppelBesetzungAbgedeckt(dienst.Gruppe, dienst.Arbeitstag))
+            if (!dienst.Arbeitstag.CheckKernzeitDoppelBesetzungAbgedeckt(dienst.Gruppe))
             {
                 dienst.Zeitraum.Start = oldStartzeit;
                 dienst.Zeitraum.End = oldEndzeit;
@@ -669,7 +688,7 @@ namespace CocoloresPEP.Services
             startzeitNichtAbgedeckt = arbeitstag.KernzeitGruppeStart;
             ticksNichtAbgedeckt = (short)((arbeitstag.KernzeitGruppeEnde - arbeitstag.KernzeitGruppeStart).TotalMinutes / 15);
 
-            if (!CheckKernzeitAbgedeckt(gruppe, arbeitstag))
+            if (!arbeitstag.CheckKernzeitAbgedeckt(gruppe))
             {
                 var planzeiten = new TimePeriodCollection(arbeitstag.GetMitarbeiterArbeitszeiten(gruppe));
                 var gapCalculator = new TimeGapCalculator<TimeRange>(new TimeCalendar());
@@ -686,43 +705,8 @@ namespace CocoloresPEP.Services
             return true;
         }
 
-        private static bool CheckKernzeitAbgedeckt(GruppenTyp gruppe, Arbeitstag arbeitstag)
-        {
-            if ((gruppe & GruppenTyp.None) == GruppenTyp.None)
-                return true;
-
-            var gruppenzeiten = arbeitstag.GetMitarbeiterArbeitszeiten(gruppe);
-
-            if (gruppenzeiten.Count == 0)
-                return false;
-
-            var tp = new TimePeriodCollection(gruppenzeiten);
-            var obKernzeit = tp.HasInside(arbeitstag.KernzeitBasisRange);
-
-            return obKernzeit;
-        }
-
-        private static bool CheckKernzeitDoppelBesetzungAbgedeckt(GruppenTyp gruppe, Arbeitstag arbeitstag)
-        {
-            if ((gruppe & GruppenTyp.None) == GruppenTyp.None)
-                return true;
-
-            var gruppenzeiten = arbeitstag.GetMitarbeiterArbeitszeiten(gruppe);
-
-            if (gruppenzeiten.Count == 0)
-                return false;
-
-            var anzDoppelBesetzung = 0;
-
-            foreach (var range in gruppenzeiten)
-            {
-                var tp = new TimePeriodCollection(new List<ITimePeriod>() { range });
-                if (tp.HasInside(arbeitstag.KernzeitDoppelBesetzungRange))
-                    anzDoppelBesetzung++;
-            }
 
 
-            return anzDoppelBesetzung >= 2;
-        }
+
     }
 }

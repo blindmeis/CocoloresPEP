@@ -19,8 +19,7 @@ namespace CocoloresPEP.Common.Extensions
 
             var fieldInfo = myEnum.GetType().GetField(myEnum.ToString(CultureInfo.CurrentCulture));
 
-            var descriptionAttributes = fieldInfo.GetCustomAttributes(
-                typeof(DisplayAttribute), false) as DisplayAttribute[];
+            var descriptionAttributes = fieldInfo?.GetCustomAttributes(typeof(DisplayAttribute), false) as DisplayAttribute[];
 
             if (descriptionAttributes == null) return string.Empty;
             return (descriptionAttributes.Length > 0) ? descriptionAttributes[0].Name : myEnum.ToString(CultureInfo.InvariantCulture);
