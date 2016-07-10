@@ -30,7 +30,6 @@ namespace CocoloresPEP.Module.Planung
             _msgService = msgService;
             _lazyUpdateGrossteamZeitCommand = new Lazy<DelegateCommand<PlanungszeitVonBisWrapper>>(()=> new DelegateCommand<PlanungszeitVonBisWrapper>(UpdateGrossteamZeitCommandExecute, CanUpdateGrossteamZeitCommandExecute));
             _lazyUpdateKernzeitDoppelBesetzungZeitCommand = new Lazy<DelegateCommand<PlanungszeitVonBisWrapper>>(()=> new DelegateCommand<PlanungszeitVonBisWrapper>(UpdateKernzeitDoppelBesetzungZeitCommandExecute, CanUpdateKernzeitDoppelBesetzungZeitCommandExecute));
-
         }
 
 
@@ -39,9 +38,6 @@ namespace CocoloresPEP.Module.Planung
             get { return _arbeitstag; }
             set
             {
-                if (_arbeitstag == value)
-                    return;
-
                 _arbeitstag = value;
                 OnPropertyChanged();
 

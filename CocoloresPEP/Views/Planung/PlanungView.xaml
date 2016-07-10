@@ -157,20 +157,13 @@
                               MinHeight="50" MaxHeight="250">
                             <TreeView.Resources>
                                 <HierarchicalDataTemplate DataType="{x:Type planung1:ArbeitstagAuswertung}" 
-                                                          ItemsSource="{Binding ValidierungsItems}"
+                                                          ItemsSource="{Binding Messages}"
       >
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{Binding Wochentag}" />
                                     </StackPanel>
                                 </HierarchicalDataTemplate>
 
-                                <HierarchicalDataTemplate DataType="{x:Type planung1:ValidierungsItem}" 
-                                                          ItemsSource="{Binding Messages}"
-      >
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Displayname, Converter={StaticResource MyStringEmptyToDisplayValueConverter}, ConverterParameter='Auswertung'}" />
-                                    </StackPanel>
-                                </HierarchicalDataTemplate>
 
                                 <DataTemplate DataType="{x:Type planung1:ValidationMessage}">
                                     <StackPanel Orientation="Horizontal">

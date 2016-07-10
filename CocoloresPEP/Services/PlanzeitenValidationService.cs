@@ -32,7 +32,6 @@ namespace CocoloresPEP.Services
                     continue;
 
                 var aa = new ArbeitstagAuswertung { Wochentag = arbeitstag.Wochentag };
-                var tmp = new List<ValidierungsItem>();
 
                 #region Frühdienst
 
@@ -41,9 +40,8 @@ namespace CocoloresPEP.Services
                 {
                     var keinMehr = obGenauEinFrühdienst.Count == 0 ? "Kein" : "Mehr als ein";
                     var msg = $"{keinMehr} {DienstTyp.Frühdienst.GetDisplayname()} geplant für {arbeitstag.Frühdienst.ToString("HH:mm")}Uhr.";
-                    var v = new ValidierungsItem();
-                    v.Messages.Add(new ValidationMessage() { Message = msg });
-                    tmp.Add(v);
+                    var v = new ValidationMessage() { Message = msg };
+                    aa.Messages.Add(v);
                 }
                 #endregion
 
@@ -54,9 +52,8 @@ namespace CocoloresPEP.Services
                 {
                     var keinMehr = obGenauEinFrühdienst.Count == 0 ? "Kein" : obGenauEinFrühdienst.Count == 1 ? "Nur ein" : "Mehr als ein";
                     var msg = $"{keinMehr} {DienstTyp.SpätdienstEnde.GetDisplayname()} geplant bis {arbeitstag.SpätdienstEnde.ToString("HH:mm")}Uhr.";
-                    var v = new ValidierungsItem();
-                    v.Messages.Add(new ValidationMessage() { Message = msg });
-                    tmp.Add(v);
+                    var v = new ValidationMessage() { Message = msg };
+                    aa.Messages.Add(v);
                 }
                 #endregion
 
@@ -66,9 +63,8 @@ namespace CocoloresPEP.Services
                 if (obGenauEin8Uhrdienst.Count == 0)
                 {
                     var msg = $"Kein {DienstTyp.AchtUhrDienst.GetDisplayname()} geplant für {arbeitstag.AchtUhrDienst.ToString("HH:mm")}Uhr.";
-                    var v = new ValidierungsItem();
-                    v.Messages.Add(new ValidationMessage() { Message = msg });
-                    tmp.Add(v);
+                    var v = new ValidationMessage() { Message = msg };
+                    aa.Messages.Add(v);
                 }
                 #endregion
 
@@ -78,9 +74,8 @@ namespace CocoloresPEP.Services
                 if (!arbeitstag.HasGrossteam && obGenauEin16Uhrdienst.Count == 0)
                 {
                     var msg = $"Kein {DienstTyp.SechszehnUhrDienst.GetDisplayname()} geplant bis {arbeitstag.SechzehnUhrDienst.ToString("HH:mm")}Uhr.";
-                    var v = new ValidierungsItem();
-                    v.Messages.Add(new ValidationMessage() { Message = msg });
-                    tmp.Add(v);
+                    var v = new ValidationMessage() { Message = msg };
+                    aa.Messages.Add(v);
                 }
                 #endregion
 
@@ -95,18 +90,17 @@ namespace CocoloresPEP.Services
                     if (!arbeitstag.CheckKernzeitAbgedeckt(gruppe.Key))
                     {
                         var msg = $"Gruppe: {gruppe.Key.GetDisplayname()} Kernzeit nicht abgedeckt";
-                        var v = new ValidierungsItem();
-                        v.Messages.Add(new ValidationMessage() { Message = msg });
-                        tmp.Add(v);
+                        var v = new ValidationMessage() { Message = msg };
+                        aa.Messages.Add(v);
 
 
                     }
                     else if (!arbeitstag.CheckKernzeitDoppelBesetzungAbgedeckt(gruppe.Key))
                     {
-                        var msgDoppel = $"Gruppe: {gruppe.Key.GetDisplayname()} Doppelbesetzung in Kernzeit nicht abgedeckt.";
-                        var vDoppel = new ValidierungsItem();
-                        vDoppel.Messages.Add(new ValidationMessage() { Message = msgDoppel });
-                        tmp.Add(vDoppel);
+                        var doppelzeitraum = $"{arbeitstag.KernzeitBasisRange.Start.ToString("HH:mm")}-{arbeitstag.KernzeitBasisRange.End.ToString("HH:mm")}";
+                        var msgDoppel = $"Gruppe: {gruppe.Key.GetDisplayname()} Doppelbesetzung ({doppelzeitraum}) nicht abgedeckt.";
+                        var vDoppel = new ValidationMessage() { Message = msgDoppel };
+                        aa.Messages.Add(vDoppel);
                     }
                 }
                 #endregion
@@ -119,11 +113,9 @@ namespace CocoloresPEP.Services
                 foreach (var planItem in wenigerZeitAlsFreiTagessatz)
                 {
                     var planstunden = (planItem.GetArbeitsminutenAmKindOhnePause() / 60).ToString("#.##");
-                    var msg =
-                        $"Dienst Frei geplant mit {planItem.GetArbeitsminutenAmKindOhnePause()}Minuten ({planstunden}h). Tagessatz: {planItem.ErledigtDurch.TagesSollMinuten}Minuten";
-                    var v = new ValidierungsItem() { Displayname = planItem.ErledigtDurch.Name };
-                    v.Messages.Add(new ValidationMessage() { Message = msg });
-                    tmp.Add(v);
+                    var msg = $"{planItem.ErledigtDurch.Name}: Dienst Frei geplant mit {planItem.GetArbeitsminutenAmKindOhnePause()}Minuten ({planstunden}h). Tagessatz: {planItem.ErledigtDurch.TagesSollMinuten}Minuten";
+                    var v = new ValidationMessage() { Message = msg };
+                    aa.Messages.Add(v);
                 }
                 #endregion
 
@@ -135,30 +127,19 @@ namespace CocoloresPEP.Services
                 foreach (var planItem in mindestArbeitszeiten)
                 {
                     var planstunden = (planItem.GetArbeitsminutenAmKindOhnePause() / 60).ToString("#.##");
-                    var msg =
-                        $"Mindestarbeitzeit nicht abgedeckt {planItem.GetArbeitsminutenAmKindOhnePause()}Minuten ({planstunden}h).";
-                    var v = new ValidierungsItem() { Displayname = planItem.ErledigtDurch?.Name };
-                    v.Messages.Add(new ValidationMessage() { Message = msg });
-                    tmp.Add(v);
+                    var msg = $"{planItem.ErledigtDurch?.Name}: Mindestarbeitzeit nicht abgedeckt {planItem.GetArbeitsminutenAmKindOhnePause()}Minuten ({planstunden}h).";
+                    var v = new ValidationMessage() { Message = msg };
+                    aa.Messages.Add(v);
                 }
                 #endregion
 
-                foreach (var item in tmp.GroupBy(x => x.Displayname).ToList())
-                {
-                    aa.ValidierungsItems.Add(new ValidierungsItem()
-                    {
-                        Displayname = item.Key,
-                        Messages = new List<ValidationMessage>(item.SelectMany(x => x.Messages))
-                    });
-                }
 
-                if (aa.ValidierungsItems.Count > 0)
+
+                if (aa.Messages.Count > 0)
                     result.Auswertungen.Add(aa);
                 else
                 {
-                    var io = new ValidierungsItem();
-                    io.Messages.Add(new ValidationMessage() { Message = "Alles Prima :)" });
-                    aa.ValidierungsItems.Add(io);
+                    aa.Messages.Add(new ValidationMessage() { Message = "Alles Prima :)" });
                     result.Auswertungen.Add(aa);
                 }
             }

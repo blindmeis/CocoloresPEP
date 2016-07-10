@@ -21,21 +21,9 @@ namespace CocoloresPEP.Module.Planung
     {
         public ArbeitstagAuswertung()
         {
-            ValidierungsItems = new List<ValidierungsItem>();
-        }
-        public string Wochentag { get; set; }
-
-        public List<ValidierungsItem> ValidierungsItems { get; set; }
-    }
-
-    public class ValidierungsItem : ViewmodelBase
-    {
-        public ValidierungsItem()
-        {
             Messages = new List<ValidationMessage>();
         }
-
-        public string Displayname { get; set; }
+        public string Wochentag { get; set; }
 
         public List<ValidationMessage> Messages { get; set; }
     }

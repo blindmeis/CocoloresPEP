@@ -26,7 +26,7 @@ namespace CocoloresPEP.Common.Entities
             Planzeiten = new ObservableCollection<PlanItem>();
 
             Grossteam = GrossteamDefault;
-            KernzeitDoppelBesetzungRange = new TimeRange(new DateTime(Datum.Year, Datum.Month, Datum.Day, 9, 0, 0),new TimeSpan(4, 0, 0));
+            KernzeitDoppelBesetzungRange = KernzeitDoppelBesetzungRangeDefaut;
         }
 
         [OnDeserialized()]
@@ -114,9 +114,15 @@ namespace CocoloresPEP.Common.Entities
             }
         }
 
+        public TimeRange KernzeitDoppelBesetzungRangeDefaut
+        { get
+        {
+            return new TimeRange(new DateTime(Datum.Year, Datum.Month, Datum.Day, 9, 0, 0), new TimeSpan(4, 0, 0));
+        } }
+
         public TimeRange KernzeitDoppelBesetzungRange
         {
-            get { return _kernzeitDoppelBesetzungRange ?? KernzeitBasisRange; }
+            get { return _kernzeitDoppelBesetzungRange ?? KernzeitDoppelBesetzungRangeDefaut; }
             set { _kernzeitDoppelBesetzungRange = value; }
         }
 
