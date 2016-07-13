@@ -302,6 +302,7 @@ namespace CocoloresPEP.Services
 
             result.Arbeitstag = arbeitstag;
             result.ErledigtDurch = ma;
+            result.Thema = ma?.DefaultThema ?? Themen.None;
             result.Zeitraum = vorgabe ?? zeitraum;
             result.Gruppe = gruppe;
             result.Dienst = dienst;

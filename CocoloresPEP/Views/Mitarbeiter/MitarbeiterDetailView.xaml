@@ -22,6 +22,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -67,6 +68,14 @@
             <TextBox Grid.Row="5" Grid.Column="1" MinWidth="100"
                  VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"
                  Text="{Binding Path=KindFreieZeit}"/>
+
+            <Label Grid.Row="6" Grid.Column="0" Content="Thema:"/>
+            <controls:DefaultThemenControl Grid.Row="6" Grid.Column="1" MinWidth="150"
+                  VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"
+                  SelectedValue="{Binding DefaultThema, Mode=TwoWay}"
+                  DisplayMemberPath="Key"
+                  SelectedValuePath="Value"
+                  IsSynchronizedWithCurrentItem="True"/>
 
         </Grid>
         

@@ -18,6 +18,7 @@ namespace CocoloresPEP.Module.Mitarbeiter
                 KindFreieZeit = ma.KindFreieZeit,
                 DefaultGruppe = ma.DefaultGruppe,
                 Wunschdienste = ma.Wunschdienste,
+                DefaultThema = ma.DefaultThema,
                 IsHelfer = ma.IsHelfer
 
             };
@@ -37,6 +38,7 @@ namespace CocoloresPEP.Module.Mitarbeiter
                 KindFreieZeit = vm.KindFreieZeit,
                 DefaultGruppe = vm.DefaultGruppe,
                 Wunschdienste = vm.Wunschdienste,
+                DefaultThema = vm.DefaultThema,
                 IsHelfer = vm.IsHelfer
             };
 

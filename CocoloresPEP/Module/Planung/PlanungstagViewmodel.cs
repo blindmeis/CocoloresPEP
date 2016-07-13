@@ -280,6 +280,13 @@ namespace CocoloresPEP.Module.Planung
             }
         }
 
+        public Themen Thema
+        {
+            get
+            {
+                return Planzeit?.Thema ?? Themen.None;
+            }
+        }
         public string Wochentag
         {
             get

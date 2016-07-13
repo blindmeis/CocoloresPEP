@@ -17,6 +17,7 @@ namespace CocoloresPEP.Common.Entities
         public TimeRange Zeitraum { get; set; }
         public Mitarbeiter ErledigtDurch { get; set; }
         public GruppenTyp Gruppe { get; set; }
+        public Themen Thema { get; set; }
         public DienstTyp Dienst { get; set; }
         public bool HatGrossteam { get; set; }
 

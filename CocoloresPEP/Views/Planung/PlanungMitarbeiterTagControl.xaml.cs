@@ -44,5 +44,14 @@ namespace CocoloresPEP.Views.Planung
             get { return (PlanungstagViewmodel)GetValue(PlanungstagViewmodelProperty); }
             set { SetValue(PlanungstagViewmodelProperty, value); }
         }
+
+        public readonly static DependencyProperty ShowThemenProperty =
+           DependencyProperty.Register("ShowThemen", typeof(bool), typeof(PlanungMitarbeiterTagControl));
+
+        public bool ShowThemen
+        {
+            get { return (bool)GetValue(ShowThemenProperty); }
+            set { SetValue(ShowThemenProperty, value); }
+        }
     }
 }

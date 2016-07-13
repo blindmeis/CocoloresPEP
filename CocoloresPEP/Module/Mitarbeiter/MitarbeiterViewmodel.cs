@@ -17,6 +17,7 @@ namespace CocoloresPEP.Module.Mitarbeiter
         private bool _isHelfer;
         private decimal _wochenStunden;
         private decimal _kindFreieZeit;
+        private Themen _defaultThema;
 
         public MitarbeiterViewmodel()
         {
@@ -80,6 +81,16 @@ namespace CocoloresPEP.Module.Mitarbeiter
             set
             {
                 _wunschdienste = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public Themen DefaultThema
+        {
+            get { return _defaultThema; }
+            set
+            {
+                _defaultThema = value;
                 OnPropertyChanged();
             }
         }

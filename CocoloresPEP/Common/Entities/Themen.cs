@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace CocoloresPEP.Common.Entities
 {
+    [Flags]
     public enum Themen
     {
-        [Display(Name = @"")]
+        [Display(Name = @" ")]
         None = 1 << 0,
         [Display(Name = @"Garten")]
         Garten = 1 << 1,

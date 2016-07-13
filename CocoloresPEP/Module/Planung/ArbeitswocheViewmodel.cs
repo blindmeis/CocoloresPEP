@@ -28,6 +28,7 @@ namespace CocoloresPEP.Module.Planung
         private List<MitarbeiterViewmodel> _mitarbeiter;
         private List<PropertyObserver<MitarbeiterViewmodel>> _propertyObserversMitarbeiter;
         private AuswertungViewmodel _auswertung;
+        private bool _showThemen;
 
         public ArbeitswocheViewmodel(int jahr, int woche)
         {
@@ -48,7 +49,15 @@ namespace CocoloresPEP.Module.Planung
         public ArbeitstagWrapper Donnerstag { get; set; }
         public ArbeitstagWrapper Freitag { get; set; }
 
-        public ICollectionView GroupedAuswertungView { get; set; }
+        public bool ShowThemen
+        {
+            get { return _showThemen; }
+            set
+            {
+                _showThemen = value; 
+                OnPropertyChanged();
+            }
+        }
 
         public AuswertungViewmodel Auswertung
 

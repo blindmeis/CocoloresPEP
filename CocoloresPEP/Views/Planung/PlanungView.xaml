@@ -146,11 +146,17 @@
                         <behaviors:ExpanderCommandOnExpandedBehavior CommandOnExpanded="{Binding RunPlanungCheckCommand}"/>
                     </i:Interaction.Behaviors>
                     <Expander.Header>
-                        <TextBlock Text="{Binding SelectedArbeitswocheInfo}" FontWeight="Bold">
+                        <StackPanel Orientation="Horizontal">
+                              <TextBlock Text="{Binding SelectedArbeitswocheInfo}" FontWeight="Bold">
                             <TextBlock.LayoutTransform>
                                 <ScaleTransform ScaleX="1.1" ScaleY="1.1"></ScaleTransform>
                             </TextBlock.LayoutTransform>
                         </TextBlock>
+                           <CheckBox Content="Themen ein-/ausblenden"
+                                     Margin="25,0,0,0" VerticalAlignment="Center"
+                                     IsChecked="{Binding Path=SelectedArbeitswoche.ShowThemen, Mode=TwoWay}"></CheckBox>
+                        </StackPanel>
+                      
                     </Expander.Header>
                     <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,10,0,0">
                         <TreeView ItemsSource="{Binding SelectedArbeitswoche.Auswertung.Auswertungen}" BorderThickness="1"
@@ -262,7 +268,7 @@
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                                         <TextBlock Text="ZaK" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                   ToolTip="Zeit am Kind/ Frei"/>
+                                                   ToolTip="Zeit am Kind"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>

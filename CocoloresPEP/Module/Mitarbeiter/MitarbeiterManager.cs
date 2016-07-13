@@ -161,6 +161,7 @@ namespace CocoloresPEP.Module.Mitarbeiter
                     || saved.DefaultGruppe != check.DefaultGruppe
                     || saved.WochenStunden != check.WochenStunden
                     || saved.Wunschdienste != check.Wunschdienste
+                    || saved.DefaultThema != check.DefaultThema
                     || saved.KindFreieZeit != check.KindFreieZeit)
                     return true;
 

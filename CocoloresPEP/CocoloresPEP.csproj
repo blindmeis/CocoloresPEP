@@ -103,6 +103,7 @@
     </ApplicationDefinition>
     <Compile Include="Common\Controls\DefaultDienstAuswahlControl.cs" />
     <Compile Include="Common\Controls\DefaultGruppenControl.cs" />
+    <Compile Include="Common\Controls\DefaultThemenControl.cs" />
     <Compile Include="Common\Controls\MinutenControl.cs" />
     <Compile Include="Common\Controls\StundenControl.cs" />
     <Compile Include="Common\Controls\VonBisUhrzeitControl.xaml.cs">

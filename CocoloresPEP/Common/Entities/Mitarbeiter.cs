@@ -43,6 +43,7 @@ namespace CocoloresPEP.Common.Entities
         public ObservableCollection<DateTime> NichtDaZeiten { get; set; }
 
         public GruppenTyp DefaultGruppe { get; set; }
+        public Themen DefaultThema { get; set; }
 
         public DienstTyp Wunschdienste { get; set; }
 
