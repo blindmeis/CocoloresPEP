@@ -11,7 +11,7 @@ namespace CocoloresPEP.Common.Entities
  [Flags]
     public enum DienstTyp
     {
-        None = 1 << 0,
+        None = 0,
         [Display(Name = @"Frühdienst")]
         Frühdienst = 1 << 1,
         [Display(Name = @"Spätdienst")]

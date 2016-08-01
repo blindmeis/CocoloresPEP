@@ -12,7 +12,7 @@ namespace CocoloresPEP.Common.Entities
     public enum GruppenTyp
     {
         [Display(Name = @" ")]
-        None = 1 << 0,
+        None = 0,
         [Display(Name = @"Gelb")]
         Gelb = 1 << 1,
         [Display(Name = @"Grün")]

@@ -89,7 +89,8 @@ namespace CocoloresPEP.Services
                 {
                     if (!arbeitstag.CheckKernzeitAbgedeckt(gruppe.Key))
                     {
-                        var msg = $"Gruppe: {gruppe.Key.GetDisplayname()} Kernzeit nicht abgedeckt";
+                        var zeitraum = $"{arbeitstag.KernzeitBasisRange.Start.ToString("HH:mm")}-{arbeitstag.KernzeitBasisRange.End.ToString("HH:mm")}";
+                        var msg = $"Gruppe: {gruppe.Key.GetDisplayname()} Kernzeit  ({zeitraum}) nicht abgedeckt";
                         var v = new ValidationMessage() { Message = msg };
                         aa.Messages.Add(v);
 
@@ -97,7 +98,7 @@ namespace CocoloresPEP.Services
                     }
                     else if (!arbeitstag.CheckKernzeitDoppelBesetzungAbgedeckt(gruppe.Key))
                     {
-                        var doppelzeitraum = $"{arbeitstag.KernzeitBasisRange.Start.ToString("HH:mm")}-{arbeitstag.KernzeitBasisRange.End.ToString("HH:mm")}";
+                        var doppelzeitraum = $"{arbeitstag.KernzeitDoppelBesetzungRange.Start.ToString("HH:mm")}-{arbeitstag.KernzeitDoppelBesetzungRange.End.ToString("HH:mm")}";
                         var msgDoppel = $"Gruppe: {gruppe.Key.GetDisplayname()} Doppelbesetzung ({doppelzeitraum}) nicht abgedeckt.";
                         var vDoppel = new ValidationMessage() { Message = msgDoppel };
                         aa.Messages.Add(vDoppel);

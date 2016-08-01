@@ -131,6 +131,6 @@
         </Grid.RowDefinitions>
         <TextBlock Text="{Binding ElementName=Uc, Path=PlanungstagViewmodel.PlanZeitenInfo}" Margin="0,0,5,0"/>
         <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding ElementName=Uc, Path=PlanungstagViewmodel.Thema, Converter={StaticResource MyEnumDecriptionConverter}}" 
-                   Visibility="{Binding ElementName=Uc, Path=ShowThemen}"/>
+                   Visibility="{Binding ElementName=Uc, Path=ShowThemen, Converter={StaticResource VisibleIfTrueConverter}}"/>
     </Grid>
 </UserControl>

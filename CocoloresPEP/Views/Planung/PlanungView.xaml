@@ -11,7 +11,7 @@
              xmlns:controls="clr-namespace:CocoloresPEP.Common.WpfCore.Controls"
              xmlns:focus="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors.Focus"
              xmlns:planung1="clr-namespace:CocoloresPEP.Module.Planung"
-             x:Name="Uc">
+             x:Name="UcPlanungView">
     <i:Interaction.Behaviors>
         <focus:SetFocusToBindingBehavior BindingName="KalenderWoche" SetFocusToBindingPath="{Binding Path=FocusToBindingPath, Mode=TwoWay}"/>
     </i:Interaction.Behaviors>
@@ -358,16 +358,17 @@
                                     <Grid>
                                         <planung:PlanungMitarbeiterTagHeaderControl 
                                             Wochentag="Montag"
-                                            IsFeiertag="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsMontagFeiertag, Mode=TwoWay}"
-                                            HasGrossteam="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.HasMontagGrossteam, Mode=TwoWay}"
-                                            ArbeitstagWrapper="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.Montag, Mode=OneWay}"/>
+                                            IsFeiertag="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.IsMontagFeiertag, Mode=TwoWay}"
+                                            HasGrossteam="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.HasMontagGrossteam, Mode=TwoWay}"
+                                            ArbeitstagWrapper="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.Montag, Mode=OneWay}"/>
 
                                     </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <planung:PlanungMitarbeiterTagControl PlanungstagViewmodel="{Binding Path=Montag}" MitarbeiterViewmodel="{Binding Mitarbeiter}"/>
+                                    <planung:PlanungMitarbeiterTagControl PlanungstagViewmodel="{Binding Path=Montag}" MitarbeiterViewmodel="{Binding Mitarbeiter}"
+                                                                          ShowThemen="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.ShowThemen, Mode=OneWay}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                             <DataGridTemplateColumn.CellStyle>
@@ -393,7 +394,8 @@
                         <DataGridTemplateColumn MinWidth="130">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <planung:PlanungMitarbeiterTagControl PlanungstagViewmodel="{Binding Path=Dienstag}" MitarbeiterViewmodel="{Binding Mitarbeiter}"/>
+                                    <planung:PlanungMitarbeiterTagControl PlanungstagViewmodel="{Binding Path=Dienstag}" MitarbeiterViewmodel="{Binding Mitarbeiter}"
+                                                                          ShowThemen="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.ShowThemen, Mode=OneWay}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                             <DataGridTemplateColumn.HeaderTemplate>
@@ -401,9 +403,10 @@
                                     <Grid>
                                         <planung:PlanungMitarbeiterTagHeaderControl 
                                               Wochentag="Dienstag"
-                                              IsFeiertag="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsDienstagFeiertag, Mode=TwoWay}"
-                                              HasGrossteam="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.HasDienstagGrossteam, Mode=TwoWay}"
-                                              ArbeitstagWrapper="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.Dienstag, Mode=OneWay}"/>
+                                              IsFeiertag="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.IsDienstagFeiertag, Mode=TwoWay}"
+                                              HasGrossteam="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.HasDienstagGrossteam, Mode=TwoWay}"
+                                              ArbeitstagWrapper="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.Dienstag, Mode=OneWay}"
+                                             />
 
                                     </Grid>
                                 </DataTemplate>
@@ -431,7 +434,8 @@
                         <DataGridTemplateColumn MinWidth="130">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <planung:PlanungMitarbeiterTagControl PlanungstagViewmodel="{Binding Path=Mittwoch}" MitarbeiterViewmodel="{Binding Mitarbeiter}"/>
+                                    <planung:PlanungMitarbeiterTagControl PlanungstagViewmodel="{Binding Path=Mittwoch}" MitarbeiterViewmodel="{Binding Mitarbeiter}"
+                                                                          ShowThemen="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.ShowThemen, Mode=OneWay}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                             <DataGridTemplateColumn.HeaderTemplate>
@@ -439,9 +443,9 @@
                                     <Grid>
                                         <planung:PlanungMitarbeiterTagHeaderControl 
                                             Wochentag="Mittwoch"
-                                            IsFeiertag="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsMittwochFeiertag, Mode=TwoWay}"
-                                            HasGrossteam="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.HasMittwochGrossteam, Mode=TwoWay}"
-                                            ArbeitstagWrapper="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.Mittwoch, Mode=OneWay}"/>
+                                            IsFeiertag="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.IsMittwochFeiertag, Mode=TwoWay}"
+                                            HasGrossteam="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.HasMittwochGrossteam, Mode=TwoWay}"
+                                            ArbeitstagWrapper="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.Mittwoch, Mode=OneWay}"/>
 
                                     </Grid>
                                 </DataTemplate>
@@ -469,7 +473,8 @@
                         <DataGridTemplateColumn MinWidth="130" >
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <planung:PlanungMitarbeiterTagControl PlanungstagViewmodel="{Binding Path=Donnerstag}" MitarbeiterViewmodel="{Binding Mitarbeiter}"/>
+                                    <planung:PlanungMitarbeiterTagControl PlanungstagViewmodel="{Binding Path=Donnerstag}" MitarbeiterViewmodel="{Binding Mitarbeiter}"
+                                                                          ShowThemen="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.ShowThemen, Mode=OneWay}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                             <DataGridTemplateColumn.HeaderTemplate>
@@ -477,9 +482,9 @@
                                     <Grid>
                                         <planung:PlanungMitarbeiterTagHeaderControl 
                                             Wochentag="Donnerstag"
-                                            IsFeiertag="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsDonnerstagFeiertag, Mode=TwoWay}"
-                                             HasGrossteam="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.HasDonnerstagGrossteam, Mode=TwoWay}"
-                                            ArbeitstagWrapper="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.Donnerstag, Mode=OneWay}"/>
+                                            IsFeiertag="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.IsDonnerstagFeiertag, Mode=TwoWay}"
+                                             HasGrossteam="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.HasDonnerstagGrossteam, Mode=TwoWay}"
+                                            ArbeitstagWrapper="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.Donnerstag, Mode=OneWay}"/>
 
                                     </Grid>
 
@@ -508,7 +513,8 @@
                         <DataGridTemplateColumn MinWidth="130">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <planung:PlanungMitarbeiterTagControl PlanungstagViewmodel="{Binding Path=Freitag}" MitarbeiterViewmodel="{Binding Mitarbeiter}"/>
+                                    <planung:PlanungMitarbeiterTagControl PlanungstagViewmodel="{Binding Path=Freitag}" MitarbeiterViewmodel="{Binding Mitarbeiter}"
+                                                                          ShowThemen="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.ShowThemen, Mode=OneWay}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                             <DataGridTemplateColumn.HeaderTemplate>
@@ -516,9 +522,9 @@
                                     <Grid>
                                         <planung:PlanungMitarbeiterTagHeaderControl 
                                             Wochentag="Freitag"
-                                            IsFeiertag="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.IsFreitagFeiertag, Mode=TwoWay}"
-                                             HasGrossteam="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.HasFreitagGrossteam, Mode=TwoWay}"
-                                            ArbeitstagWrapper="{Binding ElementName=Uc, Path=DataContext.SelectedArbeitswoche.Freitag, Mode=OneWay}"/>
+                                            IsFeiertag="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.IsFreitagFeiertag, Mode=TwoWay}"
+                                             HasGrossteam="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.HasFreitagGrossteam, Mode=TwoWay}"
+                                            ArbeitstagWrapper="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.Freitag, Mode=OneWay}"/>
 
                                     </Grid>
 

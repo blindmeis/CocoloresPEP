@@ -20,7 +20,11 @@
             <converter:StundenToMinutenConverter x:Key="MyStundenToMinutenConverter"/>
             <converter:VisibilityIfNullConverter x:Key="MyVisibilityIfNullConverter"/>
             <converter:StringEmptyToDisplayValueConverter x:Key="MyStringEmptyToDisplayValueConverter"/>
-                
+            <converter:BoolToVisibilityConverter x:Key="TrueIfVisibleConverter" Inverted="False" Not="False" />
+            <converter:BoolToVisibilityConverter x:Key="TrueIfNotVisibleConverter" Inverted="False" Not="True" />
+            <converter:BoolToVisibilityConverter x:Key="VisibleIfTrueConverter" Inverted="True" Not="False" />
+            <converter:BoolToVisibilityConverter x:Key="VisibleIfNotTrueConverter" Inverted="True" Not="True" />
+
 
             <system:Double x:Key="FontSize">16</system:Double>
             <system:Double x:Key="FontSizeSmall">14</system:Double>

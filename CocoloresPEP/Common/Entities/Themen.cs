@@ -11,7 +11,7 @@ namespace CocoloresPEP.Common.Entities
     public enum Themen
     {
         [Display(Name = @" ")]
-        None = 1 << 0,
+        None = 0,
         [Display(Name = @"Garten")]
         Garten = 1 << 1,
         [Display(Name = @"Musik")]

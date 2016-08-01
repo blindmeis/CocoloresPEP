@@ -365,7 +365,7 @@ namespace CocoloresPEP.Module.Planung
                 var ms = await Task.Run(() =>
                 {
                     var service = new ExcelExportService();
-                    return service.SchreibeIstZeiten(woche, woche.Mitarbeiter);
+                    return service.SchreibeIstZeiten(woche, woche.Mitarbeiter, SelectedArbeitswoche.ShowThemen);
                 });
 
                 ms.CreateXlsxFileOnTempPath(true);

@@ -139,6 +139,7 @@
     </Compile>
     <Compile Include="Common\WpfCore\Controls\ComboBoxWithoutDropdown.cs" />
     <Compile Include="Common\WpfCore\Controls\DesignModeTool.cs" />
+    <Compile Include="Common\WpfCore\Converter\BoolToVisibilityConverter.cs" />
     <Compile Include="Common\WpfCore\Converter\CheckPositivNegativeZeroNumberConverter.cs" />
     <Compile Include="Common\WpfCore\Converter\EnumDescriptionConverter.cs" />
     <Compile Include="Common\WpfCore\Converter\EnumHasFlagConverter.cs" />

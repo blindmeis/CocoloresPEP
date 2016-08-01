@@ -14,7 +14,7 @@ namespace CocoloresPEP.Services
 {
     public class ExcelExportService
     {
-        public MemoryStream SchreibeIstZeiten(Arbeitswoche woche, IList<Mitarbeiter> mitarbeiters)
+        public MemoryStream SchreibeIstZeiten(Arbeitswoche woche, IList<Mitarbeiter> mitarbeiters, bool showThemen = false)
         {
             using (var xls = new ExcelPackage())
             {
@@ -52,6 +52,7 @@ namespace CocoloresPEP.Services
                 for (int i = 0; i < mitarbeiters.Count; i++)
                 {
                     row ++;
+                    var obThemenRow = false;
                     var ma = sortedMa[i];
                     ws.Cells[row,1].Value = ma.Name;
 
@@ -62,6 +63,7 @@ namespace CocoloresPEP.Services
                     for (int j = 0; j < woche.Arbeitstage.Count; j++)
                     {
                         var tag = woche.Arbeitstage[j];
+
                        
                         foreach (var zeiten in tag.Planzeiten.Where(x=>x.ErledigtDurch.Name==ma.Name))
                         {
@@ -77,6 +79,13 @@ namespace CocoloresPEP.Services
                             if ((zeiten.Dienst & DienstTyp.Frühdienst)== DienstTyp.Frühdienst
                                 || (zeiten.Dienst & DienstTyp.SpätdienstEnde) == DienstTyp.SpätdienstEnde)
                                 ws.Cells[row, j + 2].Style.Font.Bold = true;
+
+                            if (showThemen && zeiten.Thema !=Themen.None)
+                            {
+                                ws.Cells[row+1, j + 2].Value = zeiten.Thema.GetDisplayname();
+                                obThemenRow = true;
+                            }
+
                         }
                     }
 
@@ -85,9 +94,21 @@ namespace CocoloresPEP.Services
 
                     ws.Cells[row, colKfz].Value = ma.KindFreieZeit;
                     ws.Cells[row, colKfz].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                    var oben = ws.Cells[row, 1, row, 8];
+                    oben.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    oben.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    oben.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+
+                    if (obThemenRow)
+                        row++;
+
+                    var unten = ws.Cells[row, 1, row, 8];
+                    unten.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    unten.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    unten.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                 }
 
-                
                 if (woche.Arbeitstage.Any(x => x.HasGrossteam))
                 {
                     row++;
@@ -114,14 +135,6 @@ namespace CocoloresPEP.Services
 
                 ws.Cells.AutoFitColumns();
                 ws.View.ShowGridLines = false;
-                //ws.View.FreezePanes(4, 1);
-                var modelTable = ws.Cells[3,1,mitarbeiters.Count+3,8];
-                
-                // Assign borders
-                modelTable.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                modelTable.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                modelTable.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                modelTable.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
                 var ms = new MemoryStream();
                 xls.SaveAs(ms);
