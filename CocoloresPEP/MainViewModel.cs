@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using CocoloresPEP.Common;
+using CocoloresPEP.Common.Extensions;
 using CocoloresPEP.Common.WpfCore;
 using CocoloresPEP.Common.WpfCore.Commanding;
 using CocoloresPEP.Common.WpfCore.Service.MessageBox;
@@ -31,16 +32,24 @@ namespace CocoloresPEP
 
         public void OnWindowClosing(object sender, CancelEventArgs e)
         {
-            var hasChangesMitarbeiter = MitarbeiterVm.HasChanges();
-            var hasChangesPlanung = PlanungVm.HasChanges();
-
-            if (hasChangesMitarbeiter || hasChangesPlanung)
+            try
             {
-                var result = _msg.ShowYesNoCancel($"Es liegen noch ungespeicherte Änderungen vor.{Environment.NewLine}Wollen Sie das Programm trotzdem beenden?", CustomDialogIcons.Warning);
-                if (result != CustomDialogResults.Yes)
+                var hasChangesMitarbeiter = MitarbeiterVm.HasChanges();
+                var hasChangesPlanung = PlanungVm.HasChanges();
+
+                if (hasChangesMitarbeiter || hasChangesPlanung)
                 {
-                    e.Cancel = true;
+                    var result = _msg.ShowYesNoCancel($"Es liegen noch ungespeicherte Änderungen vor.{Environment.NewLine}Wollen Sie das Programm trotzdem beenden?", CustomDialogIcons.Warning);
+                    if (result != CustomDialogResults.Yes)
+                    {
+                        e.Cancel = true;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                _msg.ShowError(ex.GetAllErrorMessages());
+                e.Cancel = false;
             }
         }
 

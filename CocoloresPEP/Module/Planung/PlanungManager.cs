@@ -466,8 +466,8 @@ namespace CocoloresPEP.Module.Planung
 
                     for (int k = 0; k < savedPlanitems.Count; k++)
                     {
-                        var savedPl = savedPlanitems[i];
-                        var checkPl = checkPlanitems[i];
+                        var savedPl = savedPlanitems[k];
+                        var checkPl = checkPlanitems[k];
 
                         if (!savedPl.Zeitraum.Equals(checkPl.Zeitraum)
                             || savedPl.Dienst != checkPl.Dienst
