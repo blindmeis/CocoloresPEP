@@ -37,6 +37,7 @@
                                 <RowDefinition/>
                                 <RowDefinition/>
                                 <RowDefinition/>
+                                <RowDefinition/>
                             </Grid.RowDefinitions>
                             <!--Put anything you want in here.-->
                             <StackPanel Grid.Row="0">
@@ -45,6 +46,7 @@
                                 <TextBlock Text="{Binding Path=PlacementTarget.PlanungstagViewmodel.PlanZeitenInfo, StringFormat='Planzeit: {0}', RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"/>
                                 <TextBlock Text="{Binding Path=PlacementTarget.PlanungstagViewmodel.Planzeit.Dienst, StringFormat='Dienst: {0}', Converter={StaticResource MyEnumDecriptionConverter}, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"/>
                                 <TextBlock Text="{Binding Path=PlacementTarget.PlanungstagViewmodel.Planzeit.Gruppe, StringFormat='Gruppe: {0}', Converter={StaticResource MyEnumDecriptionConverter}, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"/>
+                                <TextBlock Text="{Binding Path=PlacementTarget.PlanungstagViewmodel.Planzeit.Thema, StringFormat='Thema:  {0}', Converter={StaticResource MyEnumDecriptionConverter}, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"/>
                                 <CheckBox Content="Großteamteilnahme" 
                                           IsEnabled="{Binding Path=PlacementTarget.PlanungstagViewmodel.Planzeit.Arbeitstag.HasGrossteam, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
                                           IsChecked="{Binding Path=PlacementTarget.PlanungstagViewmodel.HasGrossteam, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"/>
@@ -75,10 +77,21 @@
                                         CommandParameter="{Binding ElementName=AuswahlDienst, Path=SelectedValue}"></Button>
                             </StackPanel>
 
-                            <Rectangle Grid.Row="4" Fill="DarkCyan" Height="2" Margin="2,3"/>
+                            <StackPanel Grid.Row="4" Orientation="Horizontal">
+                                <TextBlock Text="Thema: " VerticalAlignment="Center"/>
+                                <controls:DefaultThemenControl x:Name="AuswahlThema" MinWidth="100"
+                                                                       DisplayMemberPath="Key"
+                                                                       SelectedValuePath="Value"
+                                                                       IsSynchronizedWithCurrentItem="True"/>
+                                <Button Content="Ändern"
+                                        Command="{Binding Path=PlacementTarget.PlanungstagViewmodel.ChangeThemaCommand, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}"
+                                        CommandParameter="{Binding ElementName=AuswahlThema, Path=SelectedValue}"></Button>
+                            </StackPanel>
+
+                            <Rectangle Grid.Row="5" Fill="DarkCyan" Height="2" Margin="2,3"/>
 
 
-                            <Grid Grid.Row="5">
+                            <Grid Grid.Row="6">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>

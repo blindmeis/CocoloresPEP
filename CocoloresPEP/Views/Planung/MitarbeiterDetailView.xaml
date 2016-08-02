@@ -43,7 +43,7 @@
         
        
        <StackPanel Grid.Row="4" Orientation="Horizontal">
-               <Label Content="Gruppe:"/>
+               <Label Content="Gruppe:" MinWidth="75"/>
         <controls:DefaultGruppenControl MinWidth="150"
                   VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"
                   SelectedValue="{Binding DefaultGruppe, Mode=TwoWay}"
@@ -52,7 +52,15 @@
                   IsSynchronizedWithCurrentItem="True"/>
        </StackPanel>
 
-    
+        <StackPanel Grid.Row="5" Orientation="Horizontal">
+            <Label Content="Thema:" MinWidth="75"/> 
+            <controls:DefaultThemenControl MinWidth="150"
+                  VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"
+                  SelectedValue="{Binding DefaultThema, Mode=TwoWay}"
+                  DisplayMemberPath="Key"
+                  SelectedValuePath="Value"
+                  IsSynchronizedWithCurrentItem="True"/>
+        </StackPanel>
 
         <Label Grid.Row="6" Grid.Column="0" Content="Wunschdienste:"/>
         <controls:WunschdienstControl Grid.Row="7" Margin="20,0,0,0"

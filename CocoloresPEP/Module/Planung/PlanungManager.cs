@@ -471,7 +471,8 @@ namespace CocoloresPEP.Module.Planung
 
                         if (!savedPl.Zeitraum.Equals(checkPl.Zeitraum)
                             || savedPl.Dienst != checkPl.Dienst
-                            || savedPl.Gruppe != checkPl.Gruppe)
+                            || savedPl.Gruppe != checkPl.Gruppe
+                            || savedPl.Thema != checkPl.Thema)
                             return true;
                     }
                 }

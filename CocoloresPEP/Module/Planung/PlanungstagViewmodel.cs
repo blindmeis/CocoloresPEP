@@ -24,6 +24,7 @@ namespace CocoloresPEP.Module.Planung
         private bool _isFeiertag;
         private readonly Lazy<DelegateCommand<GruppenTyp>> _lazyChangePlanGruppeCommand;
         private readonly Lazy<DelegateCommand<DienstTyp>> _lazyChangePlanzeitCommand;
+        private readonly Lazy<DelegateCommand<Themen>> _lazyChangeThemaCommand;
         private readonly Lazy<DelegateCommand<PlanungszeitVonBisWrapper>> _lazyDeletePlanzeitCommand;
         private readonly Lazy<DelegateCommand<PlanungszeitVonBisWrapper>> _lazyUpdatePlanzeitCommand;
         private PlanItem _planzeit;
@@ -39,7 +40,7 @@ namespace CocoloresPEP.Module.Planung
             _lazyChangePlanzeitCommand = new Lazy<DelegateCommand<DienstTyp>>(() => new DelegateCommand<DienstTyp>(ChangePlanzeitCommandExecute, CanChangePlanzeitCommandExecute));
             _lazyDeletePlanzeitCommand = new Lazy<DelegateCommand<PlanungszeitVonBisWrapper>>(()=> new DelegateCommand<PlanungszeitVonBisWrapper>(DeletePlanzeitCommandExecute, CanDeletePlanzeitCommandExecute));
             _lazyUpdatePlanzeitCommand = new Lazy<DelegateCommand<PlanungszeitVonBisWrapper>>(()=> new DelegateCommand<PlanungszeitVonBisWrapper>(UpdatePlanzeitCommandExecute, CanUpdatePlanzeitCommandExecute));
-
+            _lazyChangeThemaCommand = new Lazy<DelegateCommand<Themen>>(()=> new DelegateCommand<Themen>(ChangeThemaCommandExecute, CanChangeThemaCommandExecute));
         }
 
         private void RefreshPlanVonBisZeiten()
@@ -204,6 +205,24 @@ namespace CocoloresPEP.Module.Planung
             Planzeit.Gruppe = gt;
 
             OnPropertyChanged(nameof(EingeteiltSollTyp));
+        }
+        #endregion
+
+        #region ChangeThemaCommand
+        public ICommand ChangeThemaCommand { get { return _lazyChangeThemaCommand.Value; } }
+
+        private bool CanChangeThemaCommandExecute(Themen t)
+        {
+            return (Planzeit.Thema & t) != t;
+        }
+
+        private void ChangeThemaCommandExecute(Themen t)
+        {
+            if (!CanChangeThemaCommandExecute(t))
+                return;
+
+            Planzeit.Thema = t;
+            OnPropertyChanged(nameof(Thema));
         } 
         #endregion
 
