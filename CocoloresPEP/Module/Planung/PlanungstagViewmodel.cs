@@ -126,7 +126,7 @@ namespace CocoloresPEP.Module.Planung
 
         private bool CanChangePlanzeitCommandExecute(DienstTyp arg)
         {
-            return (Planzeit.Dienst & arg) != arg;
+            return Planzeit.Dienst != arg;
         }
 
         private void ChangePlanzeitCommandExecute(DienstTyp obj)
@@ -194,7 +194,7 @@ namespace CocoloresPEP.Module.Planung
 
         private bool CanChangePlanGruppeCommandExecute(GruppenTyp gt)
         {
-            return (Planzeit.Gruppe & gt) != gt;
+            return Planzeit.Gruppe!= gt;
         }
 
         private void ChangePlanGruppeCommandExecute(GruppenTyp gt)
@@ -213,7 +213,7 @@ namespace CocoloresPEP.Module.Planung
 
         private bool CanChangeThemaCommandExecute(Themen t)
         {
-            return (Planzeit.Thema & t) != t;
+            return Planzeit.Thema != t;
         }
 
         private void ChangeThemaCommandExecute(Themen t)
