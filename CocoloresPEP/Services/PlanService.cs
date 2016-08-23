@@ -18,10 +18,13 @@ namespace CocoloresPEP.Services
         #region Erstellung Wochenplan
         public static void ErstelleWochenplan(Arbeitswoche woche, IList<Mitarbeiter> maList)
         {
+            foreach (var item in woche.Arbeitstage)
+            {
+                item.Planzeiten.Clear();
+            }
+
             foreach (var arbeitstag in woche.Arbeitstage)
             {
-                arbeitstag.Planzeiten.Clear();
-
                 //Samstag und Sontag ignorieren bei Planung
                 if (arbeitstag.Datum.DayOfWeek == DayOfWeek.Saturday || arbeitstag.Datum.DayOfWeek == DayOfWeek.Sunday)
                     continue;
@@ -223,7 +226,7 @@ namespace CocoloresPEP.Services
                 mitarbeiter = sonderTopf.Where(x => (x.Wunschdienste & ma4Diensttyp) == ma4Diensttyp).ToList();
 
             //Wenn mit der RandDienstlogik niemand gefunden wurde, dann vllt vorher nochmal schauen ob ein Wunschdienstler Lust hat
-            if(mitarbeiter.Count == 0 && ma4Diensttyp.IstRandDienst())
+            if (mitarbeiter.Count == 0 && ma4Diensttyp.IstRandDienst())
                 mitarbeiter = topf.Where(x => (x.Wunschdienste & ma4Diensttyp) == ma4Diensttyp).ToList();
 
             if (mitarbeiter.Count == 0)
@@ -236,7 +239,7 @@ namespace CocoloresPEP.Services
             if (woche != null && ma4Diensttyp.IstRandDienst())
             {
                 var geplanteRanddienste = woche.Arbeitstage.SelectMany(x => x.Planzeiten.Where(p => p.Dienst == ma4Diensttyp)).ToList();
-                var mitarbeiterMitRanddiensten = geplanteRanddienste.Select(x => x.ErledigtDurch).ToList();
+                var mitarbeiterMitRanddiensten = geplanteRanddienste.Select(x => x.ErledigtDurch).Distinct().ToList();
 
                 //irgendein Mitarbeiter da, der noch gar nix hat
                 if (mitarbeiter.Except(mitarbeiterMitRanddiensten).Any())
@@ -245,18 +248,20 @@ namespace CocoloresPEP.Services
                 }
                 else
                 {
-                      var mitarbeiterMitAnzahlRanddienstInderWoche = geplanteRanddienste.GroupBy(g => g.ErledigtDurch).ToDictionary(x => x.Key, c=>c.Count());
+                    var mitarbeiterMitAnzahlRanddienstInderWoche = geplanteRanddienste.GroupBy(g => g.ErledigtDurch).ToDictionary(x => x.Key, c => c.Count());
+                    var minCount = mitarbeiterMitAnzahlRanddienstInderWoche.Min(x => x.Value);
+                    var mitarbeiterMitWenigstenCounts = mitarbeiterMitAnzahlRanddienstInderWoche.Where(x => x.Value == minCount).Select(x => x.Key).ToList();
+                    var mitarbeiterMitMehrcounts = mitarbeiterMitAnzahlRanddienstInderWoche.Where(x => x.Value != minCount).Select(x => x.Key).ToList();
 
-                var minCount = mitarbeiterMitAnzahlRanddienstInderWoche.Min(x => x.Value);
-                var mitarbeiterMitWenigstenCounts = mitarbeiterMitAnzahlRanddienstInderWoche.Where(x=>x.Value == minCount).Select(x=>x.Key).ToList();
-                var mitarbeiterMitMehrcounts = mitarbeiterMitAnzahlRanddienstInderWoche.Where(x => x.Value != minCount).Select(x => x.Key).ToList();
-
-                var ohnemitMehrCounts = mitarbeiter.Except(mitarbeiterMitMehrcounts);
-
+                    if (mitarbeiter.Intersect(mitarbeiterMitWenigstenCounts).Any())
+                    {
+                        mitarbeiter = mitarbeiter.Intersect(mitarbeiterMitWenigstenCounts).ToList();
+                    }
+                    else if (mitarbeiter.Except(mitarbeiterMitRanddiensten.Except(mitarbeiterMitMehrcounts)).Any())
+                    {
+                        mitarbeiter = mitarbeiter.Except(mitarbeiterMitRanddiensten.Except(mitarbeiterMitMehrcounts)).ToList();
+                    }
                 }
-
-              
-               
             }
 
             int ichBinDran = Zufall.Next(0, mitarbeiter.Count);
@@ -408,7 +413,7 @@ namespace CocoloresPEP.Services
                         && (x.Gruppe & gruppe) == gruppe
                         && !x.ErledigtDurch.IsHelfer))
             {
-                var ma = NextMitarbeiter(maList, schonEingeteilt, arbeitstag.Planzeiten.ToList(),ma4Diensttyp: DienstTyp.KernzeitStartDienst);
+                var ma = NextMitarbeiter(maList, schonEingeteilt, arbeitstag.Planzeiten.ToList(), ma4Diensttyp: DienstTyp.KernzeitStartDienst);
                 if (ma == null)
                     return;
 
@@ -535,7 +540,7 @@ namespace CocoloresPEP.Services
                                 continue;
 
                             var mindauer = (int)(startzeit.AddMinutes(ticks) - startzeit).TotalMinutes;
-                            var erstbesten = kanditaten.Where(x => x.Zeitraum.Duration.TotalMinutes >= mindauer && !x.Dienst.IstRandDienst()).OrderBy(x => x.Zeitraum.Start).FirstOrDefault() 
+                            var erstbesten = kanditaten.Where(x => x.Zeitraum.Duration.TotalMinutes >= mindauer && !x.Dienst.IstRandDienst()).OrderBy(x => x.Zeitraum.Start).FirstOrDefault()
                                              ?? kanditaten.Where(x => x.Zeitraum.Duration.TotalMinutes >= mindauer).OrderBy(x => x.Zeitraum.Start).FirstOrDefault();
 
                             if (erstbesten == null)
@@ -687,7 +692,7 @@ namespace CocoloresPEP.Services
                     {
                         dienst.Zeitraum.End = dienst.Zeitraum.End.AddMinutes(-1 * aufzuteilen);
                     }
-                    
+
                     break;
                 case DienstTyp.KernzeitEndeDienst:
                 case DienstTyp.SechszehnUhrDienst:

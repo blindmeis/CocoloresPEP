@@ -33,78 +33,98 @@ namespace CocoloresPEP.Services
 
                 var aa = new ArbeitstagAuswertung { Wochentag = arbeitstag.Wochentag };
 
-                #region Frühdienst
-
-                var obGenauEinFrühdienst = arbeitstag.Planzeiten.Where(x => x.Dienst == DienstTyp.Frühdienst && x.Zeitraum.Start == x.Arbeitstag.Frühdienst).ToList();
-                if (obGenauEinFrühdienst.Count != 1)
+                if (!arbeitstag.IsFeiertag)
                 {
-                    var keinMehr = obGenauEinFrühdienst.Count == 0 ? "Kein" : "Mehr als ein";
-                    var msg = $"{keinMehr} {DienstTyp.Frühdienst.GetDisplayname()} geplant für {arbeitstag.Frühdienst.ToString("HH:mm")}Uhr.";
-                    var v = new ValidationMessage() { Message = msg };
-                    aa.Messages.Add(v);
-                }
-                #endregion
 
-                #region Spätdienst
+                    #region Frühdienst
 
-                var obGenauZweiSpätdienste = arbeitstag.Planzeiten.Where(x => x.Dienst == DienstTyp.SpätdienstEnde && x.Zeitraum.End == x.Arbeitstag.SpätdienstEnde).ToList();
-                if (obGenauZweiSpätdienste.Count != 2)
-                {
-                    var keinMehr = obGenauEinFrühdienst.Count == 0 ? "Kein" : obGenauEinFrühdienst.Count == 1 ? "Nur ein" : "Mehr als ein";
-                    var msg = $"{keinMehr} {DienstTyp.SpätdienstEnde.GetDisplayname()} geplant bis {arbeitstag.SpätdienstEnde.ToString("HH:mm")}Uhr.";
-                    var v = new ValidationMessage() { Message = msg };
-                    aa.Messages.Add(v);
-                }
-                #endregion
-
-                #region 8Uhr Dienst
-
-                var obGenauEin8Uhrdienst = arbeitstag.Planzeiten.Where(x => x.Dienst == DienstTyp.AchtUhrDienst && x.Zeitraum.Start == x.Arbeitstag.AchtUhrDienst).ToList();
-                if (obGenauEin8Uhrdienst.Count == 0)
-                {
-                    var msg = $"Kein {DienstTyp.AchtUhrDienst.GetDisplayname()} geplant für {arbeitstag.AchtUhrDienst.ToString("HH:mm")}Uhr.";
-                    var v = new ValidationMessage() { Message = msg };
-                    aa.Messages.Add(v);
-                }
-                #endregion
-
-                #region 16Uhr Dienst
-
-                var obGenauEin16Uhrdienst = arbeitstag.Planzeiten.Where(x => x.Dienst == DienstTyp.SechszehnUhrDienst && x.Zeitraum.End == x.Arbeitstag.SechzehnUhrDienst).ToList();
-                if (!arbeitstag.HasGrossteam && obGenauEin16Uhrdienst.Count == 0)
-                {
-                    var msg = $"Kein {DienstTyp.SechszehnUhrDienst.GetDisplayname()} geplant bis {arbeitstag.SechzehnUhrDienst.ToString("HH:mm")}Uhr.";
-                    var v = new ValidationMessage() { Message = msg };
-                    aa.Messages.Add(v);
-                }
-                #endregion
-
-                #region Kernzeit
-                var gruppen =
-                            arbeitstag.Planzeiten.Where(x => x.Gruppe != GruppenTyp.None)
-                            .GroupBy(x => x.Gruppe)
-                            .ToList();
-
-                foreach (var gruppe in gruppen)
-                {
-                    if (!arbeitstag.CheckKernzeitAbgedeckt(gruppe.Key))
+                    var obGenauEinFrühdienst = arbeitstag.Planzeiten.Where(x => x.Dienst == DienstTyp.Frühdienst && x.Zeitraum.Start == x.Arbeitstag.Frühdienst).ToList();
+                    if (obGenauEinFrühdienst.Count != 1)
                     {
-                        var zeitraum = $"{arbeitstag.KernzeitBasisRange.Start.ToString("HH:mm")}-{arbeitstag.KernzeitBasisRange.End.ToString("HH:mm")}";
-                        var msg = $"Gruppe: {gruppe.Key.GetDisplayname()} Kernzeit  ({zeitraum}) nicht abgedeckt";
+                        var keinMehr = obGenauEinFrühdienst.Count == 0 ? "Kein" : "Mehr als ein";
+                        var msg = $"{keinMehr} {DienstTyp.Frühdienst.GetDisplayname()} geplant für {arbeitstag.Frühdienst.ToString("HH:mm")}Uhr.";
                         var v = new ValidationMessage() { Message = msg };
                         aa.Messages.Add(v);
-
-
                     }
-                    else if (!arbeitstag.CheckKernzeitDoppelBesetzungAbgedeckt(gruppe.Key))
+                    #endregion
+
+                    #region Spätdienst
+
+                    var obGenauZweiSpätdienste = arbeitstag.Planzeiten.Where(x => x.Dienst == DienstTyp.SpätdienstEnde && x.Zeitraum.End == x.Arbeitstag.SpätdienstEnde).ToList();
+                    if (obGenauZweiSpätdienste.Count != 2)
                     {
-                        var doppelzeitraum = $"{arbeitstag.KernzeitDoppelBesetzungRange.Start.ToString("HH:mm")}-{arbeitstag.KernzeitDoppelBesetzungRange.End.ToString("HH:mm")}";
-                        var msgDoppel = $"Gruppe: {gruppe.Key.GetDisplayname()} Doppelbesetzung ({doppelzeitraum}) nicht abgedeckt.";
-                        var vDoppel = new ValidationMessage() { Message = msgDoppel };
-                        aa.Messages.Add(vDoppel);
+                        var keinMehr = obGenauEinFrühdienst.Count == 0 ? "Kein" : obGenauEinFrühdienst.Count == 1 ? "Nur ein" : "Mehr als ein";
+                        var msg = $"{keinMehr} {DienstTyp.SpätdienstEnde.GetDisplayname()} geplant bis {arbeitstag.SpätdienstEnde.ToString("HH:mm")}Uhr.";
+                        var v = new ValidationMessage() { Message = msg };
+                        aa.Messages.Add(v);
                     }
+                    #endregion
+
+                    #region 8Uhr Dienst
+
+                    var obGenauEin8Uhrdienst = arbeitstag.Planzeiten.Where(x => x.Dienst == DienstTyp.AchtUhrDienst && x.Zeitraum.Start == x.Arbeitstag.AchtUhrDienst).ToList();
+                    if (obGenauEin8Uhrdienst.Count == 0)
+                    {
+                        var msg = $"Kein {DienstTyp.AchtUhrDienst.GetDisplayname()} geplant für {arbeitstag.AchtUhrDienst.ToString("HH:mm")}Uhr.";
+                        var v = new ValidationMessage() { Message = msg };
+                        aa.Messages.Add(v);
+                    }
+                    #endregion
+
+                    #region 16Uhr Dienst
+
+                    var obGenauEin16Uhrdienst = arbeitstag.Planzeiten.Where(x => x.Dienst == DienstTyp.SechszehnUhrDienst && x.Zeitraum.End == x.Arbeitstag.SechzehnUhrDienst).ToList();
+                    if (!arbeitstag.HasGrossteam && obGenauEin16Uhrdienst.Count == 0)
+                    {
+                        var msg = $"Kein {DienstTyp.SechszehnUhrDienst.GetDisplayname()} geplant bis {arbeitstag.SechzehnUhrDienst.ToString("HH:mm")}Uhr.";
+                        var v = new ValidationMessage() { Message = msg };
+                        aa.Messages.Add(v);
+                    }
+                    #endregion
+
+                    #region Kernzeit
+                    var gruppen =
+                                arbeitstag.Planzeiten.Where(x => x.Gruppe != GruppenTyp.None)
+                                .GroupBy(x => x.Gruppe)
+                                .ToList();
+
+                    foreach (var gruppe in gruppen)
+                    {
+                        if (!arbeitstag.CheckKernzeitAbgedeckt(gruppe.Key))
+                        {
+                            var zeitraum = $"{arbeitstag.KernzeitBasisRange.Start.ToString("HH:mm")}-{arbeitstag.KernzeitBasisRange.End.ToString("HH:mm")}";
+                            var msg = $"Gruppe: {gruppe.Key.GetDisplayname()} Kernzeit  ({zeitraum}) nicht abgedeckt";
+                            var v = new ValidationMessage() { Message = msg };
+                            aa.Messages.Add(v);
+
+
+                        }
+                        else if (!arbeitstag.CheckKernzeitDoppelBesetzungAbgedeckt(gruppe.Key))
+                        {
+                            var doppelzeitraum = $"{arbeitstag.KernzeitDoppelBesetzungRange.Start.ToString("HH:mm")}-{arbeitstag.KernzeitDoppelBesetzungRange.End.ToString("HH:mm")}";
+                            var msgDoppel = $"Gruppe: {gruppe.Key.GetDisplayname()} Doppelbesetzung ({doppelzeitraum}) nicht abgedeckt.";
+                            var vDoppel = new ValidationMessage() { Message = msgDoppel };
+                            aa.Messages.Add(vDoppel);
+                        }
+                    }
+                    #endregion
+
+                    #region Check Mindestarbeitszeit
+                    var mindestArbeitszeiten =
+                                arbeitstag.Planzeiten.Where(
+                                    x => x.Dienst != DienstTyp.Frei && !x.Zeitraum.Duration.IsMindestzeitAbgedeckt()).ToList();
+
+                    foreach (var planItem in mindestArbeitszeiten)
+                    {
+                        var planstunden = (planItem.GetArbeitsminutenAmKindOhnePause() / 60).ToString("#.##");
+                        var msg = $"{planItem.ErledigtDurch?.Name}: Mindestarbeitzeit nicht abgedeckt {planItem.GetArbeitsminutenAmKindOhnePause()}Minuten ({planstunden}h).";
+                        var v = new ValidationMessage() { Message = msg };
+                        aa.Messages.Add(v);
+                    }
+                    #endregion
+
+
                 }
-                #endregion
 
                 #region Check Frei Tagessollsatz
                 var wenigerZeitAlsFreiTagessatz =
@@ -119,21 +139,6 @@ namespace CocoloresPEP.Services
                     aa.Messages.Add(v);
                 }
                 #endregion
-
-                #region Check Mindestarbeitszeit
-                var mindestArbeitszeiten =
-                            arbeitstag.Planzeiten.Where(
-                                x => x.Dienst != DienstTyp.Frei && !x.Zeitraum.Duration.IsMindestzeitAbgedeckt()).ToList();
-
-                foreach (var planItem in mindestArbeitszeiten)
-                {
-                    var planstunden = (planItem.GetArbeitsminutenAmKindOhnePause() / 60).ToString("#.##");
-                    var msg = $"{planItem.ErledigtDurch?.Name}: Mindestarbeitzeit nicht abgedeckt {planItem.GetArbeitsminutenAmKindOhnePause()}Minuten ({planstunden}h).";
-                    var v = new ValidationMessage() { Message = msg };
-                    aa.Messages.Add(v);
-                }
-                #endregion
-
 
 
                 if (aa.Messages.Count > 0)
