@@ -70,7 +70,7 @@ namespace CocoloresPEP.Services
                             if(zeiten.Dienst ==DienstTyp.Frei)
                                 continue;
                             
-                            ws.Cells[row, j + 2].Value = zeiten.GetInfoPlanzeitInfo();
+                            ws.Cells[row, j + 2].Value = zeiten.GetInfoPlanzeitInfo(true);
 
                             var c = zeiten.Gruppe.GetFarbeFromResources();
                             ws.Cells[row, j + 2].Style.Fill.PatternType = ExcelFillStyle.Solid;

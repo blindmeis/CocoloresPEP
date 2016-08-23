@@ -50,7 +50,7 @@ namespace CocoloresPEP.Services
 
                 #region Frühdienst
 
-                var maFrüh = NextMitarbeiter(alledieDaSind, schonEingeteilt, arbeitstag.Planzeiten.ToList(), DienstTyp.Frühdienst);
+                var maFrüh = NextMitarbeiter(alledieDaSind, schonEingeteilt, arbeitstag.Planzeiten.ToList(), woche, DienstTyp.Frühdienst);
                 if (maFrüh != null)
                 {
                     schonEingeteilt.Add(maFrüh);
@@ -62,7 +62,7 @@ namespace CocoloresPEP.Services
 
                 #region Spätdienst 2Mitarbeiter
 
-                var maSpät1 = NextMitarbeiter(alledieDaSind, schonEingeteilt, arbeitstag.Planzeiten.ToList(), DienstTyp.SpätdienstEnde);
+                var maSpät1 = NextMitarbeiter(alledieDaSind, schonEingeteilt, arbeitstag.Planzeiten.ToList(), woche, DienstTyp.SpätdienstEnde);
 
                 if (maSpät1 != null)
                 {
@@ -71,7 +71,7 @@ namespace CocoloresPEP.Services
                     arbeitstag.Planzeiten.Add(istSpät1);
                 }
 
-                var maSpät2 = NextMitarbeiter(alledieDaSind, schonEingeteilt, arbeitstag.Planzeiten.ToList(), DienstTyp.SpätdienstEnde, GibAndereEtage(maSpät1));
+                var maSpät2 = NextMitarbeiter(alledieDaSind, schonEingeteilt, arbeitstag.Planzeiten.ToList(), woche, DienstTyp.SpätdienstEnde, GibAndereEtage(maSpät1));
 
                 if (maSpät2 != null)
                 {
@@ -84,7 +84,7 @@ namespace CocoloresPEP.Services
 
                 #region 8 uhr Dienst
 
-                var ma8UhrErster = NextMitarbeiter(alledieDaSind, schonEingeteilt, arbeitstag.Planzeiten.ToList(), DienstTyp.AchtUhrDienst, GibAndereEtage(maFrüh));
+                var ma8UhrErster = NextMitarbeiter(alledieDaSind, schonEingeteilt, arbeitstag.Planzeiten.ToList(), woche, DienstTyp.AchtUhrDienst, GibAndereEtage(maFrüh));
                 if (ma8UhrErster != null)
                 {
                     schonEingeteilt.Add(ma8UhrErster);
@@ -98,7 +98,7 @@ namespace CocoloresPEP.Services
 
                 if (!arbeitstag.HasGrossteam)
                 {
-                    var ma16Uhr = NextMitarbeiter(alledieDaSind, schonEingeteilt, arbeitstag.Planzeiten.ToList(), DienstTyp.SpätdienstEnde);
+                    var ma16Uhr = NextMitarbeiter(alledieDaSind, schonEingeteilt, arbeitstag.Planzeiten.ToList(), woche, DienstTyp.SpätdienstEnde);
 
                     if (ma16Uhr != null)
                     {
@@ -141,7 +141,7 @@ namespace CocoloresPEP.Services
                 //Frühdienst
                 if (!arbeitstag.HasGrossteam)
                 {
-                    var h1 = NextMitarbeiter(helferleins, schonEingeteilt, arbeitstag.Planzeiten.ToList(), DienstTyp.FsjFrühdienst);
+                    var h1 = NextMitarbeiter(helferleins, schonEingeteilt, arbeitstag.Planzeiten.ToList(), woche, DienstTyp.FsjFrühdienst);
 
                     if (h1 != null)
                     {
@@ -170,7 +170,7 @@ namespace CocoloresPEP.Services
 
         private static GruppenTyp GibAndereEtage(Mitarbeiter ma)
         {
-            var result = GruppenTyp.Nest | GruppenTyp.Gelb | GruppenTyp.Nest | GruppenTyp.Gelb;
+            var result = GruppenTyp.Nest | GruppenTyp.Gelb | GruppenTyp.Gruen | GruppenTyp.Rot;
 
             if (ma == null)
                 return result;
@@ -184,7 +184,7 @@ namespace CocoloresPEP.Services
             return result;
         }
 
-        private static Mitarbeiter NextMitarbeiter(IList<Mitarbeiter> alleDieDaSind, IList<Mitarbeiter> schonEingeteilt, IList<PlanItem> planzeiten, DienstTyp ma4Diensttyp = DienstTyp.None, GruppenTyp etage = GruppenTyp.Gelb | GruppenTyp.Gruen | GruppenTyp.Nest | GruppenTyp.Rot)
+        private static Mitarbeiter NextMitarbeiter(IList<Mitarbeiter> alleDieDaSind, IList<Mitarbeiter> schonEingeteilt, IList<PlanItem> arbeitstagPlanzeiten, Arbeitswoche woche = null, DienstTyp ma4Diensttyp = DienstTyp.None, GruppenTyp etage = GruppenTyp.Gelb | GruppenTyp.Gruen | GruppenTyp.Nest | GruppenTyp.Rot)
         {
             var topf = alleDieDaSind.Except(schonEingeteilt).Where(x => x.DefaultGruppe != GruppenTyp.None).ToList();
 
@@ -196,20 +196,20 @@ namespace CocoloresPEP.Services
 
             //erstma gucken für die ganz RandRand Dienste
             //alle verfügbaren wo mehr als einer noch in der Gruppe ist
-            //und wenn
+            //und in der Gruppe darf noch keiner einen RandRandDienst haben
             if (ma4Diensttyp.IstRandRandDienst())
                 sonderTopf = topf.GroupBy(x => x.DefaultGruppe).Where(x => x.Count() > 1)
-                                 .SelectMany(x => x.Where(ma => !planzeiten.Any(y => y.Gruppe == ma.DefaultGruppe && y.Dienst.IstRandRandDienst()))).ToList();
+                                 .SelectMany(x => x.Where(ma => !arbeitstagPlanzeiten.Any(y => y.Gruppe == ma.DefaultGruppe && y.Dienst.IstRandRandDienst()))).ToList();
 
             //dann gucken für die ganz Rand Dienste
             if (ma4Diensttyp.IstRandDienst() && sonderTopf.Count == 0)
                 sonderTopf = topf.GroupBy(x => x.DefaultGruppe).Where(x => x.Count() > 1)
-                                .SelectMany(x => x.Where(ma => !planzeiten.Any(y => y.Gruppe == ma.DefaultGruppe && y.Dienst.IstRandDienst()))).ToList();
+                                .SelectMany(x => x.Where(ma => !arbeitstagPlanzeiten.Any(y => y.Gruppe == ma.DefaultGruppe && y.Dienst.IstRandDienst()))).ToList();
 
             //Probieren einen zu Finden aus einer Gruppen die noch keinen Randdienst hat
             if (ma4Diensttyp.IstRandDienst() && sonderTopf.Count == 0)
                 sonderTopf = topf.GroupBy(x => x.DefaultGruppe)
-                                .SelectMany(x => x.Where(ma => !planzeiten.Any(y => y.Gruppe == ma.DefaultGruppe && y.Dienst.IstRandDienst()))).ToList();
+                                .SelectMany(x => x.Where(ma => !arbeitstagPlanzeiten.Any(y => y.Gruppe == ma.DefaultGruppe && y.Dienst.IstRandDienst()))).ToList();
 
             //die mit Wunschdienst aus Etage
             var mitarbeiter = sonderTopf.Where(x => (x.Wunschdienste & ma4Diensttyp) == ma4Diensttyp && (etage & x.DefaultGruppe) == x.DefaultGruppe).ToList();
@@ -222,12 +222,42 @@ namespace CocoloresPEP.Services
             if (mitarbeiter.Count == 0)
                 mitarbeiter = sonderTopf.Where(x => (x.Wunschdienste & ma4Diensttyp) == ma4Diensttyp).ToList();
 
+            //Wenn mit der RandDienstlogik niemand gefunden wurde, dann vllt vorher nochmal schauen ob ein Wunschdienstler Lust hat
+            if(mitarbeiter.Count == 0 && ma4Diensttyp.IstRandDienst())
+                mitarbeiter = topf.Where(x => (x.Wunschdienste & ma4Diensttyp) == ma4Diensttyp).ToList();
+
             if (mitarbeiter.Count == 0)
                 mitarbeiter = sonderTopf;
 
             if (mitarbeiter.Count == 0)//bei allen gucken wenn keiner will
                 mitarbeiter = topf;
 
+            //RandDienste Gleichverteilen über die Woche
+            if (woche != null && ma4Diensttyp.IstRandDienst())
+            {
+                var geplanteRanddienste = woche.Arbeitstage.SelectMany(x => x.Planzeiten.Where(p => p.Dienst == ma4Diensttyp)).ToList();
+                var mitarbeiterMitRanddiensten = geplanteRanddienste.Select(x => x.ErledigtDurch).ToList();
+
+                //irgendein Mitarbeiter da, der noch gar nix hat
+                if (mitarbeiter.Except(mitarbeiterMitRanddiensten).Any())
+                {
+                    mitarbeiter = mitarbeiter.Except(mitarbeiterMitRanddiensten).ToList();
+                }
+                else
+                {
+                      var mitarbeiterMitAnzahlRanddienstInderWoche = geplanteRanddienste.GroupBy(g => g.ErledigtDurch).ToDictionary(x => x.Key, c=>c.Count());
+
+                var minCount = mitarbeiterMitAnzahlRanddienstInderWoche.Min(x => x.Value);
+                var mitarbeiterMitWenigstenCounts = mitarbeiterMitAnzahlRanddienstInderWoche.Where(x=>x.Value == minCount).Select(x=>x.Key).ToList();
+                var mitarbeiterMitMehrcounts = mitarbeiterMitAnzahlRanddienstInderWoche.Where(x => x.Value != minCount).Select(x => x.Key).ToList();
+
+                var ohnemitMehrCounts = mitarbeiter.Except(mitarbeiterMitMehrcounts);
+
+                }
+
+              
+               
+            }
 
             int ichBinDran = Zufall.Next(0, mitarbeiter.Count);
 #if DEBUG
@@ -378,7 +408,7 @@ namespace CocoloresPEP.Services
                         && (x.Gruppe & gruppe) == gruppe
                         && !x.ErledigtDurch.IsHelfer))
             {
-                var ma = NextMitarbeiter(maList, schonEingeteilt, arbeitstag.Planzeiten.ToList(), DienstTyp.KernzeitStartDienst);
+                var ma = NextMitarbeiter(maList, schonEingeteilt, arbeitstag.Planzeiten.ToList(),ma4Diensttyp: DienstTyp.KernzeitStartDienst);
                 if (ma == null)
                     return;
 
@@ -407,7 +437,7 @@ namespace CocoloresPEP.Services
             }
 
             //ab hier gibts ein "Frühen Dienst" und wenn möglich ein Dienst bis Kernzeitende oder drüber
-            var ma9 = NextMitarbeiter(maList, schonEingeteilt, arbeitstag.Planzeiten.ToList(), DienstTyp.NeunUhrDienst);
+            var ma9 = NextMitarbeiter(maList, schonEingeteilt, arbeitstag.Planzeiten.ToList(), ma4Diensttyp: DienstTyp.NeunUhrDienst);
             if (ma9 == null)
                 return;
 
@@ -415,7 +445,7 @@ namespace CocoloresPEP.Services
             var plan9 = CreatePlanItem(arbeitstag, ma9, ma9.DefaultGruppe, DienstTyp.NeunUhrDienst);
             arbeitstag.Planzeiten.Add(plan9);
 
-            var ma10 = NextMitarbeiter(maList, schonEingeteilt, arbeitstag.Planzeiten.ToList(), DienstTyp.ZehnUhrDienst);
+            var ma10 = NextMitarbeiter(maList, schonEingeteilt, arbeitstag.Planzeiten.ToList(), ma4Diensttyp: DienstTyp.ZehnUhrDienst);
             if (ma10 == null)
                 return;
 
@@ -426,7 +456,7 @@ namespace CocoloresPEP.Services
             //hmm wenn immernoch welche übrig sind dann, halt um 9Uhr kommen
             while (true)
             {
-                var ma = NextMitarbeiter(maList, schonEingeteilt, arbeitstag.Planzeiten.ToList(), DienstTyp.NeunUhrDienst);
+                var ma = NextMitarbeiter(maList, schonEingeteilt, arbeitstag.Planzeiten.ToList(), ma4Diensttyp: DienstTyp.NeunUhrDienst);
                 if (ma == null)
                     return;
 
@@ -634,9 +664,30 @@ namespace CocoloresPEP.Services
                 case DienstTyp.Frühdienst:
                 case DienstTyp.AchtUhrDienst:
                 case DienstTyp.KernzeitStartDienst:
-                case DienstTyp.NeunUhrDienst:
-                case DienstTyp.ZehnUhrDienst:
                     dienst.Zeitraum.End = dienst.Zeitraum.End.AddMinutes(-1 * aufzuteilen);
+                    break;
+                case DienstTyp.NeunUhrDienst:
+                    //für 9Uhr Dienst schauen ob man besser beim Ende oder beim Anfang die Zeit abzieht
+                    if (oldEndzeit <= dienst.Arbeitstag.KernzeitGruppeEnde && oldStartzeit <= dienst.Arbeitstag.NeunUhrDienst)
+                    {
+                        dienst.Zeitraum.Start = dienst.Zeitraum.Start.AddMinutes(aufzuteilen);
+                    }
+                    else
+                    {
+                        dienst.Zeitraum.End = dienst.Zeitraum.End.AddMinutes(-1 * aufzuteilen);
+                    }
+                    break;
+                case DienstTyp.ZehnUhrDienst:
+                    //für 10Uhr Dienst schauen ob man besser beim Ende oder beim Anfang die Zeit abzieht
+                    if (oldEndzeit <= dienst.Arbeitstag.KernzeitGruppeEnde && oldStartzeit <= dienst.Arbeitstag.ZehnUhrDienst)
+                    {
+                        dienst.Zeitraum.Start = dienst.Zeitraum.Start.AddMinutes(aufzuteilen);
+                    }
+                    else
+                    {
+                        dienst.Zeitraum.End = dienst.Zeitraum.End.AddMinutes(-1 * aufzuteilen);
+                    }
+                    
                     break;
                 case DienstTyp.KernzeitEndeDienst:
                 case DienstTyp.SechszehnUhrDienst:

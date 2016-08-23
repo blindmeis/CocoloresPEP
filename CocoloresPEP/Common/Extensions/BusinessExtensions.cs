@@ -108,19 +108,24 @@ namespace CocoloresPEP.Common.Extensions
             return false;
         }
 
-        public static string GetInfoPlanzeitInfo(this PlanItem planzeit)
+        public static string GetInfoPlanzeitInfo(this PlanItem planzeit, bool showStundenInfo = false)
         {
             var info = "";
+            var stundenanzeige = "";
+
             if ((planzeit.Arbeitstag?.IsFeiertag ?? false)
-                || (planzeit.Dienst & DienstTyp.Frei) == DienstTyp.Frei 
+                || planzeit.Dienst == DienstTyp.Frei 
                 || (int)planzeit.Zeitraum.Duration.TotalMinutes == 0)
                 return info;
 
             var pause = planzeit.NeedPause() ? "P" : " ";
             var grossteam = planzeit.HatGrossteam ? "G" : " ";
 
+            if (showStundenInfo)
+                stundenanzeige = $" ({(planzeit.Zeitraum.Duration.TotalMinutes/60).ToString("0.00")}h)";
+
             var zusatz = !string.IsNullOrWhiteSpace(pause) || !string.IsNullOrWhiteSpace(grossteam) ? " |" : "";
-            info = $"{planzeit.Zeitraum.Start.ToString("HH:mm")}-{planzeit.Zeitraum.End.ToString("HH:mm")}{zusatz}{pause}{grossteam}";
+            info = $"{planzeit.Zeitraum.Start.ToString("HH:mm")}-{planzeit.Zeitraum.End.ToString("HH:mm")}{stundenanzeige}{zusatz}{pause}{grossteam}";
 
             return info;
         }
@@ -142,7 +147,7 @@ namespace CocoloresPEP.Common.Extensions
 
         public static bool CheckKernzeitAbgedeckt(this Arbeitstag arbeitstag, GruppenTyp gruppe)
         {
-            if ((gruppe & GruppenTyp.None) == GruppenTyp.None)
+            if (gruppe  == GruppenTyp.None)
                 return true;
 
             var gruppenzeiten = arbeitstag.GetMitarbeiterArbeitszeiten(gruppe);
@@ -158,7 +163,7 @@ namespace CocoloresPEP.Common.Extensions
 
         public static bool CheckKernzeitDoppelBesetzungAbgedeckt(this Arbeitstag arbeitstag, GruppenTyp gruppe)
         {
-            if ((gruppe & GruppenTyp.None) == GruppenTyp.None)
+            if (gruppe == GruppenTyp.None)
                 return true;
 
             var gruppenzeiten = arbeitstag.GetMitarbeiterArbeitszeiten(gruppe);
@@ -232,8 +237,8 @@ namespace CocoloresPEP.Common.Extensions
         {
             return
                 arbeitstag.Planzeiten
-                .Where(x => (x.Gruppe & gruppe) == gruppe 
-                            && (x.Dienst & DienstTyp.Frei) != DienstTyp.Frei
+                .Where(x => x.Gruppe  == gruppe 
+                            && x.Dienst != DienstTyp.Frei
                             && (!x.ErledigtDurch?.IsHelfer??false))
                     .Select(x => x.Zeitraum)
                     .ToList();
