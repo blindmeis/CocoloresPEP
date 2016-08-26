@@ -185,6 +185,7 @@ namespace CocoloresPEP.Module.Planung
             }
             RefreshPlanVonBisZeiten();
             OnPropertyChanged(nameof(PlanZeitenInfo));
+            OnPropertyChanged(nameof(Planzeit));
            
         }
         #endregion
@@ -205,6 +206,7 @@ namespace CocoloresPEP.Module.Planung
             Planzeit.Gruppe = gt;
 
             OnPropertyChanged(nameof(EingeteiltSollTyp));
+            OnPropertyChanged(nameof(Planzeit));
         }
         #endregion
 

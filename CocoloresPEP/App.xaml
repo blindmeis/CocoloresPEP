@@ -6,13 +6,25 @@
              xmlns:focus="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors.Focus"
              xmlns:entities="clr-namespace:CocoloresPEP.Common.Entities"
              xmlns:converter="clr-namespace:CocoloresPEP.Common.WpfCore.Converter"
+             xmlns:converterCommon="clr-namespace:CocoloresPEP.Common.Converter"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <!--<ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/PresentationFramework.Aero;component/themes/Aero.NormalColor.xaml"/>
+                <ResourceDictionary Source="ColoresPEPResourceDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>-->
-            
+
+            <!--<SolidColorBrush x:Key="ColorGruppeGelb" Color="DarkGoldenrod"/>
+            <SolidColorBrush x:Key="ColorGruppeGruen" Color="LightGreen"/>
+            <SolidColorBrush x:Key="ColorGruppeRot" Color="LightCoral" />
+            <SolidColorBrush x:Key="ColorGruppeNest" Color="LightBlue"/>
+            <SolidColorBrush x:Key="ColorExpanderBackground" Color="DarkSalmon" />
+            <SolidColorBrush x:Key="ColorSpaetdienst" Color="#FFFF342A"/>
+            <SolidColorBrush x:Key="ColorFruehdienst" Color="Yellow" />
+            <SolidColorBrush x:Key="ColorAchtUhrDienst" Color="DarkSeaGreen"/>
+            <SolidColorBrush x:Key="ColorFsjFruehDienst" Color="#FFFFFDD2" />
+            <SolidColorBrush x:Key="ColorFsjSpaetDienst" Color="#FFFFDCDA" />-->
+
             <converter:EnumHasFlagConverter x:Key="MyEnumHasFlagConverter"/>
             <converter:EnumDescriptionConverter x:Key="MyEnumDecriptionConverter"/>
             <converter:CheckPositivNegativeZeroNumberConverter x:Key="MyCheckPositivNegativeZeroNumberConverter"/>
@@ -25,6 +37,8 @@
             <converter:BoolToVisibilityConverter x:Key="VisibleIfTrueConverter" Inverted="True" Not="False" />
             <converter:BoolToVisibilityConverter x:Key="VisibleIfNotTrueConverter" Inverted="True" Not="True" />
 
+            <converterCommon:PlanItemToColorConverter x:Key="MyPlanItemToColorConverter"/>
+
 
             <system:Double x:Key="FontSize">16</system:Double>
             <system:Double x:Key="FontSizeSmall">14</system:Double>
@@ -34,12 +48,7 @@
             <SolidColorBrush x:Key="IsDisabledForegroundBrush" Color="Black"/>
             <SolidColorBrush x:Key="BrushError" Color="Red"/>
 
-            <SolidColorBrush x:Key="ColorGruppeGelb" Color="DarkGoldenrod"/>
-            <SolidColorBrush x:Key="ColorGruppeGruen" Color="LightGreen"/>
-            <SolidColorBrush x:Key="ColorGruppeRot" Color="LightCoral"/>
-            <SolidColorBrush x:Key="ColorGruppeNest" Color="LightBlue"/>
-            <SolidColorBrush x:Key="ColorExpanderBackground" Color="DarkSalmon"/>
-
+         
             <!--STYLES-->
             <Style x:Key="{x:Type Window}" TargetType="{x:Type Window}">
                 <Setter Property="FontFamily" Value="{StaticResource FontFamily}"/>

@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Markup;
 using System.Windows.Media;
 using CocoloresPEP.Common.Entities;
 using Itenso.TimePeriod;
+using OfficeOpenXml.DataValidation;
 
 namespace CocoloresPEP.Common.Extensions
 {
     public static class BusinessExtensions
     {
+        private const string ExternalResources = "ColoresPEPResourceDictionary.xaml";
 
         public static int GetGrossteamZeitInMinmuten(this PlanItem planzeit)
         {
@@ -268,6 +272,22 @@ namespace CocoloresPEP.Common.Extensions
 
         }
 
+
+        public static ResourceDictionary GetExternalResources()
+        {
+            var fi = new FileInfo(ExternalResources);
+
+            if (fi.Exists)
+            {
+                using (var reader = new StreamReader(ExternalResources))
+                {
+                    var xml = XamlReader.Load(reader.BaseStream) as ResourceDictionary;
+                    return xml;
+                }
+            }
+            return null;
+        }
+
         /// <summary>
         ///    <SolidColorBrush x:Key="ColorGruppeGelb" Color="DarkGoldenrod"/>
         ///    <SolidColorBrush x:Key="ColorGruppeGruen" Color="LightGreen"/>
@@ -314,7 +334,63 @@ namespace CocoloresPEP.Common.Extensions
             {
                 return farbe;
             }
-          
+
+
+        }
+
+        /// <summary>
+        /// <SolidColorBrush x:Key="ColorSpaetdienst" Color="Red"/>
+        /// <SolidColorBrush x:Key="ColorFruehdienst" Color="Yellow"/>
+        /// <SolidColorBrush x:Key="ColorAchtUhrDienst" Color="DarkSeaGreen"/>
+        /// <SolidColorBrush x:Key="ColorFsjFruehDienst" Color="DarkSeaGreen"/>
+        /// <SolidColorBrush x:Key="ColorFsjSpaetDienst" Color="DarkSeaGreen"/>
+        /// </summary>
+        /// <param name="dienst"></param>
+        /// <returns></returns>
+        public static SolidColorBrush GetFarbeFromResources(this DienstTyp dienst)
+        {
+            var farbe = new SolidColorBrush();
+
+            if (dienst == DienstTyp.None)
+                return farbe;
+
+            var key = "";
+            switch (dienst)
+            {
+                case DienstTyp.Frühdienst:
+                    key = "ColorFruehdienst";
+                    break;
+                case DienstTyp.SpätdienstEnde:
+                    key = "ColorSpaetdienst";
+                    break;
+                case DienstTyp.AchtUhrDienst:
+                    key = "ColorAchtUhrDienst";
+                    break;
+                case DienstTyp.FsjSpätdienst:
+                    key = "ColorFsjSpaetDienst";
+                    break;
+                case DienstTyp.FsjFrühdienst:
+                    key = "ColorFsjFruehDienst";
+                    break;
+                default:
+                    return farbe;
+            }
+
+            try
+            {
+                var color = Application.Current.TryFindResource(key) as SolidColorBrush;
+
+                if (color == null)
+                    return farbe;
+
+                farbe = color;
+                return farbe;
+            }
+            catch
+            {
+                return farbe;
+            }
+
 
         }
     }

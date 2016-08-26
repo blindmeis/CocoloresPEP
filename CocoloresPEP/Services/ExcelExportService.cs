@@ -72,13 +72,13 @@ namespace CocoloresPEP.Services
                             
                             ws.Cells[row, j + 2].Value = zeiten.GetInfoPlanzeitInfo(true);
 
-                            var c = zeiten.Gruppe.GetFarbeFromResources();
+                            var c = zeiten.Gruppe != zeiten.ErledigtDurch.DefaultGruppe ? zeiten.Gruppe.GetFarbeFromResources() : zeiten.Dienst.GetFarbeFromResources();
                             ws.Cells[row, j + 2].Style.Fill.PatternType = ExcelFillStyle.Solid;
                             ws.Cells[row, j + 2].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(c.Color.A, c.Color.R, c.Color.G, c.Color.B));
 
-                            if ((zeiten.Dienst & DienstTyp.Frühdienst)== DienstTyp.Frühdienst
-                                || (zeiten.Dienst & DienstTyp.SpätdienstEnde) == DienstTyp.SpätdienstEnde)
-                                ws.Cells[row, j + 2].Style.Font.Bold = true;
+                            //if ((zeiten.Dienst & DienstTyp.Frühdienst)== DienstTyp.Frühdienst
+                            //    || (zeiten.Dienst & DienstTyp.SpätdienstEnde) == DienstTyp.SpätdienstEnde)
+                            //    ws.Cells[row, j + 2].Style.Font.Bold = true;
 
                             if (showThemen && zeiten.Thema !=Themen.None)
                             {

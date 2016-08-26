@@ -236,6 +236,7 @@
                                 </Style>
                             </DataGridTemplateColumn.CellStyle>
                         </DataGridTemplateColumn>
+                       
                         <DataGridTemplateColumn Width="50">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
@@ -368,34 +369,18 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <planung:PlanungMitarbeiterTagControl PlanungstagViewmodel="{Binding Path=Montag}" MitarbeiterViewmodel="{Binding Mitarbeiter}"
-                                                                          ShowThemen="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.ShowThemen, Mode=OneWay}"/>
+                                                                          ShowThemen="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.ShowThemen, Mode=OneWay}"
+                                                                          Background="{Binding Path=Montag.Planzeit, Converter={StaticResource MyPlanItemToColorConverter}}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
-                            <DataGridTemplateColumn.CellStyle>
-                                <Style TargetType="DataGridCell">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Montag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Gelb}}" Value="true">
-                                            <Setter Property="Background" Value="{StaticResource ColorGruppeGelb}"></Setter>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Montag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Gruen}}" Value="true">
-                                            <Setter Property="Background" Value="{StaticResource ColorGruppeGruen}"></Setter>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Montag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Rot}}" Value="true">
-                                            <Setter Property="Background" Value="{StaticResource ColorGruppeRot}"></Setter>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Montag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Nest}}" Value="true">
-                                            <Setter Property="Background" Value="{StaticResource ColorGruppeNest}"></Setter>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DataGridTemplateColumn.CellStyle>
                         </DataGridTemplateColumn>
 
                         <DataGridTemplateColumn MinWidth="130">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <planung:PlanungMitarbeiterTagControl PlanungstagViewmodel="{Binding Path=Dienstag}" MitarbeiterViewmodel="{Binding Mitarbeiter}"
-                                                                          ShowThemen="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.ShowThemen, Mode=OneWay}"/>
+                                                                          ShowThemen="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.ShowThemen, Mode=OneWay}"
+                                                                          Background="{Binding Path=Dienstag.Planzeit, Converter={StaticResource MyPlanItemToColorConverter}}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                             <DataGridTemplateColumn.HeaderTemplate>
@@ -411,31 +396,15 @@
                                     </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellStyle>
-                                <Style TargetType="DataGridCell">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Dienstag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Gelb}}" Value="true">
-                                            <Setter Property="Background" Value="{StaticResource ColorGruppeGelb}"></Setter>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Dienstag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Gruen}}" Value="true">
-                                            <Setter Property="Background" Value="{StaticResource ColorGruppeGruen}"></Setter>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Dienstag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Rot}}" Value="true">
-                                            <Setter Property="Background" Value="{StaticResource ColorGruppeRot}"></Setter>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Dienstag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Nest}}" Value="true">
-                                            <Setter Property="Background" Value="{StaticResource ColorGruppeNest}"></Setter>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DataGridTemplateColumn.CellStyle>
+                         
                         </DataGridTemplateColumn>
 
                         <DataGridTemplateColumn MinWidth="130">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <planung:PlanungMitarbeiterTagControl PlanungstagViewmodel="{Binding Path=Mittwoch}" MitarbeiterViewmodel="{Binding Mitarbeiter}"
-                                                                          ShowThemen="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.ShowThemen, Mode=OneWay}"/>
+                                                                          ShowThemen="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.ShowThemen, Mode=OneWay}"
+                                                                          Background="{Binding Path=Mittwoch.Planzeit, Converter={StaticResource MyPlanItemToColorConverter}}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                             <DataGridTemplateColumn.HeaderTemplate>
@@ -450,31 +419,14 @@
                                     </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellStyle>
-                                <Style TargetType="DataGridCell">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Mittwoch.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Gelb}}" Value="true">
-                                            <Setter Property="Background" Value="{StaticResource ColorGruppeGelb}"></Setter>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Mittwoch.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Gruen}}" Value="true">
-                                            <Setter Property="Background" Value="{StaticResource ColorGruppeGruen}"></Setter>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Mittwoch.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Rot}}" Value="true">
-                                            <Setter Property="Background" Value="{StaticResource ColorGruppeRot}"></Setter>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Mittwoch.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Nest}}" Value="true">
-                                            <Setter Property="Background" Value="{StaticResource ColorGruppeNest}"></Setter>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DataGridTemplateColumn.CellStyle>
                         </DataGridTemplateColumn>
 
                         <DataGridTemplateColumn MinWidth="130" >
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <planung:PlanungMitarbeiterTagControl PlanungstagViewmodel="{Binding Path=Donnerstag}" MitarbeiterViewmodel="{Binding Mitarbeiter}"
-                                                                          ShowThemen="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.ShowThemen, Mode=OneWay}"/>
+                                                                          ShowThemen="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.ShowThemen, Mode=OneWay}"
+                                                                          Background="{Binding Path=Donnerstag.Planzeit, Converter={StaticResource MyPlanItemToColorConverter}}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                             <DataGridTemplateColumn.HeaderTemplate>
@@ -490,31 +442,15 @@
 
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellStyle>
-                                <Style TargetType="DataGridCell">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Donnerstag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Gelb}}" Value="true">
-                                            <Setter Property="Background" Value="{StaticResource ColorGruppeGelb}"></Setter>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Donnerstag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Gruen}}" Value="true">
-                                            <Setter Property="Background" Value="{StaticResource ColorGruppeGruen}"></Setter>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Donnerstag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Rot}}" Value="true">
-                                            <Setter Property="Background" Value="{StaticResource ColorGruppeRot}"></Setter>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Donnerstag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Nest}}" Value="true">
-                                            <Setter Property="Background" Value="{StaticResource ColorGruppeNest}"></Setter>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DataGridTemplateColumn.CellStyle>
+                          
                         </DataGridTemplateColumn>
 
                         <DataGridTemplateColumn MinWidth="130">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <planung:PlanungMitarbeiterTagControl PlanungstagViewmodel="{Binding Path=Freitag}" MitarbeiterViewmodel="{Binding Mitarbeiter}"
-                                                                          ShowThemen="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.ShowThemen, Mode=OneWay}"/>
+                                                                          ShowThemen="{Binding ElementName=UcPlanungView, Path=DataContext.SelectedArbeitswoche.ShowThemen, Mode=OneWay}"
+                                                                          Background="{Binding Path=Freitag.Planzeit, Converter={StaticResource MyPlanItemToColorConverter}}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                             <DataGridTemplateColumn.HeaderTemplate>
@@ -530,24 +466,7 @@
 
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellStyle>
-                                <Style TargetType="DataGridCell">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Freitag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Gelb}}" Value="true">
-                                            <Setter Property="Background" Value="{StaticResource ColorGruppeGelb}"></Setter>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Freitag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Gruen}}" Value="true">
-                                            <Setter Property="Background" Value="{StaticResource ColorGruppeGruen}"></Setter>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Freitag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Rot}}" Value="true">
-                                            <Setter Property="Background" Value="{StaticResource ColorGruppeRot}"></Setter>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Freitag.EingeteiltSollTyp, Converter={StaticResource MyEnumHasFlagConverter}, ConverterParameter={x:Static entities:GruppenTyp.Nest}}" Value="true">
-                                            <Setter Property="Background" Value="{StaticResource ColorGruppeNest}"></Setter>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DataGridTemplateColumn.CellStyle>
+                           
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>

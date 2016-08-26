@@ -132,6 +132,7 @@
       <DependentUpon>VonBisUhrzeitControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common\Controls\WunschdienstControl.cs" />
+    <Compile Include="Common\Converter\PlanItemToColorConverter.cs" />
     <Compile Include="Common\Entities\DienstTyp.cs" />
     <Compile Include="Common\Entities\GruppenTyp.cs" />
     <Compile Include="Common\Entities\Themen.cs" />
@@ -239,6 +240,11 @@
     <Compile Include="Views\Planung\PlanungView.xaml.cs">
       <DependentUpon>PlanungView.xaml</DependentUpon>
     </Compile>
+    <None Include="ColoresPEPResourceDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Page Include="Common\Controls\VonBisUhrzeitControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
