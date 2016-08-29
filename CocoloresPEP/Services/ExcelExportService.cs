@@ -60,6 +60,12 @@ namespace CocoloresPEP.Services
                     ws.Cells[row, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
                     ws.Cells[row, 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(color.Color.A, color.Color.R, color.Color.G, color.Color.B));
 
+                    if (showThemen && woche.Arbeitstage.Any(a=>a.Planzeiten.Any(x => x.ErledigtDurch.Name == ma.Name && x.Thema != Themen.None)))
+                    {
+                        ws.Cells[row+1, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        ws.Cells[row+1, 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(color.Color.A, color.Color.R, color.Color.G, color.Color.B));
+                    }
+
                     for (int j = 0; j < woche.Arbeitstage.Count; j++)
                     {
                         var tag = woche.Arbeitstage[j];

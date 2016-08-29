@@ -260,8 +260,7 @@ namespace CocoloresPEP.Services
                     var minCount = mitarbeiterMitAnzahlRanddienstInderWoche.Min(x => x.Value);
                     var mitarbeiterMitWenigstenCounts = mitarbeiterMitAnzahlRanddienstInderWoche.Where(x => x.Value == minCount).Select(x => x.Key).ToList();
                     var mitarbeiterMitMehrcounts = mitarbeiterMitAnzahlRanddienstInderWoche.Where(x => x.Value != minCount).Select(x => x.Key).ToList();
-
-
+                    
                     if (mitarbeiter.Intersect(mitarbeiterMitWenigstenCounts).Any())
                     {
                         mitarbeiter = mitarbeiter.Intersect(mitarbeiterMitWenigstenCounts).ToList();
@@ -271,17 +270,12 @@ namespace CocoloresPEP.Services
                         mitarbeiter = mitarbeiter.Except(mitarbeiterMitRanddiensten.Except(mitarbeiterMitMehrcounts)).ToList();
                     }
 
-                    //das bedeutet hier sind Mitarbeiter drin die bisher gleich oft den Randdienst gemacht haben
                     //sofern noch einer übrig bleibt soll derjenige der am Vortag das gemacht, nicht nochmal dran sein
-                    if (!mitarbeiterMitMehrcounts.Any())
-                    {
-                        var vortag = woche.Arbeitstage.Single(x => x.Datum == arbeitstag.Datum.AddDays(-1));
-                        var letzte = vortag?.Planzeiten?.Where(x => x.Dienst == ma4Diensttyp).Select(x => x.ErledigtDurch).ToList() ?? new List<Mitarbeiter>();
+                    var vortag = woche.Arbeitstage.Single(x => x.Datum == arbeitstag.Datum.AddDays(-1));
+                    var letzte = vortag?.Planzeiten?.Where(x => x.Dienst == ma4Diensttyp).Select(x => x.ErledigtDurch).ToList() ?? new List<Mitarbeiter>();
 
-                        if (mitarbeiter.Except(letzte).Any())
-                            mitarbeiter = mitarbeiter.Except(letzte).ToList();
-                    }
-
+                    if (mitarbeiter.Except(letzte).Any())
+                        mitarbeiter = mitarbeiter.Except(letzte).ToList();
                 }
             }
 
@@ -628,7 +622,7 @@ namespace CocoloresPEP.Services
 
 
                     aufzuteilenMin = ((int)aufzuteilenMin / 15) * 15;
-                    var tage = mapl.Value.Count;
+                    var tage = mapl.Value.Count(x=>(x.Dienst & DienstTyp.Frei) != DienstTyp.Frei);
                     var tagAufteilung = ((int)((int)(aufzuteilenMin / tage)) / 15) * 15;
 
                     //1. Kleine Zeiten auf alle Teile
@@ -671,11 +665,6 @@ namespace CocoloresPEP.Services
                         }
                     }
                 }
-                else
-                {
-
-                }
-
             }
         }
 
@@ -694,7 +683,7 @@ namespace CocoloresPEP.Services
                     break;
                 case DienstTyp.NeunUhrDienst:
                     //für 9Uhr Dienst schauen ob man besser beim Ende oder beim Anfang die Zeit abzieht
-                    if (oldEndzeit <= dienst.Arbeitstag.KernzeitGruppeEnde && oldStartzeit <= dienst.Arbeitstag.NeunUhrDienst)
+                    if (oldStartzeit <= dienst.Arbeitstag.NeunUhrDienst && dienst.Zeitraum.Start.AddMinutes(aufzuteilen) <= dienst.Arbeitstag.NeunUhrDienst)
                     {
                         dienst.Zeitraum.Start = dienst.Zeitraum.Start.AddMinutes(aufzuteilen);
                     }
@@ -705,7 +694,7 @@ namespace CocoloresPEP.Services
                     break;
                 case DienstTyp.ZehnUhrDienst:
                     //für 10Uhr Dienst schauen ob man besser beim Ende oder beim Anfang die Zeit abzieht
-                    if (oldEndzeit <= dienst.Arbeitstag.KernzeitGruppeEnde && oldStartzeit <= dienst.Arbeitstag.ZehnUhrDienst)
+                    if (oldStartzeit <= dienst.Arbeitstag.ZehnUhrDienst && dienst.Zeitraum.Start.AddMinutes(aufzuteilen) <= dienst.Arbeitstag.ZehnUhrDienst)
                     {
                         dienst.Zeitraum.Start = dienst.Zeitraum.Start.AddMinutes(aufzuteilen);
                     }
