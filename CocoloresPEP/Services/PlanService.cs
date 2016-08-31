@@ -683,7 +683,7 @@ namespace CocoloresPEP.Services
                     break;
                 case DienstTyp.NeunUhrDienst:
                     //für 9Uhr Dienst schauen ob man besser beim Ende oder beim Anfang die Zeit abzieht
-                    if (oldStartzeit <= dienst.Arbeitstag.NeunUhrDienst && dienst.Zeitraum.Start.AddMinutes(aufzuteilen) <= dienst.Arbeitstag.NeunUhrDienst)
+                    if (dienst.Zeitraum.Start.AddMinutes(aufzuteilen) <= dienst.Arbeitstag.NeunUhrDienst)
                     {
                         dienst.Zeitraum.Start = dienst.Zeitraum.Start.AddMinutes(aufzuteilen);
                     }
@@ -694,7 +694,7 @@ namespace CocoloresPEP.Services
                     break;
                 case DienstTyp.ZehnUhrDienst:
                     //für 10Uhr Dienst schauen ob man besser beim Ende oder beim Anfang die Zeit abzieht
-                    if (oldStartzeit <= dienst.Arbeitstag.ZehnUhrDienst && dienst.Zeitraum.Start.AddMinutes(aufzuteilen) <= dienst.Arbeitstag.ZehnUhrDienst)
+                    if (dienst.Zeitraum.Start.AddMinutes(aufzuteilen) <= dienst.Arbeitstag.ZehnUhrDienst)
                     {
                         dienst.Zeitraum.Start = dienst.Zeitraum.Start.AddMinutes(aufzuteilen);
                     }
