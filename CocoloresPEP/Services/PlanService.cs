@@ -152,14 +152,34 @@ namespace CocoloresPEP.Services
                         var h1Früh = CreatePlanItem(arbeitstag, h1, h1.DefaultGruppe, DienstTyp.FsjFrühdienst);
                         arbeitstag.Planzeiten.Add(h1Früh);
                     }
-                }
 
-                foreach (var helferlein in helferleins.Except(schonEingeteilt).ToList())
-                {
-                    schonEingeteilt.Add(helferlein);
-                    var hSpät = CreatePlanItem(arbeitstag, helferlein, helferlein.DefaultGruppe, DienstTyp.FsjSpätdienst);
-                    arbeitstag.Planzeiten.Add(hSpät);
+                    var h2 = NextMitarbeiter(helferleins, schonEingeteilt, arbeitstag, woche, DienstTyp.FsjSpätdienst);
+
+                    if (h2 != null)
+                    {
+                        schonEingeteilt.Add(h2);
+                        var h2Früh = CreatePlanItem(arbeitstag, h2, h2.DefaultGruppe, DienstTyp.FsjSpätdienst);
+                        arbeitstag.Planzeiten.Add(h2Früh);
+                    }
+
+
+                    foreach (var helferlein in helferleins.Except(schonEingeteilt).ToList())
+                    {
+                        schonEingeteilt.Add(helferlein);
+                        var h = CreatePlanItem(arbeitstag, helferlein, helferlein.DefaultGruppe, DienstTyp.FsjKernzeitdienst);
+                        arbeitstag.Planzeiten.Add(h);
+                    }
                 }
+                else
+                {
+                    foreach (var helferlein in helferleins.Except(schonEingeteilt).ToList())
+                    {
+                        schonEingeteilt.Add(helferlein);
+                        var hSpät = CreatePlanItem(arbeitstag, helferlein, helferlein.DefaultGruppe, DienstTyp.FsjSpätdienst);
+                        arbeitstag.Planzeiten.Add(hSpät);
+                    }
+                }
+               
                 #endregion
 
             }
@@ -277,6 +297,14 @@ namespace CocoloresPEP.Services
                     if (mitarbeiter.Except(letzte).Any())
                         mitarbeiter = mitarbeiter.Except(letzte).ToList();
                 }
+
+                //am gleichen Tag vllt nicht unbedingt auch noch aus der gleichen gruppe
+                var ma4Gruppencheck = arbeitstag.Planzeiten.Where(x => x.Dienst == ma4Diensttyp).Select(x=>x.ErledigtDurch).ToList();
+                var maGleicherGruppe = mitarbeiter.Where(x => ma4Gruppencheck.Any(m => m.DefaultGruppe == x.DefaultGruppe)).ToList();
+                if (mitarbeiter.Except(maGleicherGruppe).Any())
+                {
+                    mitarbeiter = mitarbeiter.Except(maGleicherGruppe).ToList();
+                }
             }
 
             int ichBinDran = Zufall.Next(0, mitarbeiter.Count);
@@ -320,6 +348,10 @@ namespace CocoloresPEP.Services
                 case DienstTyp.FsjFrühdienst:
                     start = arbeitstag.FrühdienstFsj;
                     ende = arbeitstag.FrühdienstFsj.AddMinutes(duration);
+                    break;
+                case DienstTyp.FsjKernzeitdienst:
+                    start = arbeitstag.NormaldienstFsj;
+                    ende = arbeitstag.NormaldienstFsj.AddMinutes(duration);
                     break;
                 case DienstTyp.FsjSpätdienst:
                     start = arbeitstag.SpätdienstEndeFsj.AddMinutes(-1 * duration);
@@ -396,6 +428,7 @@ namespace CocoloresPEP.Services
                     ende = planItem.Arbeitstag.KernzeitGruppeEnde;
                     break;
                 case DienstTyp.FsjFrühdienst:
+                case DienstTyp.FsjKernzeitdienst:
                 case DienstTyp.FsjSpätdienst:
                     ende = planItem.Arbeitstag.SpätdienstEndeFsj;
                     break;
@@ -623,6 +656,10 @@ namespace CocoloresPEP.Services
 
                     aufzuteilenMin = ((int)aufzuteilenMin / 15) * 15;
                     var tage = mapl.Value.Count(x=>(x.Dienst & DienstTyp.Frei) != DienstTyp.Frei);
+
+                    if(tage == 0)
+                        continue;
+
                     var tagAufteilung = ((int)((int)(aufzuteilenMin / tage)) / 15) * 15;
 
                     //1. Kleine Zeiten auf alle Teile

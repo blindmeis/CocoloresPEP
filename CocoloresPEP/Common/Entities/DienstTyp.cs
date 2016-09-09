@@ -33,7 +33,9 @@ namespace CocoloresPEP.Common.Entities
         [Display(Name = @"FSJ Spätdienst")]
         FsjSpätdienst = 1 << 10,
         [Display(Name = @"16:00Uhr Dienst")]
-        SechszehnUhrDienst = 1<<11 
+        SechszehnUhrDienst = 1<<11,
+        [Display(Name = @"FSJ Kernzeit")]
+        FsjKernzeitdienst = 1 << 12
 
     }
 }

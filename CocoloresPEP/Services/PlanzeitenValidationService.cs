@@ -62,7 +62,7 @@ namespace CocoloresPEP.Services
 
                     #region 8Uhr Dienst
 
-                    var obGenauEin8Uhrdienst = arbeitstag.Planzeiten.Where(x => x.Dienst == DienstTyp.AchtUhrDienst && x.Zeitraum.Start == x.Arbeitstag.AchtUhrDienst).ToList();
+                    var obGenauEin8Uhrdienst = arbeitstag.Planzeiten.Where(x => x.Dienst == DienstTyp.AchtUhrDienst && x.Zeitraum.HasInside(x.Arbeitstag.AchtUhrDienst)).ToList();
                     if (obGenauEin8Uhrdienst.Count == 0)
                     {
                         var msg = $"Kein {DienstTyp.AchtUhrDienst.GetDisplayname()} geplant für {arbeitstag.AchtUhrDienst.ToString("HH:mm")}Uhr.";
