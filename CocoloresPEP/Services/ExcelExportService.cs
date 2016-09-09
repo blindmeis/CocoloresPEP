@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,25 @@ namespace CocoloresPEP.Services
 {
     public class ExcelExportService
     {
+        public static string PfadExcel
+        {
+            get
+            {
+                if (ConfigurationManager.AppSettings.AllKeys.Any(x => x == "PfadExcel"))
+                {
+                    var pfad = ConfigurationManager.AppSettings["PfadExcel"];
+                    var di = new DirectoryInfo(pfad);
+
+                    if (!di.Exists)
+                        di.Create();
+
+                    return pfad;            
+                }
+
+                return "";
+            }
+        }
+
         public MemoryStream SchreibeIstZeiten(Arbeitswoche woche, IList<Mitarbeiter> mitarbeiters, bool showThemen = false)
         {
             using (var xls = new ExcelPackage())

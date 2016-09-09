@@ -21,5 +21,7 @@ namespace CocoloresPEP.Common.Entities
         Rot = 1 << 3,
         [Display(Name = @"Nest")]
         Nest = 1 << 4,
+        [Display(Name = @"Nicht Pädagogen")]
+        NichtPaedagogen = 1 << 5,
     }
 }

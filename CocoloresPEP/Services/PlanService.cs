@@ -191,7 +191,7 @@ namespace CocoloresPEP.Services
         {
             var arbeitstagPlanzeiten = arbeitstag.Planzeiten.ToList();
 
-            var topf = alleDieDaSind.Except(schonEingeteilt).Where(x => x.DefaultGruppe != GruppenTyp.None).ToList();
+            var topf = alleDieDaSind.Except(schonEingeteilt).Where(x => x.DefaultGruppe.IstFarbGruppe()).ToList();
 
             if (topf.Count == 0)
                 return null;

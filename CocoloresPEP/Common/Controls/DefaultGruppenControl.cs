@@ -19,7 +19,8 @@ namespace CocoloresPEP.Common.Controls
                 {GruppenTyp.Gelb.GetDisplayname(), GruppenTyp.Gelb},
                 {GruppenTyp.Rot.GetDisplayname(), GruppenTyp.Rot},
                 {GruppenTyp.Gruen.GetDisplayname(), GruppenTyp.Gruen},
-                {GruppenTyp.Nest.GetDisplayname(), GruppenTyp.Nest}
+                {GruppenTyp.Nest.GetDisplayname(), GruppenTyp.Nest},
+                {GruppenTyp.NichtPaedagogen.GetDisplayname(), GruppenTyp.NichtPaedagogen}
             };
 
         }

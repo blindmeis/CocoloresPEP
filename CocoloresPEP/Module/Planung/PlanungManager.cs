@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -368,7 +369,15 @@ namespace CocoloresPEP.Module.Planung
                     return service.SchreibeIstZeiten(woche, woche.Mitarbeiter, SelectedArbeitswoche.ShowThemen);
                 });
 
-                ms.CreateXlsxFileOnTempPath(true);
+                var pfad = ExcelExportService.PfadExcel;
+                var filename = $"Planung_{woche.Jahr}_{woche.KalenderWoche.ToString("00")}.xlsx";
+
+                if (string.IsNullOrWhiteSpace(pfad))
+                    ms.CreateXlsxFileOnTempPath(true);
+                else
+                {
+                    ms.CreateFile(true, pfad + filename);
+                }
             }
             catch (Exception ex)
             {

@@ -18,6 +18,16 @@ namespace CocoloresPEP.Common.Extensions
     {
         private const string ExternalResources = "ColoresPEPResourceDictionary.xaml";
 
+        public static Tuple<int, int> GetZeitTuple(this string zeit)
+        {
+            var z = zeit.Split(':');
+
+            if(z.Length != 2)
+                throw new ArgumentException(@"Unzulässiger Wert für Dienstzeit in der app.config.", zeit);
+
+            return new Tuple<int, int>(int.Parse(z[0]),int.Parse(z[1]));
+        }
+
         public static int GetGrossteamZeitInMinmuten(this PlanItem planzeit)
         {
             if (planzeit.HatGrossteam)
@@ -151,7 +161,7 @@ namespace CocoloresPEP.Common.Extensions
 
         public static bool CheckKernzeitAbgedeckt(this Arbeitstag arbeitstag, GruppenTyp gruppe)
         {
-            if (gruppe  == GruppenTyp.None)
+            if (!gruppe.IstFarbGruppe())
                 return true;
 
             var gruppenzeiten = arbeitstag.GetMitarbeiterArbeitszeiten(gruppe);
@@ -167,7 +177,7 @@ namespace CocoloresPEP.Common.Extensions
 
         public static bool CheckKernzeitDoppelBesetzungAbgedeckt(this Arbeitstag arbeitstag, GruppenTyp gruppe)
         {
-            if (gruppe == GruppenTyp.None)
+            if (!gruppe.IstFarbGruppe())
                 return true;
 
             var gruppenzeiten = arbeitstag.GetMitarbeiterArbeitszeiten(gruppe);
@@ -226,7 +236,7 @@ namespace CocoloresPEP.Common.Extensions
         public static IList<PlanItem> GetMitarbeiterArbeitsplanzeiten(this Arbeitstag arbeitstag, GruppenTyp gruppe)
         {
             return
-                arbeitstag.Planzeiten.Where(x => (x.Gruppe & gruppe) == gruppe && !x.ErledigtDurch.IsHelfer)
+                arbeitstag.Planzeiten.Where(x => x.Gruppe== gruppe && !x.ErledigtDurch.IsHelfer)
                     .Select(x => x)
                     .ToList();
         }
@@ -272,6 +282,14 @@ namespace CocoloresPEP.Common.Extensions
 
         }
 
+        public static bool IstFarbGruppe(this GruppenTyp gruppe)
+        {
+            return (gruppe & GruppenTyp.Gelb) == GruppenTyp.Gelb
+                   || (gruppe & GruppenTyp.Gruen) == GruppenTyp.Gruen
+                   || (gruppe & GruppenTyp.Rot) == GruppenTyp.Rot
+                   || (gruppe & GruppenTyp.Nest) == GruppenTyp.Nest;
+        }
+
 
         public static ResourceDictionary GetExternalResources()
         {
@@ -300,7 +318,7 @@ namespace CocoloresPEP.Common.Extensions
         {
             var farbe = new SolidColorBrush();
 
-            if (gruppe == GruppenTyp.None)
+            if (!gruppe.IstFarbGruppe())
                 return farbe;
 
             var key = "";

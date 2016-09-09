@@ -272,7 +272,7 @@ namespace CocoloresPEP.Module.Planung
 
         public decimal SummeAngeordneteStunden
         {
-            get { return Mitarbeiter.Where(x=>!x.IsHelfer).Sum(x => x.WochenStunden); }
+            get { return Mitarbeiter.Where(x=>!x.IsHelfer && x.DefaultGruppe != GruppenTyp.NichtPaedagogen).Sum(x => x.WochenStunden); }
         }
     }
 }
