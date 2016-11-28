@@ -223,7 +223,7 @@ namespace CocoloresPEP.Common.Extensions
         public static bool CanSetHatGrossteam(this PlanItem plan)
         {
             return plan.Arbeitstag.HasGrossteam
-                   && !plan.ErledigtDurch.IsHelfer
+                   && (!plan.ErledigtDurch?.IsHelfer ?? false)
                    && (plan.Dienst & DienstTyp.Frei) != DienstTyp.Frei;
         }
 
