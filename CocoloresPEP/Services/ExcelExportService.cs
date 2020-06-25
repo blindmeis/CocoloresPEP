@@ -36,6 +36,7 @@ namespace CocoloresPEP.Services
 
         public MemoryStream SchreibeIstZeiten(Arbeitswoche woche, IList<Mitarbeiter> mitarbeiters, bool showThemen = false)
         {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using (var xls = new ExcelPackage())
             {
                 var ws = xls.Workbook.Worksheets.Add($"Woche {woche.KalenderWoche}");
@@ -90,6 +91,12 @@ namespace CocoloresPEP.Services
                     {
                         var tag = woche.Arbeitstage[j];
 
+                        //var tmp =mitarbeiters.SingleOrDefault(x => x.Name == "Robert");
+                        //if (tag.Datum == new DateTime(2020, 7, 3) && tag.Planzeiten.Any(x=>x.ErledigtDurch==null))
+                        //{
+                        //    var pp = tag.Planzeiten.Where(x => x.ErledigtDurch == null);
+                        //    pp.First().ErledigtDurch = tmp;
+                        //}
                        
                         foreach (var zeiten in tag.Planzeiten.Where(x=>x.ErledigtDurch.Name==ma.Name))
                         {

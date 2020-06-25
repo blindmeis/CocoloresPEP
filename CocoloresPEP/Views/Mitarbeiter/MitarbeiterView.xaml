@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:CocoloresPEP.Views.Mitarbeiter"
              xmlns:images="clr-namespace:CocoloresPEP.Images"
              xmlns:entities="clr-namespace:CocoloresPEP.Common.Entities"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:focus="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors.Focus"
              x:Name="Uc">
     <i:Interaction.Behaviors>

@@ -4,13 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:images="clr-namespace:CocoloresPEP.Images"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:behaviors="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors"
              xmlns:planung="clr-namespace:CocoloresPEP.Views.Planung"
              xmlns:entities="clr-namespace:CocoloresPEP.Common.Entities"
              xmlns:controls="clr-namespace:CocoloresPEP.Common.WpfCore.Controls"
              xmlns:focus="clr-namespace:CocoloresPEP.Common.WpfCore.Behaviors.Focus"
              xmlns:planung1="clr-namespace:CocoloresPEP.Module.Planung"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              x:Name="UcPlanungView">
     <i:Interaction.Behaviors>
         <focus:SetFocusToBindingBehavior BindingName="KalenderWoche" SetFocusToBindingPath="{Binding Path=FocusToBindingPath, Mode=TwoWay}"/>

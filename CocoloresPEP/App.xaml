@@ -11,6 +11,10 @@
     <Application.Resources>
         <ResourceDictionary>
 
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/ColoresPEPResourceDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
             <converter:EnumHasFlagConverter x:Key="MyEnumHasFlagConverter"/>
             <converter:EnumDescriptionConverter x:Key="MyEnumDecriptionConverter"/>
             <converter:CheckPositivNegativeZeroNumberConverter x:Key="MyCheckPositivNegativeZeroNumberConverter"/>
